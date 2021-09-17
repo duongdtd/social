@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
 import { StyleSheet, Text, View,TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import Landing from './Components/auth/Landing';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Register from './Components/auth/Register';
 import Login from './Components/auth/Login';
@@ -17,8 +16,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Photo from './Components/main/Photo'
 import Profile from './Components/main/Profile'
 import Feed from './Components/main/Feed'
-import Main from './Components/Main';
-
+import Save from './Components/main/Save'
 const store = createStore(rootReducer , applyMiddleware(thunk))
 const firebaseConfig = {
   apiKey: "AIzaSyBm0GkkdkMO8iz9tLtssu9v4XtcXB1wvns",
@@ -35,7 +33,7 @@ if(firebase.apps.length === 0 )
   firebase.initializeApp(firebaseConfig)
 } 
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+
 export class  App extends Component {
   
 constructor(props)
@@ -79,10 +77,8 @@ render() {
     return(
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Landing">
-          {/* <Stack.Screen name ="Landing" component ={Landing} options ={{headerShow : false}}/> */}
-          {/* <Stack.Screen name ="Register" component ={Register} options ={{headerShow : false}}/> */}
           <Stack.Screen name ="Login" component ={Login} options ={{headerShow : false}}/>
-          <Stack.Screen name ="Register" component ={Register} options ={{headerShow : false}}/>
+          <Stack.Screen name ="Register" component ={Register}/>
         </Stack.Navigator>
       </NavigationContainer>
     );
@@ -91,11 +87,14 @@ render() {
   return(
 <Provider store={store}>
 <NavigationContainer>
-          <Tab.Navigator initialRouteName="Main">
-          <Tab.Screen name ="Main" component ={MainScreen} options ={{headerShow : false}}/>
-          <Tab.Screen name ="Profile" component ={Profile} />
-          <Tab.Screen name ="Photo" component ={Photo} />
-        </Tab.Navigator>
+          <Stack.Navigator initialRouteName="Main" screenOptions={{
+    headerShown: false
+  }}>
+          <Stack.Screen name ="Main" component ={MainScreen} options ={{headerShow : true}}/>
+          <Stack.Screen name ="Profile" component ={Profile} />
+          <Stack.Screen name ="Photo" component ={Photo} navigation ={this.props.navigation}/>
+          <Stack.Screen name ="Save" component ={Save} navigation ={this.props.navigation} options ={{headerShow : false}}/>
+        </Stack.Navigator>
     </NavigationContainer>
 </Provider>
 )

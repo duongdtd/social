@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, TouchableOpacity, Button,Image } from 'react-na
 import { Camera } from 'expo-camera';
 import { useIsFocused } from '@react-navigation/core';
 import * as ImagePicker from 'expo-image-picker'; 
-export default function Photo() {
+
+export default function Photo({navigation}) {
   const [hasCameraPermission, setCameraHasPermission] = useState(null);
   const [hasGalleyPermission, setGalleyHasPermission] = useState(null);
   const [camera, setCamera] = useState(null);
@@ -71,8 +72,12 @@ const pickImage = async () => {
           onPress={()=>takeImage()}>
           </Button>
           <Button
-          title= "take Image"
+          title= "Pick Image"
           onPress={()=>pickImage()}>
+          </Button>
+          <Button
+          title= "Save"
+          onPress={() => navigation.navigate('Save', {image}) }>
           </Button>
           {image && <Image source ={{uri :image}} style ={{flex :1}} />}
         </View>
