@@ -11,6 +11,7 @@ import Photo from "./main/Photo";
 import Profile from "./main/Profile";
 import FeedScreen from "./main/Feed";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Search from "./main/Search";
 const Tab = createBottomTabNavigator();
 export class Main extends Component {
     componentDidMount()
@@ -40,7 +41,14 @@ export class Main extends Component {
                       <MaterialCommunityIcons name ="account" color={color} size={26} />
                   )}}
               />
+              <Tab.Screen name="Search" component={Search} 
+              options={{
+                  tabBarIcon :({color,size}) =>(
+                      <MaterialCommunityIcons name ="account-search" color={color} size={26} />
+                  )}}
+              />
             </Tab.Navigator>
+            
           );
     }
 }

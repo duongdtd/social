@@ -26,6 +26,7 @@ export default function Register({navigation}) {
       .set({
         name: name,
         email: email,
+        downloadURL: 'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg',
       })
       .then(() => {
         console.log('User added!');

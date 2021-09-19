@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { Text, View,Image,FlatList,StyleSheet,TouchableOpacity } from 'react-native';
+import { Text, View,Image,FlatList,StyleSheet,TouchableOpacity,Button } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
+import{useLayoutEffect} from 'react'
 import { AntDesign } from '@expo/vector-icons';
- function Profile(props) {
+import {Avatar} from 'react-native-elements'
+ function Profile(props,{navigation}) {
+
   const SignOut = () => {
     firebase.auth().signOut();
   }
@@ -11,13 +14,20 @@ import { AntDesign } from '@expo/vector-icons';
    console.log({currentUser,posts})
   return (
     <View style={styles.container}>
+      <Avatar
+      rounded
+      size="large"
+      marginLeft ={20}
+      source={{
+        uri :firebase.auth().currentUser.photoURL
+      }}
+      />
       <View style={styles.containerInfo}>
       <Text>{currentUser.name}</Text>
-      <Text>{currentUser.email}</Text>
-      <TouchableOpacity style={{ marginRight: 10 }}
-                    onPress={SignOut}>
-                    <AntDesign name="login" size={24} color="black" />
-                  </TouchableOpacity>
+      <TouchableOpacity
+      onPress={SignOut}>
+      <AntDesign name="logout" size={24} color="black" />
+      </TouchableOpacity>
       </View>
       <View style={styles.comtainerGalley}
       >
@@ -62,6 +72,12 @@ const  styles = StyleSheet.create({
   },
   containerImage:{
     flex :1/3
+  },
+  userImage :{
+    height :100,
+    width:100,
+    borderRadius :75
   }
+  
 })
 export default connect(mapStateToProps,null)(Profile)

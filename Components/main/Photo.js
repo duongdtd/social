@@ -79,6 +79,10 @@ const pickImage = async () => {
           title= "Save"
           onPress={() => navigation.navigate('Save', {image}) }>
           </Button>
+          <Button
+          title= "Save Avatar"
+          onPress={() => navigation.navigate('AvatarUpdate', {image}) }>
+          </Button>
           {image && <Image source ={{uri :image}} style ={{flex :1}} />}
         </View>
   );
