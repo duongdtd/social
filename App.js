@@ -19,6 +19,8 @@ import Feed from './Components/main/Feed'
 import Save from './Components/main/Save'
 import Search from './Components/main/Search';
 import AvatarUpdate from './Components/main/AvatarUpdate'
+import NewFeeds from './Components/main/NewFeeds'
+import Comments from './Components/main/Comments';
 const store = createStore(rootReducer, applyMiddleware(thunk))
 const firebaseConfig = {
   apiKey: "AIzaSyBm0GkkdkMO8iz9tLtssu9v4XtcXB1wvns",
@@ -96,6 +98,8 @@ export class App extends Component {
             />
             <Stack.Screen name="Search" component={Search} navigation={this.props.navigation} options={{ headerShow: false }} />
             <Stack.Screen name="Save" component={Save} navigation={this.props.navigation} options={{ headerShow: false }} />
+            <Stack.Screen name="Comments" component={Comments} navigation={this.props.navigation}  />
+            <Stack.Screen name="NewFeeds" component={NewFeeds} navigation={this.props.navigation} options={{ headerShow: false }} />
             <Stack.Screen name="AvatarUpdate" component={AvatarUpdate} navigation={this.props.navigation} options={{ headerShow: false }} />
           </Stack.Navigator>
         </NavigationContainer>

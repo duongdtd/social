@@ -15,7 +15,29 @@ export default function Register({navigation}) {
   const [email, setemail]=useState("")
   const [password, setpassword]=useState("")
   const [ImageURL, setImageURL]=useState("")
+  const [phone, setPhone]=useState("")
 
+  function generateSearchIndex(str) {
+    var temp = []
+    str.trim().split(" ").forEach(word => {
+      temp = temp.concat(generateSearchIndexWord(word))
+    })
+    return temp
+  }
+  
+  function generateSearchIndexWord(word) {
+    if (word.length == 0) {
+      return []
+    } else if (word.length <= 3) {
+      return [word]
+    } else {
+      var ret = []
+      for (var i = 3 ; i <= word.length ; i++) {
+        ret.push(word.substring(0, i))
+      }
+      return ret
+    }
+  }
   const sign = () =>{
     firebase.auth()
     .createUserWithEmailAndPassword(email, password)
@@ -27,6 +49,7 @@ export default function Register({navigation}) {
         name: name,
         email: email,
         downloadURL: 'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg',
+        phone : generateSearchIndex(phone)
       })
       .then(() => {
         console.log('User added!');
@@ -76,6 +99,16 @@ export default function Register({navigation}) {
             type='text'
             value={name}
             onChangeText={(text) =>setname(text)} 
+          >
+          </TextInput>
+          <TextInput
+            style={styles.input2} 
+            placeholder="Phone Number" 
+            placeholderTextColor='rgba(255,255,255,0.8)'
+            returnKeyType="go"
+            type='text'
+            value={phone}
+            onChangeText={(text) =>setPhone(text)} 
           >
           </TextInput>
           <TouchableOpacity  style={styles.inputIcon3} onPress ={() => {setIs((x)=>!x)}} >
