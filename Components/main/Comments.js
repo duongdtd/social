@@ -53,7 +53,7 @@ function Comments(props) {
         }
 
 
-    }, [props.route.params.postId, props.users])
+    }, [props.route.params.postId, props.users, props.route.params.postId.likesCouter])
 
 
     const onCommentSend = () => {

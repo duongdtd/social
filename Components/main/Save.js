@@ -38,11 +38,20 @@ export default function Save(props, {navigation}) {
         .add ({
             downloadURL,
             caption,
+            LikesCount :0,
             creation : firebase.firestore.FieldValue.serverTimestamp() 
         }).then((function () {
             props.navigation.navigate('Feed');
         }))
 
+    }
+    const addPost =() => {
+        firebase.firestore()
+  .collection("Users")
+  .doc(firebase.auth().currentUser.uid)
+  .update({
+    Posts : firebase.firestore.FieldValue.increment(1)
+  })
     }
     return(
         <View style ={{flex :1}}>
@@ -53,7 +62,7 @@ export default function Save(props, {navigation}) {
             </TextInput>
             <Button
             title ='Save'
-            onPress = {() => uploadImage()}
+            onPress = {() =>{ uploadImage(),addPost()}}
             ></Button>
         </View>
     )

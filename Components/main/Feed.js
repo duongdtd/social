@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View,TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import firebase from 'firebase';
@@ -9,12 +9,77 @@ export default function Feed() {
     firebase.auth().signOut();
   }
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home!</Text>
-      <TouchableOpacity
-      onPress={SignOut}>
-      <AntDesign name="logout" size={24} color="black" />
-      </TouchableOpacity>
+    <View style={styles.containerView}>
+
+      {/* //   <Text>Home!</Text>
+    //   <TouchableOpacity
+    //   onPress={SignOut}>
+    //   <AntDesign name="logout" size={24} color="black" />
+    //   </TouchableOpacity> */}
+      <View style={styles.container}>
+        <Text>Helllllllllo</Text>
+
+        <Text>Helllllllllo</Text>
+        <Text>Helllllllllo</Text>
+        <Text>Helllllllllo</Text>
+      </View>
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#f8f8f8',
+    width: '100%',
+    marginBottom: 20,
+    borderRadius: 10
+  },
+  containerView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 20
+  },
+  userInfo: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  userImg: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  userInfoText: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginLeft: 10,
+  },
+  userName: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#2e64e5',
+  },
+  postText :{
+    fontSize :14,
+    paddingLeft :15,
+    paddingRight: 15,
+  },
+  postImg :{
+    width :'100%',
+    height :250,
+    marginTop : 15,
+
+  },
+  interReactionWrapper :{
+    flexDirection :'row',
+    justifyContent :'space-around',
+    padding :15,
+
+  },
+  interReaction :{
+    flexDirection:'row',
+    justifyContent :'center',
+    borderRadius :5,
+    padding : 5,
+  },
+})

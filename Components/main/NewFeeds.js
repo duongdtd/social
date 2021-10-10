@@ -1,33 +1,71 @@
 import * as React from 'react';
-import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button, } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { useLayoutEffect, useEffect } from 'react'
 import { useState } from 'react';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign,Ionicons } from '@expo/vector-icons';
 import { Avatar } from 'react-native-elements'
 require('firebase/firestore')
 function NewFeeds(props, { navigation }) {
 
   const [posts, setPosts] = useState([])
   useEffect(() => {
-    let posts = [];
-    console.log(props.usersFollowingLoaded),
-      console.log(props.following.length)
-    if (props.usersFollowingLoaded == props.following.length) {
-      for (let i = 0; i < props.following.length; i++) {
-        const user = props.users.find(el => el.uid === props.following[i]);
-        if (user != undefined) {
-          posts = [...posts, ...user.posts]
-        }
-      }
-      posts.sort(function (x, y) {
+    if (props.usersFollowingLoaded == props.following.length && props.following.length !== 0) {
+      // for (let i = 0; i < props.following.length; i++) {
+      //   const user = props.users.find(el => el.uid === props.following[i]);
+      //   if (user != undefined) {
+      //     posts = [...posts, ...user.posts]
+      //   }
+      // }
+      props.feed.sort(function (x, y) {
         return x.creation - y.creation;
       })
-      setPosts(posts)
+      setPosts(props.feed)
     }
+    console.log(posts)
+  }, [props.usersFollowingLoaded, props.feed,])
+  const onLikePress = (userId, postId) => {
+    firebase.firestore()
+      .collection("Posts")
+      .doc(userId)
+      .collection("UserPosts")
+      .doc(postId)
+      .collection("likes")
+      .doc(firebase.auth().currentUser.uid)
+      .set({})
+  }
+  const LikePress = (userId, postId) => {
+    firebase.firestore()
+      .collection("Posts")
+      .doc(userId)
+      .collection("UserPosts")
+      .doc(postId)
+      .update({
+        likesCouter: firebase.firestore.FieldValue.increment(1)
+      })
+  }
 
-  }, [props.usersLoaded])
+  const onDisLikePress = (userId, postId) => {
+    firebase.firestore()
+      .collection("Posts")
+      .doc(userId)
+      .collection("UserPosts")
+      .doc(postId)
+      .update({
+        likesCouter: firebase.firestore.FieldValue.increment(-1)
+      })
+  }
+  const DisLikePress = (userId, postId) => {
+    firebase.firestore()
+      .collection("Posts")
+      .doc(userId)
+      .collection("UserPosts")
+      .doc(postId)
+      .collection("likes")
+      .doc(firebase.auth().currentUser.uid)
+      .delete({})
+  }
 
   return (
     <View style={styles.container}>
@@ -37,16 +75,92 @@ function NewFeeds(props, { navigation }) {
           horizontal={false}
           data={posts}
           renderItem={({ item }) => (
-            <View style={styles.containerImage}>
-              <Text>{item.user.name}</Text>
-              <Image
+            <View style={styles.containerView}>
+              <View style={styles.container1}>
+                <View style={styles.userInfo}>
+                  <View style={styles.userInfo}>
+                    <Image style={styles.userImg}
+                      source={{
+                        uri: item.user.downloadURL
+                      }}>
+                    </Image>
+                    <View style={styles.userInfoText}>
+                      <Text style={styles.userName}>
+                        {item.user.name}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <Text style={styles.postText}>
+                  {item.caption}
+                </Text>
+                <Image
+                  style={styles.postImg}
+                  source={{ uri: item.downloadURL }}
+                />
+                <View style ={styles.deviler} />
+                <View style={styles.interReactionWrapper}>
+                {item.currentUserLike ?
+                (
+                  <TouchableOpacity
+                    style={styles.interReaction}
+                    title="Dislike"
+                    onPress={() => { onDisLikePress(item.user.uid, item.id), DisLikePress(item.user.uid, item.id), item.LikesCount-- }}>
+                    <AntDesign name="heart" size={30} color="red" />
+                  </TouchableOpacity>
+                )
+                : (
+                  <TouchableOpacity
+                    title="Like"
+                    style={styles.interReaction}
+                    onPress={() => { onLikePress(item.user.uid, item.id), LikePress(item.user.uid, item.id), item.LikesCount++ }}
+                  >
+                    <AntDesign name="hearto" size={30} color="black" />
+                  </TouchableOpacity>
+                )}
+                <Text style ={styles.interReactionText}>
+                  likes
+                </Text>
+                <TouchableOpacity
+                    title="Coments"
+                    style={styles.interReaction}
+                    onPress={() => props.navigation.navigate('Comments', { postId: item.id, uid: item.user.uid }
+                )}
+                  >
+                   <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
+                  </TouchableOpacity>
+                  <Text style ={styles.interReactionText}>
+                  Coments
+                </Text>
+                </View>
+              </View>
+              {/* <Image
                 style={styles.image}
                 source={{ uri: item.downloadURL }}
-              />
-              <Text
-                onPress={() => props.navigation.navigate('Comments', { postId: item.id, uid  : item.user.uid }
+              /> */}
+              {/* <Text>{String(item.likesCouter)} likes</Text>
+              {item.currentUserLike ?
+                (
+                  <TouchableOpacity
+                    title="Dislike"
+
+                    onPress={() => { onDisLikePress(item.user.uid, item.id), DisLikePress(item.user.uid, item.id), item.likesCouter-- }}>
+                    <AntDesign name="heart" size={30} color="red" />
+                  </TouchableOpacity>
+                )
+                : (
+                  <TouchableOpacity
+                    title="Like"
+                    onPress={() => { onLikePress(item.user.uid, item.id), LikePress(item.user.uid, item.id), item.likesCouter++ }}
+                  >
+                    <AntDesign name="hearto" size={30} color="black" />
+                  </TouchableOpacity>
+
                 )}
-              >View Comments...</Text>
+              <Text
+                onPress={() => props.navigation.navigate('Comments', { postId: item.id, uid: item.user.uid }
+                )}
+              >View Comments...</Text> */}
             </View>
           )}
 
@@ -61,13 +175,13 @@ const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   following: store.userState.following,
 
-  users: store.usersState.users,
+  feed: store.usersState.feed,
   usersFollowingLoaded: store.usersState.usersFollowingLoaded,
 })
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 40,
+    backgroundColor: '#fff'
   },
   containerInfo: {
     margin: 20
@@ -87,6 +201,75 @@ const styles = StyleSheet.create({
     width: 100,
     borderRadius: 75
   },
+  container1: {
+    backgroundColor: '#f8f8f8',
+    width: '100%',
+    marginBottom: 20,
+    borderRadius: 10
+  },
+  containerView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 20
+  },
+  userInfo: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  userImg: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  userInfoText: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginLeft: 10,
+  },
+  userName: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  postText: {
+    fontSize: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
+  postImg: {
+    width: '100%',
+    height: 250,
+    marginTop: 15,
 
+  },
+  interReactionWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 8,
+
+  },
+  interReaction: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderRadius: 5,
+    padding: 5,
+  },
+  interReactionText :{
+    fontSize :15,
+    fontWeight :'bold',
+    color :'black',
+    marginTop :10,
+    marginLeft :10,
+
+  },
+  deviler :{
+    borderBottomColor :'#dddddd',
+    borderBottomWidth :1,
+    width :'92%',
+    alignSelf: 'center',
+    marginTop: 15,
+  }
 })
 export default connect(mapStateToProps, null)(NewFeeds)
