@@ -32,7 +32,7 @@ export default function Search(props) {
                     renderItem={({ item }) => (
                         <View>
                             <TouchableOpacity
-                            onPress ={() => props.navigation.navigate("Profile",{uid :item.id})}>
+                            onPress ={() => props.navigation.navigate("ProfileFriend",{uid :item.id})}>
                                 <Avatar
                                     size="small"
                                     rounded

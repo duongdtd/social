@@ -68,6 +68,7 @@ function NewFeeds(props, { navigation }) {
   }
 
   return (
+
     <View style={styles.container}>
       <View style={styles.comtainerGalley}>
         <FlatList

@@ -21,6 +21,7 @@ import Search from './Components/main/Search';
 import AvatarUpdate from './Components/main/AvatarUpdate'
 import NewFeeds from './Components/main/NewFeeds'
 import Comments from './Components/main/Comments';
+import ProfileFriend from './Components/main/ProfileFriend';
 const store = createStore(rootReducer, applyMiddleware(thunk))
 const firebaseConfig = {
   apiKey: "AIzaSyBm0GkkdkMO8iz9tLtssu9v4XtcXB1wvns",
@@ -77,7 +78,7 @@ export class App extends Component {
     if (!loggedIn) {
       return (
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Landing">
+          <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login" component={Login} options={{ headerShow: false }} />
             <Stack.Screen name="Register" component={Register} />
           </Stack.Navigator>
@@ -93,6 +94,8 @@ export class App extends Component {
           }}>
             <Stack.Screen name="Main" component={MainScreen} options={{ headerShow: true }} />
             <Stack.Screen name="Profile" component={Profile}
+              navigation={this.props.navigation} />
+              <Stack.Screen name="ProfileFriend" component={ProfileFriend}
               navigation={this.props.navigation} />
             <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation}
             />

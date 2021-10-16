@@ -10,57 +10,34 @@ import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 require('firebase/firestore')
 import { SimpleLineIcons } from '@expo/vector-icons';
-function Profile(props, { navigation }) {
+function ProfileFriend(props, { navigation }) {
 
-  bs = React.useRef(null);
-  fall = new Animated.Value(1);
 
-  const renderInner = () => (
-    <View style={styles.panel}>
-      <TouchableOpacity style={styles.panelButton}>
-        <Text style={styles.panelButtonTitle}>Edit Profile</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.panelButton}
-        onPress={() => navigation.navigate('Photo')}>
-        <Text style={styles.panelButtonTitle}>Take Photo</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.panelButton}
-        onPress={() => firebase.auth().signOut()} >
-        <Text style={styles.panelButtonTitle}>Log Out</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.panelButton}
-        onPress={() => bs.current.snapTo(1)}>
-        <Text style={styles.panelButtonTitle}>Cancel</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  const renderHeader = () => (
-    <View style={styles.hearder}>
-      <View style={styles.panelHeader}>
-        <View style={styles.panelHandle} ></View>
-      </View>
-    </View>
-  );
   const [userPosts, setUserPosts] = useState([])
   const [user, setUser] = useState(null)
   const [following, setFollowing] = useState(false)
   useEffect(() => {
     const { currentUser, posts } = props;
+    console.log({ currentUser, posts })
     if (props.route.params.uid === firebase.auth().currentUser.uid) {
+    }
+    else {
       firebase.firestore()
         .collection("Users")
-        .doc(firebase.auth().currentUser.uid)
+        .doc(props.route.params.uid)
         .get()
         .then((snapshot) => {
           if (snapshot.exists) {
             setUser(snapshot.data())
             console.log(snapshot.data())
           }
+          else {
+            console.log('does not exists')
+          }
         })
       firebase.firestore()
         .collection("Posts")
-        .doc(firebase.auth().currentUser.uid)
+        .doc(props.route.params.uid)
         .collection("UserPosts")
         .orderBy("creation", "asc")
         .get()
@@ -70,28 +47,71 @@ function Profile(props, { navigation }) {
             const id = doc.id;
             return { id, ...data }
           })
+          console.log(posts)
           setUserPosts(posts)
         })
     }
+    if (props.following.indexOf(props.route.params.uid) > -1) {
+      setFollowing(true);
+    } else {
+      setFollowing(false);
+    }
+    console.log(following)
 
   }, [props.route.params.uid, props.following])
-
+  const onfollowing = () => {
+    firebase.firestore()
+      .collection("following")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userFollowing")
+      .doc(props.route.params.uid)
+      .set({})
+  }
+  const unfollowing = () => {
+    firebase.firestore()
+      .collection("following")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userFollowing")
+      .doc(props.route.params.uid)
+      .delete()
+  }
+  const AddFollow = () => {
+    firebase.firestore()
+      .collection("Users")
+      .doc(props.route.params.uid)
+      .update({
+        Followers: firebase.firestore.FieldValue.increment(1)
+      })
+  }
+  const SubFollow = () => {
+    firebase.firestore()
+      .collection("Users")
+      .doc(props.route.params.uid)
+      .update({
+        Followers: firebase.firestore.FieldValue.increment(-1)
+      })
+  }
+  const AddFollowing = () => {
+    firebase.firestore()
+      .collection("Users")
+      .doc(firebase.auth().currentUser.uid)
+      .update({
+        Following: firebase.firestore.FieldValue.increment(1)
+      })
+  }
+  const SubFollowing = () => {
+    firebase.firestore()
+      .collection("Users")
+      .doc(firebase.auth().currentUser.uid)
+      .update({
+        Following: firebase.firestore.FieldValue.increment(-1)
+      })
+  }
   if (user === null) {
     return <View />
   }
   return (
     <View style={styles.container}>
-      <BottomSheet
-        ref={bs}
-        snapPoints={[300, 0]}
-        initialSnap={1}
-        renderContent={renderInner}
-        renderHeader={renderHeader}
-        callbackNode={fall}
-        enabledGestureInteraction={true}
-        enabledContentGestureInteraction={false}
-
-      />
       <View style={{
         flexDirection: 'row',
         justifyContent: 'flex-start',
@@ -105,18 +125,24 @@ function Profile(props, { navigation }) {
           }}
         />
         <View style={styles.containerInfo}>
-
           <View style={{ justifyContent: 'flex-start', flexDirection: 'row' }}>
             <Text style={styles.text}>{user.name}</Text>
-
-            <View style={{ marginLeft: 20 }}>
-
-              <TouchableOpacity
-                onPress={() => bs.current.snapTo(0)}
-              >
-                <AntDesign name="setting" size={24} color="black" />
-              </TouchableOpacity>
-            </View>
+            {props.route.params.uid !== firebase.auth().currentUser.uid ? (
+              <View style={{ marginLeft: 20 }}>
+                {following ? (
+                  <TouchableOpacity
+                    onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
+                    <SimpleLineIcons name="user-following" size={24} color="black" />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => { onfollowing(), AddFollow(), AddFollowing() }}>
+                    <SimpleLineIcons name="user-unfollow" size={24} color="black" />
+                  </TouchableOpacity>
+                )
+                }
+              </View>
+            ) : null}
           </View>
           <View style={styles.userInfo}>
             <View style={styles.userInfoItem}>
@@ -138,7 +164,7 @@ function Profile(props, { navigation }) {
         </View>
       </View>
       <View
-        style={styles.deviler} />
+      style ={styles.deviler} />
       <View style={styles.comtainerGalley}
       >
         <FlatList
@@ -162,6 +188,7 @@ function Profile(props, { navigation }) {
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   posts: store.userState.posts,
+  following: store.userState.following,
 })
 const styles = StyleSheet.create({
   container: {
@@ -214,81 +241,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: "black",
   },
-  deviler: {
-    borderBottomColor: '#dddddd',
-    borderBottomWidth: 1,
-    width: '92%',
+  deviler :{
+    borderBottomColor :'#dddddd',
+    borderBottomWidth :1,
+    width :'92%',
     alignSelf: 'center',
     marginTop: 15,
   },
-  hearder: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#333333',
-    shadowOffset: { width: -1, height: -3 },
-    shadowRadius: 2,
-    shadowOpacity: 0.4,
-    paddingTop: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  panelHeader: {
-    alignItems: 'center'
-  },
-  panelHandle: {
-    width: 40,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#00000040",
-    marginBottom: 10,
-  },
-  panelTitle: {
-    fontSize: 27,
-    height: 35,
-  },
-  panelButton: {
-    padding: 13,
-    borderRadius: 10,
-    backgroundColor: '#FF6347',
-    alignItems: 'center',
-    marginVertical: 7,
-  },
-  panelSubTitle: {
-    fontSize: 14,
-    color: 'gray',
-    height: 30,
-    marginBottom: 10,
-  },
-  panelButtonTitle: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  action: {
-    flexDirection: 'row',
-    marginTop: 10,
-    marginBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
-    paddingBottom: 5,
-  },
-  actionError: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#FF0000',
-    paddingBottom: 5,
-
-  },
-  textInput: {
-    flex: 1,
-    paddingLeft: 10,
-    color: "#05375a",
-  },
-  panel: {
-    padding: 20,
-    backgroundColor: '#FFFFFF',
-    paddingTop: 20,
-  }
-
 })
-export default connect(mapStateToProps, null)(Profile)
+export default connect(mapStateToProps, null)(ProfileFriend)
