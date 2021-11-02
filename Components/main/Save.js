@@ -3,7 +3,7 @@ import { View, TextInput,Button,Image } from "react-native";
 import firebase from "firebase";
 require("firebase/firestore")
 require("firebase/firebase-firestore")
-export default function Save(props, {navigation}) {
+export default function Save(props) {
     console.log(props)
     const [caption,setCaption] =useState("")
     const uploadImage = async () => {
@@ -41,7 +41,7 @@ export default function Save(props, {navigation}) {
             LikesCount :0,
             creation : firebase.firestore.FieldValue.serverTimestamp() 
         }).then((function () {
-            props.navigation.navigate('Feed');
+            props.navigation.navigate("NewFeeds");
         }))
 
     }

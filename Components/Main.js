@@ -7,7 +7,7 @@ import { fetchUser,fetchUserPosts,fetchUserFollowing,clearData } from "../redux/
 import firebase from "firebase";
 import { TabActions } from "@react-navigation/routers";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Photo from "./main/Photo";
+import Photo from "./main/Image/Photo";
 import Profile from "./main/Profile";
 import FeedScreen from "./main/Feed";
 import NewFeeds from "./main/NewFeeds"

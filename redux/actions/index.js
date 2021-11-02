@@ -17,11 +17,9 @@ export function fetchUser() {
         .get()
         .then((snapshot)=>{
             if(snapshot.exists){
-                console.log(snapshot.data())
                 dispacth({type :USER_STATE_CHANGE , currentUser: snapshot.data()})
             }
             else{
-                console.log('does not exists')
             }
         })
     })
@@ -40,7 +38,6 @@ export function fetchUserPosts() {
                 const id = doc.id;
                 return {id, ...data}
             })
-            console.log(posts)
             dispacth({type :USER_POSTS_STATE_CHANGE, posts})
         })
     })
@@ -82,7 +79,6 @@ export function fetchUsersData(uid,getPosts)
 
             }
             else{
-                console.log('does not exists')
             }
         })
         if(getPosts)
@@ -104,7 +100,6 @@ export function fetchUserFollowingPosts(uid) {
         .then((snapshot)=>{
 
             const uid = snapshot.docs[0].ref.path.split('/')[1];
-            console.log({snapshot,uid})
             const user =getState().usersState.users.find(el => el.uid === uid);
 
             let posts = snapshot.docs.map(doc => {
@@ -131,7 +126,6 @@ export function fetchUsersFollowingLikes(uid, postId) {
     .collection("likes")
     .doc(firebase.auth().currentUser.uid)
     .onSnapshot((snapshot) => {
-    console.log(snapshot)
     const postId = snapshot.ref.path.split('/')[3];
     let currentUserLike = false;
     if(snapshot.exists){

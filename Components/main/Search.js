@@ -19,7 +19,10 @@ export default function Search(props) {
                 setUsers(users)
             })
     }
+    if(users.id != firebase.auth().currentUser.uid)
+    {
     console.log(users)
+    }
     return (
         <View>
             <TextInput onChangeText={(search) => fetchUsers(search)}

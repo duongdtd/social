@@ -12,16 +12,17 @@ require('firebase/firestore')
 import { SimpleLineIcons } from '@expo/vector-icons';
 function Profile(props, { navigation }) {
 
-  bs = React.useRef(null);
-  fall = new Animated.Value(1);
+  var bs = React.useRef(null);
+  var fall = new Animated.Value(1);
 
   const renderInner = () => (
     <View style={styles.panel}>
-      <TouchableOpacity style={styles.panelButton}>
+      <TouchableOpacity style={styles.panelButton}
+      onPress={() =>( props.navigation.navigate('EditProfile',{uid : firebase.auth().currentUser.uid}),bs.current.snapTo(1))}>
         <Text style={styles.panelButtonTitle}>Edit Profile</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton}
-        onPress={() => navigation.navigate('Photo')}>
+        onPress={() => (props.navigation.navigate('Photo'),bs.current.snapTo(1))}>
         <Text style={styles.panelButtonTitle}>Take Photo</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton}
@@ -82,79 +83,85 @@ function Profile(props, { navigation }) {
   return (
     <View style={styles.container}>
       <BottomSheet
-        ref={bs}
-        snapPoints={[300, 0]}
-        initialSnap={1}
-        renderContent={renderInner}
-        renderHeader={renderHeader}
-        callbackNode={fall}
-        enabledGestureInteraction={true}
-        enabledContentGestureInteraction={false}
-
-      />
-      <View style={{
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
+          ref={bs}
+          snapPoints={[300, 0]}
+          initialSnap={1}
+          renderContent={renderInner}
+          renderHeader={renderHeader}
+          callbackNode={fall}
+          enabledGestureInteraction={true}
+          enabledContentGestureInteraction={false}
+        />
+      <Animated.View style={{
+        flex: 1,
+        marginTop: 40,
+        opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
       }}>
-        <Avatar
-          rounded
-          size="large"
-          marginLeft={20}
-          source={{
-            uri: user.downloadURL
-          }}
-        />
-        <View style={styles.containerInfo}>
+        
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+        }}>
+          <Avatar
+            rounded
+            size="large"
+            marginLeft={20}
+            source={{
+              uri: user.downloadURL
+            }}
+          />
+          <View style={styles.containerInfo}>
 
-          <View style={{ justifyContent: 'flex-start', flexDirection: 'row' }}>
-            <Text style={styles.text}>{user.name}</Text>
+            <View style={{ justifyContent: 'flex-start', flexDirection: 'row' }}>
+              <Text style={styles.text}>{user.name}</Text>
 
-            <View style={{ marginLeft: 20 }}>
+              <View style={{ marginLeft: 20 }}>
 
-              <TouchableOpacity
-                onPress={() => bs.current.snapTo(0)}
-              >
-                <AntDesign name="setting" size={24} color="black" />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => bs.current.snapTo(0)}
+                >
+                  <AntDesign name="setting" size={24} color="black" />
+                </TouchableOpacity>
+              </View>
             </View>
+            <View style={styles.userInfo}>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Posts}</Text>
+                <Text style={styles.userInfoView}>Post</Text>
+
+              </View>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Followers}</Text>
+                <Text style={styles.userInfoView}>Followers</Text>
+              </View>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Following}</Text>
+                <Text style={styles.userInfoView}>Following</Text>
+              </View>
+
+            </View>
+
           </View>
-          <View style={styles.userInfo}>
-            <View style={styles.userInfoItem}>
-              <Text style={styles.userInfoTitle}>{user.Posts}</Text>
-              <Text style={styles.userInfoView}>Post</Text>
-
-            </View>
-            <View style={styles.userInfoItem}>
-              <Text style={styles.userInfoTitle}>{user.Followers}</Text>
-              <Text style={styles.userInfoView}>Followers</Text>
-            </View>
-            <View style={styles.userInfoItem}>
-              <Text style={styles.userInfoTitle}>{user.Following}</Text>
-              <Text style={styles.userInfoView}>Following</Text>
-            </View>
-
-          </View>
-
         </View>
-      </View>
-      <View
-        style={styles.deviler} />
-      <View style={styles.comtainerGalley}
-      >
-        <FlatList
-          numColumns={3}
-          horizontal={false}
-          data={userPosts}
-          renderItem={({ item }) => (
-            <View style={styles.containerImage}>
-              <Image
-                style={styles.image}
-                source={{ uri: item.downloadURL }}
-              />
-            </View>
-          )}
-        />
-      </View>
+        <View
+          style={styles.deviler} />
+        <View style={styles.comtainerGalley}
+        >
+          <FlatList
+            numColumns={3}
+            horizontal={false}
+            data={userPosts}
+            renderItem={({ item }) => (
+              <View style={styles.containerImage}>
+                <Image
+                  style={styles.image}
+                  source={{ uri: item.downloadURL }}
+                />
+              </View>
+            )}
+          />
+        </View>
+      </Animated.View>
     </View>
   );
 }
@@ -166,7 +173,7 @@ const mapStateToProps = (store) => ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 40,
+
   },
   containerInfo: {
     marginLeft: 30
@@ -183,6 +190,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
+    margin: 2,
     aspectRatio: 1 / 1
   },
   containerImage: {

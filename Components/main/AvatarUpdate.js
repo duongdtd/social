@@ -3,7 +3,7 @@ import { View, TextInput,Button,Image } from "react-native";
 import firebase from "firebase";
 require("firebase/firestore")
 require("firebase/firebase-firestore")
-export default function Save(props, {navigation}) {
+export default function AvatarUpdate(props, {navigation}) {
     console.log(props)
     const [caption,setCaption] =useState("")
     const uploadImage = async () => {
