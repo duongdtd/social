@@ -7,7 +7,6 @@ import Register from './Components/auth/Register';
 import Login from './Components/auth/Login';
 import MainScreen from './Components/Main'
 import * as firebase from 'firebase'
-import { AntDesign } from '@expo/vector-icons';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './redux/reducers'
@@ -15,13 +14,11 @@ import thunk from 'redux-thunk';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Photo from './Components/main/Image/Photo'
 import Profile from './Components/main/Profile'
-import Feed from './Components/main/Feed'
 import Save from './Components/main/Save'
 import Search from './Components/main/Search';
 import AvatarUpdate from './Components/main/AvatarUpdate'
 import NewFeeds from './Components/main/NewFeeds'
 import Comments from './Components/main/Comments';
-import ProfileFriend from './Components/main/ProfileFriend';
 import EditProfile from './Components/main/EditProfile';
 const store = createStore(rootReducer, applyMiddleware(thunk))
 const firebaseConfig = {
@@ -94,11 +91,10 @@ export class App extends Component {
             headerShown: false
           }}>
             <Stack.Screen name="Main" component={MainScreen} options={{ headerShow: true }} />
-            <Stack.Screen name="ProfileFriend" component={ProfileFriend} navigation={this.props.navigation} />
             <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} />
-            <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation}/>
+            <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation} />
             <Stack.Screen name="Search" component={Search} navigation={this.props.navigation} options={{ headerShow: false }} />
-            <Stack.Screen name="Save" component={Save} navigation={this.props.navigation}  />
+            <Stack.Screen name="Save" component={Save} navigation={this.props.navigation} />
             <Stack.Screen name="Comments" component={Comments} navigation={this.props.navigation} />
             <Stack.Screen name="AvatarUpdate" component={AvatarUpdate} navigation={this.props.navigation} options={{ headerShow: false }} />
           </Stack.Navigator>

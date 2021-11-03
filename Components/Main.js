@@ -9,7 +9,6 @@ import { TabActions } from "@react-navigation/routers";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Photo from "./main/Image/Photo";
 import Profile from "./main/Profile";
-import FeedScreen from "./main/Feed";
 import NewFeeds from "./main/NewFeeds"
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Search from "./main/Search";
@@ -26,12 +25,6 @@ export class Main extends Component {
     render(){
         return (
             <Tab.Navigator>
-                <Tab.Screen name="Feed" component={FeedScreen} 
-              options={{
-                  tabBarIcon :({color,size}) =>(
-                      <MaterialCommunityIcons name ="home" color={color} size={26} />
-                  )}}
-              />
                <Tab.Screen name="NewFeeds" component={NewFeeds} 
               options={{
                   tabBarIcon :({color,size}) =>(

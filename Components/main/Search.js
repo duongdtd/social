@@ -19,10 +19,7 @@ export default function Search(props) {
                 setUsers(users)
             })
     }
-    if(users.id != firebase.auth().currentUser.uid)
-    {
     console.log(users)
-    }
     return (
         <View>
             <TextInput onChangeText={(search) => fetchUsers(search)}
@@ -35,7 +32,7 @@ export default function Search(props) {
                     renderItem={({ item }) => (
                         <View>
                             <TouchableOpacity
-                            onPress ={() => props.navigation.navigate("ProfileFriend",{uid :item.id})}>
+                            onPress ={() => props.navigation.navigate("Profile",{uid :item.id})}>
                                 <Avatar
                                     size="small"
                                     rounded

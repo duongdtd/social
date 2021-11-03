@@ -80,7 +80,7 @@ function EditProfile(props, { navigation }) {
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
         <TouchableOpacity
-          onPress={() => props.navigation.navigate('Feed')}>
+          onPress={() => props.navigation.navigate('Photo')}>
           <Avatar
             rounded
             size="xlarge"
