@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState,useLayoutEffect } from "react";
 import { View, Text, TextInput, FlatList, TouchableOpacity } from "react-native";
 import firebase from "firebase";
 import { Avatar } from 'react-native-elements';
 require('firebase/firestore')
-export default function Search(props) {
+export default function Search(props,{navigation}) {
+
     const [users, setUsers] = useState([])
     const fetchUsers = (search) => {
         firebase.firestore()

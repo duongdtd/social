@@ -8,7 +8,6 @@ import { AntDesign,Ionicons } from '@expo/vector-icons';
 import { Avatar } from 'react-native-elements'
 require('firebase/firestore')
 function NewFeeds(props, { navigation }) {
-
   const [posts, setPosts] = useState([])
   useEffect(() => {
     if (props.usersFollowingLoaded == props.following.length && props.following.length !== 0) {
@@ -98,7 +97,7 @@ function NewFeeds(props, { navigation }) {
                 <Image
                   style={styles.postImg}
                   source={{ uri: item.downloadURL }}
-                />
+                /><Text>{String(item.likesCouter)} likes</Text>
                 <View style ={styles.deviler} />
                 <View style={styles.interReactionWrapper}>
                 {item.currentUserLike ?
@@ -123,7 +122,7 @@ function NewFeeds(props, { navigation }) {
                   likes
                 </Text>
                 <TouchableOpacity
-                    title="Coments"
+                    title="Comments"
                     style={styles.interReaction}
                     onPress={() => props.navigation.navigate('Comments', { postId: item.id, uid: item.user.uid }
                 )}
@@ -131,7 +130,7 @@ function NewFeeds(props, { navigation }) {
                    <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
                   </TouchableOpacity>
                   <Text style ={styles.interReactionText}>
-                  Coments
+                  Comments
                 </Text>
                 </View>
               </View>

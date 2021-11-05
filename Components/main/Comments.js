@@ -9,6 +9,12 @@ import { bindActionCreators } from "redux";
 import { fetchUsersData } from "../../redux/actions/index";
 import { AntDesign } from '@expo/vector-icons';
 function Comments(props) {
+    navigationOptions = {
+        title: "Title",
+        headerLe: (
+<AntDesign name="pluscircle" size={24} color="black" />
+          ),
+      }
     const [comments, setComments] = useState([])
     const [postId, setPostId] = useState("")
     const [text, setText] = useState("")
