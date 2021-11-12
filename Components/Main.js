@@ -31,7 +31,7 @@ export class Main extends Component {
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name="home" color={color} size={26} />
                         ),
-                        headerTitle:"",
+                        headerTitle:"Social Clone",
                         headerRight: () => <View style={styles.container}>
                             <TouchableOpacity style={styles.button}
                             onPress ={() =>this.props.navigation.navigate("Photo")}>
