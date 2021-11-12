@@ -11,14 +11,9 @@ function NewFeeds(props, { navigation }) {
   const [posts, setPosts] = useState([])
   useEffect(() => {
     if (props.usersFollowingLoaded == props.following.length && props.following.length !== 0) {
-      // for (let i = 0; i < props.following.length; i++) {
-      //   const user = props.users.find(el => el.uid === props.following[i]);
-      //   if (user != undefined) {
-      //     posts = [...posts, ...user.posts]
-      //   }
-      // }
+
       props.feed.sort(function (x, y) {
-        return x.creation - y.creation;
+        return y.creation - x.creation;
       })
       setPosts(props.feed)
     }
