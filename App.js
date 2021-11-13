@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Register from './Components/auth/Register';
 import Login from './Components/auth/Login';
 import MainScreen from './Components/Main'
-import * as firebase from 'firebase'
+import firebase from 'firebase'
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './redux/reducers'

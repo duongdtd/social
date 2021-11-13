@@ -9,7 +9,11 @@ import { Avatar } from 'react-native-elements';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 require('firebase/firestore')
-import { SimpleLineIcons } from '@expo/vector-icons';
+import { SimpleLineIcons, Feather } from '@expo/vector-icons';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+
 function Profile(props, { navigation }) {
   var bs = React.useRef(null);
   var fall = new Animated.Value(1);
@@ -48,6 +52,7 @@ function Profile(props, { navigation }) {
   const [userPosts, setUserPosts] = useState([])
   const [user, setUser] = useState(null)
   const [following, setFollowing] = useState(false)
+  
   useEffect(() => {
     const { currentUser, posts } = props;
     console.log({ currentUser, posts })
@@ -119,6 +124,8 @@ function Profile(props, { navigation }) {
     console.log(following)
 
   }, [props.route.params.uid, props.following])
+
+
   const onfollowing = () => {
     firebase.firestore()
       .collection("following")
@@ -188,87 +195,92 @@ function Profile(props, { navigation }) {
         marginTop: 40,
         opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
       }}>
-      <View style={{
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-    }}>
-      <Avatar
-      rounded
-      size="large"
-      marginLeft={20}
-      source={{
-      uri: user.downloadURL
-    }}
-      />
-      <View style={styles.containerInfo}>
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+        }}>
+          <Avatar
+            rounded
+            size="large"
+            marginLeft={20}
+            source={{
+              uri: user.downloadURL
+            }}
+          />
+          <View style={styles.containerInfo}>
 
-      <View style={{ justifyContent: 'flex-start', flexDirection: 'row' }}>
-      <Text style={styles.text}>{user.name}</Text>
-    {props.route.params.uid !== firebase.auth().currentUser.uid?(
-      <View style={{ marginLeft: 20 }}>
-    {following?(
-      <TouchableOpacity
-      onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
-      <SimpleLineIcons name="user-following" size={24} color="black" />
-      </TouchableOpacity>
-    ): (
-      <TouchableOpacity
-      onPress={() => { onfollowing(), AddFollow(), AddFollowing() }}>
-      <SimpleLineIcons name="user-unfollow" size={24} color="black" />
-      </TouchableOpacity>
-    )
-    }
-      </View>
-    ): null}
-    {props.route.params.uid == firebase.auth().currentUser.uid?(
-      <View style={{ marginLeft: 20 }}>
+            <View style={{ justifyContent: 'flex-start', flexDirection: 'row' }}>
+              <Text style={styles.text}>{user.name}</Text>
+              {props.route.params.uid !== firebase.auth().currentUser.uid ? (
+                <View style={{ marginLeft: 20 }}>
+                  {following ? (
+                    <TouchableOpacity
+                      onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
+                      <SimpleLineIcons name="user-following" size={24} color="black" />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => { onfollowing(), AddFollow(), AddFollowing() }}>
+                      <SimpleLineIcons name="user-unfollow" size={24} color="black" />
+                    </TouchableOpacity>
+                  )
+                  }
+                </View>
+              ) : null}
+              {props.route.params.uid == firebase.auth().currentUser.uid ? (
+                <View style={{ marginLeft: 20 }}>
 
-      <TouchableOpacity
-         onPress={() => bs.current.snapTo(0)}
-      >
-      <AntDesign name="setting" size={24} color="black" />
-      </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => bs.current.snapTo(0)}
+                  >
+                    <AntDesign name="setting" size={24} color="black" />
+                  </TouchableOpacity>
 
-      </View>
-    ): null}
-      </View>
-      <View style={styles.userInfo}>
-      <View style={styles.userInfoItem}>
-      <Text style={styles.userInfoTitle}>{user.Posts}</Text>
-      <Text style={styles.userInfoView}>Post</Text>
+                </View>
+              ) : null}
 
-      </View>
-      <View style={styles.userInfoItem}>
-      <Text style={styles.userInfoTitle}>{user.Followers}</Text>
-      <Text style={styles.userInfoView}>Followers</Text>
-      </View>
-      <View style={styles.userInfoItem}>
-      <Text style={styles.userInfoTitle}>{user.Following}</Text>
-      <Text style={styles.userInfoView}>Following</Text>
-      </View>
+              {/* User header basic info */}
+            </View>
+            <View style={styles.userInfo}>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Posts}</Text>
+                <Text style={styles.userInfoView}>Post</Text>
 
-      </View>
+              </View>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Followers}</Text>
+                <Text style={styles.userInfoView}>Followers</Text>
+              </View>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Following}</Text>
+                <Text style={styles.userInfoView}>Following</Text>
+              </View>
+              <TouchableOpacity style={styles.button}
+                onPress={() => props.navigation.navigate('Messenger')}>
+                <Feather name="message-circle" size={30} color="black" />
+              </TouchableOpacity>
+            </View>
 
-      </View>
-      </View>
-      <View
-      style ={styles.deviler} />
-      <View style={styles.comtainerGalley}
-      >
-      <FlatList
-      numColumns={3}
-      horizontal={false}
-      data={userPosts}
-      renderItem={({ item }) => (
-      <View style={styles.containerImage}>
-      <Image
-      style={styles.image}
-      source={{ uri: item.downloadURL }}
-      />
-      </View>
-    )}
-      />
-      </View>
+          </View>
+        </View>
+        <View
+          style={styles.deviler} />
+        <View style={styles.comtainerGalley}
+        >
+          <FlatList
+            numColumns={3}
+            horizontal={false}
+            data={userPosts}
+            renderItem={({ item }) => (
+              <View style={styles.containerImage}>
+                <Image
+                  style={styles.image}
+                  source={{ uri: item.downloadURL }}
+                />
+              </View>
+            )}
+          />
+        </View>
       </Animated.View>
     </View>
   );

@@ -8,16 +8,19 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 const { width: WIDTH } = Dimensions.get('window')
 import firebase from 'firebase'
+
 export default function Login({navigation} ) {
   const [isShow,setIs] =useState(true)
   const [email, setemail]=useState("")
   const [password, setpassword]=useState("")
+  const [uid,setUID] = useState("");
   const SignIn = () => {
     firebase.auth()
     .signInWithEmailAndPassword(email, password)
   .then((userCredential) => {
     // Signed in
     var user = userCredential.user;
+    //firebase.database().ref('user')
     // ...
   })
   .catch((error)=> alert(error.message))
