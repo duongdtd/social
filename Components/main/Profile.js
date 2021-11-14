@@ -49,21 +49,15 @@ function Profile(props, { navigation }) {
   const [user, setUser] = useState(null)
   const [following, setFollowing] = useState(false)
   useEffect(() => {
-    const { currentUser, posts } = props;
-    console.log({ currentUser, posts })
     if (props.route.params.uid === firebase.auth().currentUser.uid) {
       firebase.firestore()
         .collection("Users")
         .doc(firebase.auth().currentUser.uid)
         .get()
         .then((snapshot) => {
-          if (snapshot.exists) {
+
             setUser(snapshot.data())
-            console.log(snapshot.data())
-          }
-          else {
-            console.log('does not exists')
-          }
+
         })
       firebase.firestore()
         .collection("Posts")
@@ -77,7 +71,6 @@ function Profile(props, { navigation }) {
             const id = doc.id;
             return { id, ...data }
           })
-          console.log(posts)
           setUserPosts(posts)
         })
     }
@@ -87,13 +80,7 @@ function Profile(props, { navigation }) {
         .doc(props.route.params.uid)
         .get()
         .then((snapshot) => {
-          if (snapshot.exists) {
             setUser(snapshot.data())
-            console.log(snapshot.data())
-          }
-          else {
-            console.log('does not exists')
-          }
         })
       firebase.firestore()
         .collection("Posts")
@@ -107,7 +94,6 @@ function Profile(props, { navigation }) {
             const id = doc.id;
             return { id, ...data }
           })
-          console.log(posts)
           setUserPosts(posts)
         })
     }
@@ -116,7 +102,6 @@ function Profile(props, { navigation }) {
     } else {
       setFollowing(false);
     }
-    console.log(following)
 
   }, [props.route.params.uid, props.following])
   const onfollowing = () => {
@@ -275,8 +260,6 @@ function Profile(props, { navigation }) {
 }
 
 const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser,
-  posts: store.userState.posts,
   following: store.userState.following,
 })
 const styles = StyleSheet.create({

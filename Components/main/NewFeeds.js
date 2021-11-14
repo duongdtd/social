@@ -17,7 +17,6 @@ function NewFeeds(props, { navigation }) {
       })
       setPosts(props.feed)
     }
-    console.log(posts)
   }, [props.usersFollowingLoaded, props.feed,])
   const onLikePress = (userId, postId) => {
     firebase.firestore()
@@ -37,6 +36,16 @@ function NewFeeds(props, { navigation }) {
       .doc(postId)
       .update({
         likesCouter: firebase.firestore.FieldValue.increment(1)
+      })
+  }
+  const AddNotifications = (userId,postId) => {
+    firebase.firestore()
+      .collection("Notifications")
+      .doc(userId)
+      .collection("UserNotifications")
+      .add({
+        name :'Test',
+        id:postId,
       })
   }
 
@@ -108,7 +117,7 @@ function NewFeeds(props, { navigation }) {
                   <TouchableOpacity
                     title="Like"
                     style={styles.interReaction}
-                    onPress={() => { onLikePress(item.user.uid, item.id), LikePress(item.user.uid, item.id), item.LikesCount++ }}
+                    onPress={() => { onLikePress(item.user.uid, item.id), LikePress(item.user.uid, item.id), item.LikesCount++,AddNotifications(item.user.uid,item.id) }}
                   >
                     <AntDesign name="hearto" size={30} color="black" />
                   </TouchableOpacity>
