@@ -52,6 +52,7 @@ const saveData = (downloadURL) => {
     )
     const update = {
         photoURL: downloadURL,
+        displayName:name
       };
        firebase.auth().currentUser.updateProfile(update);
 }

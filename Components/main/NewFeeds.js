@@ -38,14 +38,17 @@ function NewFeeds(props, { navigation }) {
         likesCouter: firebase.firestore.FieldValue.increment(1)
       })
   }
-  const AddNotifications = (userId,postId) => {
+  const AddNotifications = (userId,postId,nameUser) => {
     firebase.firestore()
       .collection("Notifications")
       .doc(userId)
       .collection("UserNotifications")
       .add({
         name :'Test',
-        id:postId,
+        kid:String(postId),
+        image : firebase.auth().currentUser.photoURL,
+        nameUser:nameUser,
+        type :' đã thích bài viết của bạn'
       })
   }
 
@@ -69,7 +72,7 @@ function NewFeeds(props, { navigation }) {
       .doc(firebase.auth().currentUser.uid)
       .delete({})
   }
-
+  console.log(posts)
   return (
 
     <View style={styles.container}>
@@ -109,7 +112,8 @@ function NewFeeds(props, { navigation }) {
                   <TouchableOpacity
                     style={styles.interReaction}
                     title="Dislike"
-                    onPress={() => { onDisLikePress(item.user.uid, item.id), DisLikePress(item.user.uid, item.id), item.LikesCount-- }}>
+                    onPress={() => { onDisLikePress(item.user.uid, item.id), 
+                    DisLikePress(item.user.uid, item.id), item.LikesCount-- }}>
                     <AntDesign name="heart" size={30} color="red" />
                   </TouchableOpacity>
                 )
@@ -117,7 +121,9 @@ function NewFeeds(props, { navigation }) {
                   <TouchableOpacity
                     title="Like"
                     style={styles.interReaction}
-                    onPress={() => { onLikePress(item.user.uid, item.id), LikePress(item.user.uid, item.id), item.LikesCount++,AddNotifications(item.user.uid,item.id) }}
+                    onPress={() => { onLikePress(item.user.uid, item.id), 
+                      LikePress(item.user.uid, item.id), item.LikesCount++,
+                      AddNotifications(item.user.uid,item.id,item.user.name) }}
                   >
                     <AntDesign name="hearto" size={30} color="black" />
                   </TouchableOpacity>
@@ -138,33 +144,6 @@ function NewFeeds(props, { navigation }) {
                 </Text>
                 </View>
               </View>
-              {/* <Image
-                style={styles.image}
-                source={{ uri: item.downloadURL }}
-              /> */}
-              {/* <Text>{String(item.likesCouter)} likes</Text>
-              {item.currentUserLike ?
-                (
-                  <TouchableOpacity
-                    title="Dislike"
-
-                    onPress={() => { onDisLikePress(item.user.uid, item.id), DisLikePress(item.user.uid, item.id), item.likesCouter-- }}>
-                    <AntDesign name="heart" size={30} color="red" />
-                  </TouchableOpacity>
-                )
-                : (
-                  <TouchableOpacity
-                    title="Like"
-                    onPress={() => { onLikePress(item.user.uid, item.id), LikePress(item.user.uid, item.id), item.likesCouter++ }}
-                  >
-                    <AntDesign name="hearto" size={30} color="black" />
-                  </TouchableOpacity>
-
-                )}
-              <Text
-                onPress={() => props.navigation.navigate('Comments', { postId: item.id, uid: item.user.uid }
-                )}
-              >View Comments...</Text> */}
             </View>
           )}
 
