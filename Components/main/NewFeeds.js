@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { useLayoutEffect, useEffect } from 'react'
 import { useState } from 'react';
-import { AntDesign,Ionicons } from '@expo/vector-icons';
-import { Avatar } from 'react-native-elements'
+import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { Avatar,Badge } from 'react-native-elements'
 require('firebase/firestore')
 function NewFeeds(props, { navigation }) {
   const [posts, setPosts] = useState([])
@@ -38,17 +38,17 @@ function NewFeeds(props, { navigation }) {
         likesCouter: firebase.firestore.FieldValue.increment(1)
       })
   }
-  const AddNotifications = (userId,postId,nameUser) => {
+  const AddNotifications = (userId, postId, nameUser) => {
     firebase.firestore()
       .collection("Notifications")
       .doc(userId)
       .collection("UserNotifications")
       .add({
-        name :'Test',
-        kid:String(postId),
-        image : firebase.auth().currentUser.photoURL,
-        nameUser:nameUser,
-        type :' đã thích bài viết của bạn'
+        name: 'Test',
+        kid: String(postId),
+        image: firebase.auth().currentUser.photoURL,
+        nameUser: nameUser,
+        type: ' đã thích bài viết của bạn'
       })
   }
 
@@ -86,11 +86,27 @@ function NewFeeds(props, { navigation }) {
               <View style={styles.container1}>
                 <View style={styles.userInfo}>
                   <View style={styles.userInfo}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                     <Image style={styles.userImg}
                       source={{
                         uri: item.user.downloadURL
                       }}>
+                     
                     </Image>
+                    {item.user.status == 'online' ? (
+                        <Badge
+                          status="success"
+                          
+                          containerStyle={{ position: 'absolute', top: 40, right: -2 }}
+                        />
+                      ) : (
+                        <Badge
+                          status="error"
+                       
+                          containerStyle={{ position: 'absolute', top: 40, right: -2, }}
+                        />
+                      )}
+                    </View>
                     <View style={styles.userInfoText}>
                       <Text style={styles.userName}>
                         {item.user.name}
@@ -105,43 +121,47 @@ function NewFeeds(props, { navigation }) {
                   style={styles.postImg}
                   source={{ uri: item.downloadURL }}
                 /><Text>{String(item.likesCouter)} likes</Text>
-                <View style ={styles.deviler} />
+                <View style={styles.deviler} />
                 <View style={styles.interReactionWrapper}>
-                {item.currentUserLike ?
-                (
+                  {item.currentUserLike ?
+                    (
+                      <TouchableOpacity
+                        style={styles.interReaction}
+                        title="Dislike"
+                        onPress={() => {
+                          onDisLikePress(item.user.uid, item.id),
+                          DisLikePress(item.user.uid, item.id), item.LikesCount--
+                        }}>
+                        <AntDesign name="heart" size={30} color="red" />
+                      </TouchableOpacity>
+                    )
+                    : (
+                      <TouchableOpacity
+                        title="Like"
+                        style={styles.interReaction}
+                        onPress={() => {
+                          onLikePress(item.user.uid, item.id),
+                          LikePress(item.user.uid, item.id), item.LikesCount++,
+                          AddNotifications(item.user.uid, item.id, item.user.name)
+                        }}
+                      >
+                        <AntDesign name="hearto" size={30} color="black" />
+                      </TouchableOpacity>
+                    )}
+                  <Text style={styles.interReactionText}>
+                    likes
+                  </Text>
                   <TouchableOpacity
-                    style={styles.interReaction}
-                    title="Dislike"
-                    onPress={() => { onDisLikePress(item.user.uid, item.id), 
-                    DisLikePress(item.user.uid, item.id), item.LikesCount-- }}>
-                    <AntDesign name="heart" size={30} color="red" />
-                  </TouchableOpacity>
-                )
-                : (
-                  <TouchableOpacity
-                    title="Like"
-                    style={styles.interReaction}
-                    onPress={() => { onLikePress(item.user.uid, item.id), 
-                      LikePress(item.user.uid, item.id), item.LikesCount++,
-                      AddNotifications(item.user.uid,item.id,item.user.name) }}
-                  >
-                    <AntDesign name="hearto" size={30} color="black" />
-                  </TouchableOpacity>
-                )}
-                <Text style ={styles.interReactionText}>
-                  likes
-                </Text>
-                <TouchableOpacity
                     title="Comments"
                     style={styles.interReaction}
                     onPress={() => props.navigation.navigate('Comments', { postId: item.id, uid: item.user.uid }
-                )}
+                    )}
                   >
-                   <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
+                    <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
                   </TouchableOpacity>
-                  <Text style ={styles.interReactionText}>
-                  Comments
-                </Text>
+                  <Text style={styles.interReactionText}>
+                    Comments
+                  </Text>
                 </View>
               </View>
             </View>
@@ -239,18 +259,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
   },
-  interReactionText :{
-    fontSize :15,
-    fontWeight :'bold',
-    color :'black',
-    marginTop :10,
-    marginLeft :10,
+  interReactionText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: 'black',
+    marginTop: 10,
+    marginLeft: 10,
 
   },
-  deviler :{
-    borderBottomColor :'#dddddd',
-    borderBottomWidth :1,
-    width :'92%',
+  deviler: {
+    borderBottomColor: '#dddddd',
+    borderBottomWidth: 1,
+    width: '92%',
     alignSelf: 'center',
     marginTop: 15,
   }

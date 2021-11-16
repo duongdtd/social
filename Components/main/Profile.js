@@ -13,10 +13,15 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 function Profile(props, { navigation }) {
   var bs = React.useRef(null);
   var fall = new Animated.Value(1);
-
-  const SignOut = () => {
-    firebase.auth().signOut();
-  }
+const logout =() =>{
+  firebase.firestore()
+  .collection('Users')
+  .doc(firebase.auth().currentUser.uid)
+  .update({
+    status: "offline",
+  })
+  firebase.auth().signOut();
+}
   const renderInner = () => (
     <View style={styles.panel}>
       <TouchableOpacity style={styles.panelButton}
@@ -28,7 +33,7 @@ function Profile(props, { navigation }) {
         <Text style={styles.panelButtonTitle}>Take Photo</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton}
-        onPress={() => firebase.auth().signOut()} >
+        onPress={logout} >
         <Text style={styles.panelButtonTitle}>Log Out</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton}

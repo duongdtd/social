@@ -16,26 +16,17 @@ export default function Login({navigation} ) {
     firebase.auth()
     .signInWithEmailAndPassword(email, password)
   .then((userCredential) => {
-    // Signed in
     var user = userCredential.user;
+    firebase.firestore()
+    .collection('Users')
+    .doc(firebase.auth().currentUser.uid)
+    .update({
+      status: "online",
+    })
     // ...
   })
   .catch((error)=> alert(error.message))
   }
-//   useEffect(()=>{
-//     const unsubcrible =auth.onAuthStateChanged(
-//       function(user){
-//         if(user)
-//         {
-//           navigation.replace('Chat')
-//         }
-//         else {
-//             navigation.canGoBack() && navigation.popToTop();
-//           }
-
-//       })
-//       return unsubcrible;
-//   })
   return (
     <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
       <View>
