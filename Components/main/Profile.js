@@ -29,8 +29,8 @@ function Profile(props, { navigation }) {
         <Text style={styles.panelButtonTitle}>Edit Profile</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton}
-        onPress={() => (props.navigation.navigate('Photo'), bs.current.snapTo(1))}>
-        <Text style={styles.panelButtonTitle}>Take Photo</Text>
+        onPress={() => (props.navigation.navigate('ChangePassword'), bs.current.snapTo(1))}>
+        <Text style={styles.panelButtonTitle}>Change Password</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton}
         onPress={logout} >

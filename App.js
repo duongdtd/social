@@ -20,6 +20,7 @@ import Comments from './Components/main/Comments';
 import Messanger from './Components/main/Messenger';
 import EditProfile from './Components/main/EditProfile';
 import Post from './Components/main/Post';
+import ChangePassword from './Components/main/ChangePassword';
 const store = createStore(rootReducer, applyMiddleware(thunk))
 const firebaseConfig = {
   apiKey: "AIzaSyBm0GkkdkMO8iz9tLtssu9v4XtcXB1wvns",
@@ -65,8 +66,8 @@ export class App extends Component {
     const { loggedIn, loaded } = this.state;
     if (!loaded) {
       return (
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-          <Text>Loading</Text>
+        <View style={{ flex: 1, justifyContent: 'center',alignItems:'center' }}>
+          <Text>Loading Screen</Text>
         </View>
       )
     }
@@ -74,8 +75,8 @@ export class App extends Component {
       return (
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Login">
-            <Stack.Screen name="Login" component={Login} options={{ headerShow: false }} />
-            <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+            <Stack.Screen name="Register" component={Register} options ={{headerShown : false}}/>
           </Stack.Navigator>
         </NavigationContainer>
       );
@@ -95,6 +96,7 @@ export class App extends Component {
             <Stack.Screen name="Save" component={Save} navigation={this.props.navigation} />
             <Stack.Screen name="Comments" component={Comments} navigation={this.props.navigation} />
             <Stack.Screen name="Post" component={Post} navigation={this.props.navigation} />
+            <Stack.Screen name="ChangePassword" component={ChangePassword} navigation={this.props.navigation} />
         
           </Stack.Navigator>
         </NavigationContainer>
