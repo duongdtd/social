@@ -9,6 +9,7 @@ import { Avatar,Badge } from 'react-native-elements'
 require('firebase/firestore')
 function NewFeeds(props, { navigation }) {
   const [posts, setPosts] = useState([])
+
   useEffect(() => {
     if (props.usersFollowingLoaded == props.following.length && props.following.length !== 0) {
 
@@ -17,7 +18,7 @@ function NewFeeds(props, { navigation }) {
       })
       setPosts(props.feed)
     }
-  }, [props.usersFollowingLoaded, props.feed,])
+  }, [props.usersFollowingLoaded, props.feed])
   const onLikePress = (userId, postId) => {
     firebase.firestore()
       .collection("Posts")
@@ -48,7 +49,8 @@ function NewFeeds(props, { navigation }) {
         kid: String(postId),
         image: firebase.auth().currentUser.photoURL,
         nameUser: nameUser,
-        type: ' đã thích bài viết của bạn'
+        type: ' đã thích bài viết của bạn',
+        seen:'no'
       })
   }
 
@@ -72,7 +74,7 @@ function NewFeeds(props, { navigation }) {
       .doc(firebase.auth().currentUser.uid)
       .delete({})
   }
-  console.log(posts)
+ 
   return (
 
     <View style={styles.container}>
@@ -142,7 +144,7 @@ function NewFeeds(props, { navigation }) {
                         onPress={() => {
                           onLikePress(item.user.uid, item.id),
                           LikePress(item.user.uid, item.id), item.LikesCount++,
-                          AddNotifications(item.user.uid, item.id, item.user.name)
+                          AddNotifications(item.user.uid, item.id, props.currentUser.name)
                         }}
                       >
                         <AntDesign name="hearto" size={30} color="black" />

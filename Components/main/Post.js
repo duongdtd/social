@@ -116,16 +116,6 @@ function Post(props) {
         likesCouter: firebase.firestore.FieldValue.increment(1)
       })
   }
-  const AddNotifications = (userId, postId) => {
-    firebase.firestore()
-      .collection("Notifications")
-      .doc(userId)
-      .collection("UserNotifications")
-      .add({
-        name: 'Test',
-        id: postId,
-      })
-  }
 
   const onDisLikePress = (userId, postId) => {
     firebase.firestore()
@@ -163,7 +153,7 @@ function Post(props) {
             </Image>
             <View style={styles.userInfoText}>
               <Text style={styles.userName}>
-                { props.route.params.nameUser}
+                { props.currentUser.name}
               </Text>
             </View>
           </View>
@@ -379,7 +369,8 @@ const styles = StyleSheet.create({
   }
 })
 const mapStateToProps = (store) => ({
-  users: store.usersState.users
+  users: store.usersState.users,
+  currentUser: store.userState.currentUser,
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUsersData }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(Post)

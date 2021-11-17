@@ -13,6 +13,7 @@ function Comments(props) {
     const [comments, setComments] = useState([])
     const [postId, setPostId] = useState("")
     const [text, setText] = useState("")
+    const [user, setUser] = useState(null)
     useEffect(() => {
         function matchUserToComment(comments) {
             for (let i = 0; i < comments.length; i++) {
@@ -81,7 +82,19 @@ function Comments(props) {
                 text
             })
     }
-
+    const AddNotifications = (userId, postId, nameUser) => {
+        firebase.firestore()
+          .collection("Notifications")
+          .doc(userId)
+          .collection("UserNotifications")
+          .add({
+            kid: String(postId),
+            image: firebase.auth().currentUser.photoURL,
+            nameUser: nameUser,
+            type: ' đã bình luận bài viết của bạn'
+          })
+      }
+    
     return (
         <View style={{
             flex: 1,
@@ -94,7 +107,7 @@ function Comments(props) {
                 renderItem={({ item }) => (
                     <View>
                         {item.user !== undefined ?
-                            <View style={{ flexDirection: 'row', justifyContent:'flex-start',  }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                                 <Avatar
                                     size="small" rounded source={{ uri: item.user.downloadURL }} />
                                 <Text>
@@ -131,7 +144,8 @@ function Comments(props) {
                     onChangeText={(text) => setText(text)}>
                 </TextInput>
                 <Button
-                    onPress={() => onCommentSend()}
+                    onPress={() =>{ onCommentSend()
+                        ,AddNotifications(props.route.params.uid,props.route.params.postId,props.currentUser.name)}}
                     title="send"
                 />
             </View>
@@ -140,7 +154,8 @@ function Comments(props) {
 }
 
 const mapStateToProps = (store) => ({
-    users: store.usersState.users
+    users: store.usersState.users,
+    currentUser: store.userState.currentUser,
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUsersData }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(Comments)
