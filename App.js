@@ -102,8 +102,7 @@ export class App extends Component {
             <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} />
             <Stack.Screen name="Messenger"  component={Messenger} navigation={this.props.navigation}/>
             <Stack.Screen name="Chat" component={Chat} navigation={this.props.navigation} options={{title: 'Default'}}/>
-            <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} options ={{headerLeft :null}} />
-            <Stack.Screen name="Messenger" component={Messanger} navigation={this.props.navigation}/>
+            {/* <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} options ={{headerLeft :null}} /> */}
             <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation}options={{ headerShown: false }} />
             <Stack.Screen name="Search" component={Search} navigation={this.props.navigation}/>
             <Stack.Screen name="Save" component={Save} navigation={this.props.navigation} />
