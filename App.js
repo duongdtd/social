@@ -20,18 +20,21 @@ import Search from './Components/main/Search';
 import AvatarUpdate from './Components/main/AvatarUpdate'
 import NewFeeds from './Components/main/NewFeeds'
 import Comments from './Components/main/Comments';
-import Messanger from './Components/main/Messenger';
+import Messenger from './Components/main/Messenger';
+import Chat from './Components/main/Chat';
 import EditProfile from './Components/main/EditProfile';
+import User from './Components/main/User';
+
 const store = createStore(rootReducer, applyMiddleware(thunk))
 const firebaseConfig = {
-  apiKey: "AIzaSyBm0GkkdkMO8iz9tLtssu9v4XtcXB1wvns",
-  authDomain: "data-c4893.firebaseapp.com",
-  databaseURL: "https://data-c4893-default-rtdb.firebaseio.com",
-  projectId: "data-c4893",
-  storageBucket: "data-c4893.appspot.com",
-  messagingSenderId: "958934199875",
-  appId: "1:958934199875:web:4dea931ea7b99663116ef6",
-  measurementId: "G-4XZ0Q0JEBF"
+  apiKey: "AIzaSyBSZEWL2hKfM64C4ZJEcKBxYhsoo5DtCfE",
+  authDomain: "social-cee8e.firebaseapp.com",
+  databaseURL: "https://social-cee8e-default-rtdb.firebaseio.com",
+  projectId: "social-cee8e",
+  storageBucket: "social-cee8e.appspot.com",
+  messagingSenderId: "603980226181",
+  appId: "1:603980226181:web:ad95757a499e2e3a5193ec",
+  measurementId: "G-JTSMRCB9PV"
 };
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig)
@@ -44,6 +47,7 @@ export class App extends Component {
     super(props);
     this.state = {
       loaded: false,
+      loggedIn: null,
     }
   }
   componentDidMount() {
@@ -55,11 +59,17 @@ export class App extends Component {
         })
       }
       else {
+        const uid = user.uid;
+        //const UserUid = User.uid;
         this.setState({
           loggedIn: true,
           loaded: true,
         })
-
+        //console.log(user.uid)
+        if(this.state.loggedIn) {
+          User.uid = uid; 
+        }
+        console.log(User.uid)
       }
     })
   }
@@ -91,7 +101,8 @@ export class App extends Component {
           }}>
             <Stack.Screen name="Main" component={MainScreen} options ={{headerShown : false}} />
             <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} />
-            <Stack.Screen name="Messenger" component={Messanger} navigation={this.props.navigation}/>
+            <Stack.Screen name="Messenger"  component={Messenger} navigation={this.props.navigation}/>
+            <Stack.Screen name="Chat" component={Chat} navigation={this.props.navigation} options={{title: 'Default'}}/>
             <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation}options={{ headerShown: false }} />
             <Stack.Screen name="Search" component={Search} navigation={this.props.navigation}/>
             <Stack.Screen name="Save" component={Save} navigation={this.props.navigation} />

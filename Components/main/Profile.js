@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
+import 'firebase/database'
 import { useLayoutEffect, useEffect } from 'react'
 import { useState } from 'react';
 import { AntDesign } from '@expo/vector-icons';
@@ -9,6 +10,7 @@ import { Avatar } from 'react-native-elements';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 require('firebase/firestore')
+require('firebase/database');
 import { SimpleLineIcons, Feather } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -55,7 +57,10 @@ function Profile(props, { navigation }) {
   
   useEffect(() => {
     const { currentUser, posts } = props;
-    console.log({ currentUser, posts })
+    // console.log({ currentUser, posts })
+    // console.log("1",props.currentUser)
+    // console.log(props.currentUser.uid)
+    // console.log("2",props.route.params)
     if (props.route.params.uid === firebase.auth().currentUser.uid) {
       firebase.firestore()
         .collection("Users")
@@ -124,7 +129,9 @@ function Profile(props, { navigation }) {
     console.log(following)
 
   }, [props.route.params.uid, props.following])
-
+  // console.log("1",props.currentUser)
+  // console.log(props.currentUser.uid)
+  //console.log("2",props.route.params.name)
 
   const onfollowing = () => {
     firebase.firestore()
@@ -174,6 +181,16 @@ function Profile(props, { navigation }) {
         Following: firebase.firestore.FieldValue.increment(-1)
       })
   }
+
+  const handleChat = () => { 
+    firebase.database().ref('Users/' + props.route.params.uid).set({name:user.name})
+    props.navigation.navigate('Messenger')
+    // props.navigation.navigate('Messenger',{
+    //   uid:props.route.params.uid,
+    //   name:user.name
+    // });
+  }
+
   if (user === null) {
     return <View />
   }
@@ -255,8 +272,10 @@ function Profile(props, { navigation }) {
                 <Text style={styles.userInfoTitle}>{user.Following}</Text>
                 <Text style={styles.userInfoView}>Following</Text>
               </View>
-              <TouchableOpacity style={styles.button}
-                onPress={() => props.navigation.navigate('Messenger')}>
+              <TouchableOpacity 
+                style={styles.button}
+                onPress ={handleChat}
+              >
                 <Feather name="message-circle" size={30} color="black" />
               </TouchableOpacity>
             </View>

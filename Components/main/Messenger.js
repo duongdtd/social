@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Text, View,StyleSheet, FlatList,TouchableOpacity } from 'react-native';
+import { SafeAreaView, Button, Text, View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,65 +9,125 @@ import firebase from "firebase/app";
 import User from '../main/User';
 
 
-export default function Messenger({ navigation, user, text}) {
-  const [users,setUsers] = useState([{name:'a',uid:'1234'}]);
-  //const [userList,setUserList] = useState([]);
-  useEffect(() => {
-    let dbRef = firebase.database().ref('UserID');
-    dbRef.on('child_added',(val) => {
-      let person = val.val(); 
-      person.uid = val.key;
-      setUsers((prevState) => {
-        // console.log(person);
-        // console.log(person.name)
-        return {
-          ...prevState, person
-        }  
-      })
-      
-    })
-  },[])
+export default class Messenger extends React.Component {
+  static navigationOptions = {
+    title: "Messenger"
+  }
 
-  const renderRow = ({item}) => {
+  state = {
+    users: []
+  }
+
+  UNSAFE_componentWillMount() {
+    let dbRef = firebase.database().ref('Users');
+    dbRef.on('child_added', (val) => {
+      let person = val.val();
+      person.uid = val.key;
+      if (person.uid === User.uid) {
+        User.name = person.name
+      } else {
+        this.setState((prevState) => {
+          // console.log("1",typeof person);
+          // console.log("2",prevState);
+          // console.log("3",typeof this.state.users);
+          return {
+            users: [...prevState.users, person]
+          }
+        })
+      }
+    })
+  }
+
+  renderRow = ({ item }) => {
     return (
-      <TouchableOpacity>
-            <Text>{item.name}</Text>
-          </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => this.props.navigation.navigate('Chat', item)}
+        style={{ padding: 10, borderBottonColor: '#ccc', borderBottomWidth: 1 }}>
+        <Text style={{ fontSize: 20 }}>{item.name}</Text>
+      </TouchableOpacity>
     )
   }
-//console.log((Object.values(users)[0]).name)
-// const a = users[0]
-// console.log(a);
-console.log(users.person)
-  return (
-    <View style={styles.container}>
-      {/* <FlatList
-        data={users}
-        renderItem={renderRow}
-        keyExtractor={(item)=> item.uid}
-      /> */}
-      <Text>{users.name}</Text>
-    </View>
-  );
+
+  render() {
+    //console.log(this.state.users)
+    console.log("User.uid la:",User.uid)
+    return (
+      <SafeAreaView>
+        <FlatList
+          data={this.state.users}
+          renderItem={this.renderRow}
+          keyExtractor={(item) => item.uid}
+        />
+        {/* <Text>{this.users.name}</Text> */}
+      </SafeAreaView>
+    )
+  }
+
 }
 
+
+
+
 const styles = StyleSheet.create({
-	container: {
-	flex:1,
-	justifyContent:'center',
-	alignItems:'center',
-	backgroundColor:'F5FCFF',
-	},
-	input: {
-	padding: 10,
-	borderWidth:1,
-	borderColor: '#ccc',
-	width:'90%',
-	marginBottom:10,
-	borderRadius:5
-	},
-	btnText: {
-	color:'darkblue',
-	fontSize:20
-	},
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+  },
+  input: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    width: '90%',
+    marginBottom: 10,
+    borderRadius: 5
+  },
+  btnText: {
+    color: 'darkblue',
+    fontSize: 20
+  },
 })
+
+// export default function Messenger({ navigation, user, text}) {
+//   const [users,setUsers] = useState([]);
+
+//   useEffect(() => {
+//     let dbRef = firebase.database().ref('UserID');
+//     dbRef.on('child_added',(val) => {
+//       let person = val.val(); 
+//       person.uid = val.key;
+//       setUsers((prevState) => {
+//         console.log("1",typeof person);
+//         console.log("2",prevState);
+//         console.log("3",typeof users);
+//         // console.log(person.name)
+//         return {
+//           users: [...prevState, person]
+//         }  
+//       })
+
+//     })
+//   },[])
+
+//   // const renderRow = ({item}) => {
+//   //   return (
+//   //     <TouchableOpacity>
+//   //           <Text>{item.name}</Text>
+//   //         </TouchableOpacity>
+//   //   )
+//   // }
+// //console.log((Object.values(users)[0]).name)
+// // const a = users[0]
+// // console.log(a);
+//   console.log(users)
+//   return (
+//      <View style={styles.container}>
+//        <FlatList
+//     //     data={users[0]}
+//     //     renderItem={renderRow}
+//     //     keyExtractor={(item)=> item.uid}
+//        />
+//     </View>
+//   );
+// }

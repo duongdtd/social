@@ -2,7 +2,8 @@
 const User = {
     phone: "",
     name: "",
-    uid: null,
+    //uid: 'HR73uzTb0pOWgusCPRs8rfFwe9H2',
+    uid: '',
     email: "",
     post: null
 }

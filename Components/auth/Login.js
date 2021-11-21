@@ -3,12 +3,12 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import {
   ImageBackground, StyleSheet, Text,
-  View, Image, TextInput, Dimensions, TouchableWithoutFeedback, Keyboard, TouchableOpacity, SafeAreaView
+  View, Image, TextInput, Dimensions, TouchableWithoutFeedback, Keyboard, TouchableOpacity, SafeAreaView, AsyncStorage
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 const { width: WIDTH } = Dimensions.get('window')
 import firebase from 'firebase'
-
+import User from '../main/User';
 export default function Login({navigation} ) {
   const [isShow,setIs] =useState(true)
   const [email, setemail]=useState("")
@@ -22,6 +22,8 @@ export default function Login({navigation} ) {
     var user = userCredential.user;
     //firebase.database().ref('user')
     // ...
+    //User.uid = user.uid;
+    console.log(user.uid)
   })
   .catch((error)=> alert(error.message))
   }
@@ -39,6 +41,7 @@ export default function Login({navigation} ) {
 //       })
 //       return unsubcrible;
 //   })
+
   return (
     <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
       <View>
