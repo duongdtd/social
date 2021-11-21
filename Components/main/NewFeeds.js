@@ -4,26 +4,21 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { useLayoutEffect, useEffect } from 'react'
 import { useState } from 'react';
-import { AntDesign,Ionicons } from '@expo/vector-icons';
-import { Avatar } from 'react-native-elements'
+import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { Avatar,Badge } from 'react-native-elements'
 require('firebase/firestore')
 function NewFeeds(props, { navigation }) {
   const [posts, setPosts] = useState([])
+
   useEffect(() => {
     if (props.usersFollowingLoaded == props.following.length && props.following.length !== 0) {
-      // for (let i = 0; i < props.following.length; i++) {
-      //   const user = props.users.find(el => el.uid === props.following[i]);
-      //   if (user != undefined) {
-      //     posts = [...posts, ...user.posts]
-      //   }
-      // }
       props.feed.sort(function (x, y) {
-        return x.creation - y.creation;
+        return y.creation - x.creation;
       })
       setPosts(props.feed)
     }
-    console.log(posts)
-  }, [props.usersFollowingLoaded, props.feed,])
+  }, [props.usersFollowingLoaded, props.feed])
+  console.log(props.feed)
   const onLikePress = (userId, postId) => {
     firebase.firestore()
       .collection("Posts")
@@ -41,7 +36,21 @@ function NewFeeds(props, { navigation }) {
       .collection("UserPosts")
       .doc(postId)
       .update({
-        likesCouter: firebase.firestore.FieldValue.increment(1)
+        LikesCount: firebase.firestore.FieldValue.increment(1)
+      })
+  }
+  const AddNotifications = (userId, postId, nameUser) => {
+    firebase.firestore()
+      .collection("Notifications")
+      .doc(userId)
+      .collection("UserNotifications")
+      .add({
+        name: 'Test',
+        kid: String(postId),
+        image: firebase.auth().currentUser.photoURL,
+        nameUser: nameUser,
+        type: ' đã thích bài viết của bạn',
+        seen:'no'
       })
   }
 
@@ -52,7 +61,7 @@ function NewFeeds(props, { navigation }) {
       .collection("UserPosts")
       .doc(postId)
       .update({
-        likesCouter: firebase.firestore.FieldValue.increment(-1)
+        LikesCount: firebase.firestore.FieldValue.increment(-1)
       })
   }
   const DisLikePress = (userId, postId) => {
@@ -65,7 +74,10 @@ function NewFeeds(props, { navigation }) {
       .doc(firebase.auth().currentUser.uid)
       .delete({})
   }
-
+  if(posts.length ==0)
+  {
+    return <View/>
+  }
   return (
 
     <View style={styles.container}>
@@ -79,14 +91,32 @@ function NewFeeds(props, { navigation }) {
               <View style={styles.container1}>
                 <View style={styles.userInfo}>
                   <View style={styles.userInfo}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                      <TouchableOpacity onPress={() =>props.navigation.navigate("Profile", { uid: item.user.uid })}>
                     <Image style={styles.userImg}
                       source={{
                         uri: item.user.downloadURL
                       }}>
+                     
                     </Image>
+                    </TouchableOpacity>
+                    {item.user.status == 'online' ? (
+                        <Badge
+                          status="success"
+                          
+                          containerStyle={{ position: 'absolute', top: 40, right: -2 }}
+                        />
+                      ) : (
+                        <Badge
+                          status="error"
+                       
+                          containerStyle={{ position: 'absolute', top: 40, right: -2, }}
+                        />
+                      )}
+                    </View>
                     <View style={styles.userInfoText}>
                       <Text style={styles.userName}>
-                        {item.user.name}
+                        {item.user.nickname[item.user.nickname.length-1]}
                       </Text>
                     </View>
                   </View>
@@ -97,70 +127,54 @@ function NewFeeds(props, { navigation }) {
                 <Image
                   style={styles.postImg}
                   source={{ uri: item.downloadURL }}
-                /><Text>{String(item.likesCouter)} likes</Text>
-                <View style ={styles.deviler} />
+                /><Text>{String(item.LikesCount)} likes</Text>
+                <View style={styles.deviler} />
                 <View style={styles.interReactionWrapper}>
-                {item.currentUserLike ?
-                (
+                  {item.currentUserLike ?
+                    (
+                      <TouchableOpacity
+                        style={styles.interReaction}
+                        title="Dislike"
+                        onPress={() => {
+                          onDisLikePress(item.user.uid, item.id),
+                          DisLikePress(item.user.uid, item.id), item.LikesCount--
+                        }}>
+                        <AntDesign name="heart" size={30} color="red" />
+                      </TouchableOpacity>
+                    )
+                    : (
+                      <TouchableOpacity
+                        title="Like"
+                        style={styles.interReaction}
+                        onPress={() => {
+                          onLikePress(item.user.uid, item.id),
+                          LikePress(item.user.uid, item.id), item.LikesCount++,
+                          AddNotifications(item.user.uid, item.id, props.currentUser.nickname[props.currentUser.nickname.length-1])
+                        }}
+                      >
+                        <AntDesign name="hearto" size={30} color="black" />
+                      </TouchableOpacity>
+                    )}
+                  <Text style={styles.interReactionText}>
+                    likes
+                  </Text>
                   <TouchableOpacity
-                    style={styles.interReaction}
-                    title="Dislike"
-                    onPress={() => { onDisLikePress(item.user.uid, item.id), DisLikePress(item.user.uid, item.id), item.LikesCount-- }}>
-                    <AntDesign name="heart" size={30} color="red" />
-                  </TouchableOpacity>
-                )
-                : (
-                  <TouchableOpacity
-                    title="Like"
-                    style={styles.interReaction}
-                    onPress={() => { onLikePress(item.user.uid, item.id), LikePress(item.user.uid, item.id), item.LikesCount++ }}
-                  >
-                    <AntDesign name="hearto" size={30} color="black" />
-                  </TouchableOpacity>
-                )}
-                <Text style ={styles.interReactionText}>
-                  likes
-                </Text>
-                <TouchableOpacity
                     title="Comments"
                     style={styles.interReaction}
-                    onPress={() => props.navigation.navigate('Comments', { postId: item.id, uid: item.user.uid }
-                )}
+                    onPress={() => 
+                      props.navigation.navigate('Comments', { postId: item.id,
+                         uid: item.user.uid,caption:item.caption,
+                        image: item.user.downloadURL,
+                      name:item.user.nickname[item.user.nickname.length-1]}
+                    )}
                   >
-                   <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
+                    <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
                   </TouchableOpacity>
-                  <Text style ={styles.interReactionText}>
-                  Comments
-                </Text>
+                  <Text style={styles.interReactionText}>
+                    Comments
+                  </Text>
                 </View>
               </View>
-              {/* <Image
-                style={styles.image}
-                source={{ uri: item.downloadURL }}
-              /> */}
-              {/* <Text>{String(item.likesCouter)} likes</Text>
-              {item.currentUserLike ?
-                (
-                  <TouchableOpacity
-                    title="Dislike"
-
-                    onPress={() => { onDisLikePress(item.user.uid, item.id), DisLikePress(item.user.uid, item.id), item.likesCouter-- }}>
-                    <AntDesign name="heart" size={30} color="red" />
-                  </TouchableOpacity>
-                )
-                : (
-                  <TouchableOpacity
-                    title="Like"
-                    onPress={() => { onLikePress(item.user.uid, item.id), LikePress(item.user.uid, item.id), item.likesCouter++ }}
-                  >
-                    <AntDesign name="hearto" size={30} color="black" />
-                  </TouchableOpacity>
-
-                )}
-              <Text
-                onPress={() => props.navigation.navigate('Comments', { postId: item.id, uid: item.user.uid }
-                )}
-              >View Comments...</Text> */}
             </View>
           )}
 
@@ -256,18 +270,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
   },
-  interReactionText :{
-    fontSize :15,
-    fontWeight :'bold',
-    color :'black',
-    marginTop :10,
-    marginLeft :10,
+  interReactionText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: 'black',
+    marginTop: 10,
+    marginLeft: 10,
 
   },
-  deviler :{
-    borderBottomColor :'#dddddd',
-    borderBottomWidth :1,
-    width :'92%',
+  deviler: {
+    borderBottomColor: '#dddddd',
+    borderBottomWidth: 1,
+    width: '92%',
     alignSelf: 'center',
     marginTop: 15,
   }

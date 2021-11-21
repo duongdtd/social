@@ -6,14 +6,12 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { fetchUser, fetchUserPosts, fetchUserFollowing, clearData } from "../redux/actions/index";
 import firebase from "firebase";
-import { TabActions } from "@react-navigation/routers";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Photo from "./main/Image/Photo";
 import Profile from "./main/Profile";
 import NewFeeds from "./main/NewFeeds"
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons,Ionicons } from "@expo/vector-icons";
 import Search from "./main/Search";
-import styled from "styled-components";
+import Notifications from "./main/Notifications";
 const Tab = createBottomTabNavigator();
 export class Main extends Component {
     componentDidMount() {
@@ -31,7 +29,7 @@ export class Main extends Component {
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name="home" color={color} size={26} />
                         ),
-                        headerTitle:"",
+                        headerTitle:"Social Clone",
                         headerRight: () => <View style={styles.container}>
                             <TouchableOpacity style={styles.button}
                             onPress ={() =>this.props.navigation.navigate("Photo")}>
@@ -55,6 +53,13 @@ export class Main extends Component {
                     options={{
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name="account" color={color} size={26} />
+                        )
+                    }}
+                />
+                 <Tab.Screen name="Notifications" component={Notifications} navigation={this.props.navigation}
+                    options={{
+                        tabBarIcon: ({ color, size }) => (
+                            <Ionicons name="notifications" size={26} color={color} />
                         )
                     }}
                 />

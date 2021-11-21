@@ -2,8 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import {
-  ImageBackground, StyleSheet, Text,
-  View, Image, TextInput, Dimensions, TouchableWithoutFeedback, Keyboard, TouchableOpacity, SafeAreaView, AsyncStorage
+  ImageBackground, StyleSheet, Text,View, Image, TextInput, Dimensions, TouchableWithoutFeedback, Alert,Keyboard, TouchableOpacity, SafeAreaView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 const { width: WIDTH } = Dimensions.get('window')
@@ -13,20 +12,40 @@ export default function Login({navigation} ) {
   const [isShow,setIs] =useState(true)
   const [email, setemail]=useState("")
   const [password, setpassword]=useState("")
+
   const [uid,setUID] = useState("");
+
+  const  forgotPassword = (Email) => {
+    firebase.auth().sendPasswordResetEmail(Email)
+      .then(() => {
+        Alert.alert("check email");
+      }).catch(function (e) {
+        console.log(e)
+      })
+  }
+
   const SignIn = () => {
     firebase.auth()
     .signInWithEmailAndPassword(email, password)
   .then((userCredential) => {
-    // Signed in
     var user = userCredential.user;
+
     //firebase.database().ref('user')
+
+    firebase.firestore()
+    .collection('Users')
+    .doc(firebase.auth().currentUser.uid)
+    .update({
+      status: "online",
+    })
+
     // ...
     //User.uid = user.uid;
     console.log(user.uid)
   })
   .catch((error)=> alert(error.message))
   }
+
 //   useEffect(()=>{
 //     const unsubcrible =auth.onAuthStateChanged(
 //       function(user){
@@ -42,7 +61,9 @@ export default function Login({navigation} ) {
 //       return unsubcrible;
 //   })
 
+
   return (
+    <View style={{flex:1, flexDirection:'row',alignItems:'center',justifyContent:'center'}}> 
     <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
       <View>
         <StatusBar style='light' />
@@ -50,10 +71,10 @@ export default function Login({navigation} ) {
           <Text style={styles.logotext}>Wellcome</Text>
         </View>
         <View >
-          <Ionicons name="md-person" size={30} color="rgba(255,255,255,0.8)" style={styles.inputIcon1} />
+          <Ionicons name="md-person" size={30} color="rgba(255,255,255,1)" style={styles.inputIcon1} />
           <TextInput
             style={styles.input1}
-            placeholder="Enter username" placeholderTextColor='rgba(255,255,255,0.8)'
+            placeholder="Enter username" placeholderTextColor='rgba(255,255,255,1)'
             keyboardType='email-address'
             returnKeyType="next"
             type='text'
@@ -61,9 +82,9 @@ export default function Login({navigation} ) {
             onChangeText={(text) =>setemail(text)}   
           >
           </TextInput>
-          <Ionicons name="md-lock-closed" size={30} color="rgba(255,255,255,0.8)" style={styles.inputIcon2} />
+          <Ionicons name="md-lock-closed" size={30} color="rgba(255,255,255,1)" style={styles.inputIcon2} />
           <TextInput
-            style={styles.input2} placeholder="Password" placeholderTextColor='rgba(255,255,255,0.8)'
+            style={styles.input2} placeholder="Password" placeholderTextColor='rgba(255,255,255,1)'
             returnKeyType="go"
             secureTextEntry={isShow}
             type='text'
@@ -72,7 +93,7 @@ export default function Login({navigation} ) {
           >
           </TextInput>
           <TouchableOpacity  style={styles.inputIcon3} onPress ={() => {setIs((x)=>!x)}} >
-          <Ionicons name={isShow ? "md-eye" : "md-eye-off" }size={30} color="rgba(255,255,255,0.8)" />
+          <Ionicons name={isShow ? "md-eye" : "md-eye-off" }size={30} color="rgba(255,255,255,1)" />
           </TouchableOpacity>
         </View>
         <View  alignItems = 'center'>
@@ -88,21 +109,23 @@ export default function Login({navigation} ) {
         onPress ={()=>navigation.navigate('Register')}>
           <Text style ={styles.textlogin2}>Đăng ký</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.login2} >
+        <TouchableOpacity style={styles.login2} 
+        onPress={() =>{forgotPassword(email)}}>
           <Text style ={styles.textlogin2}>Quên mật khẩu</Text>
         </TouchableOpacity>
         </View>
 
       </View>
     </TouchableWithoutFeedback>
+    </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: null,
-    height: null,
     justifyContent: 'center',
+    alignItems:'center',
+    flexDirection:'row'
   },
   logocontainer: {
     alignItems: 'center',
@@ -116,15 +139,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '500',
     marginTop: 10,
-    opacity: 0.5,
+
   },
   input1: {
     width: WIDTH - 55,
     height: 45,
     borderRadius: 45,
     fontSize: 16,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    color: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(0,0,0,1)',
+    color: 'rgba(255,255,255,1)',
     marginHorizontal: 25,
     paddingHorizontal: 50,
     marginTop: 20,
@@ -133,8 +156,8 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 45,
     fontSize: 16,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    color: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(0,0,0,1)',
+    color: 'rgba(255,255,255,1)',
     marginHorizontal: 25,
     paddingHorizontal: 50,
     marginTop: 5,
@@ -161,7 +184,7 @@ const styles = StyleSheet.create({
     width: WIDTH - 55,
     height: 45,
     borderRadius: 45,
-    backgroundColor: `#e0ffff`,
+    backgroundColor: `#FF6347`,
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -173,12 +196,12 @@ const styles = StyleSheet.create({
   },
   textlogin: {
     fontSize: 16,
-    color: 'rgba(0,0,0,0.8)',
+    color: 'rgba(0,0,0,1)',
     fontWeight: '900',
   },
   textlogin2: {
     fontSize: 16,
-    color: 'rgba(255,255,255,1)',
+    color: 'rgba(0,0,0,1)',
     fontWeight: '900',
   },
   action: {

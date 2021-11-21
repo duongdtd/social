@@ -19,8 +19,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 function Profile(props, { navigation }) {
   var bs = React.useRef(null);
   var fall = new Animated.Value(1);
-
-  const SignOut = () => {
+  const logout = () => {
+    firebase.firestore()
+      .collection('Users')
+      .doc(firebase.auth().currentUser.uid)
+      .update({
+        status: "offline",
+      })
     firebase.auth().signOut();
   }
   const renderInner = () => (
@@ -30,11 +35,11 @@ function Profile(props, { navigation }) {
         <Text style={styles.panelButtonTitle}>Edit Profile</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton}
-        onPress={() => (props.navigation.navigate('Photo'), bs.current.snapTo(1))}>
-        <Text style={styles.panelButtonTitle}>Take Photo</Text>
+        onPress={() => (props.navigation.navigate('ChangePassword'), bs.current.snapTo(1))}>
+        <Text style={styles.panelButtonTitle}>Change Password</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton}
-        onPress={() => firebase.auth().signOut()} >
+        onPress={logout} >
         <Text style={styles.panelButtonTitle}>Log Out</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton}
@@ -56,24 +61,22 @@ function Profile(props, { navigation }) {
   const [following, setFollowing] = useState(false)
   
   useEffect(() => {
+
     const { currentUser, posts } = props;
     // console.log({ currentUser, posts })
     // console.log("1",props.currentUser)
     // console.log(props.currentUser.uid)
     // console.log("2",props.route.params)
+
     if (props.route.params.uid === firebase.auth().currentUser.uid) {
       firebase.firestore()
         .collection("Users")
         .doc(firebase.auth().currentUser.uid)
         .get()
         .then((snapshot) => {
-          if (snapshot.exists) {
-            setUser(snapshot.data())
-            console.log(snapshot.data())
-          }
-          else {
-            console.log('does not exists')
-          }
+
+          setUser(snapshot.data())
+
         })
       firebase.firestore()
         .collection("Posts")
@@ -87,7 +90,6 @@ function Profile(props, { navigation }) {
             const id = doc.id;
             return { id, ...data }
           })
-          console.log(posts)
           setUserPosts(posts)
         })
     }
@@ -97,13 +99,7 @@ function Profile(props, { navigation }) {
         .doc(props.route.params.uid)
         .get()
         .then((snapshot) => {
-          if (snapshot.exists) {
-            setUser(snapshot.data())
-            console.log(snapshot.data())
-          }
-          else {
-            console.log('does not exists')
-          }
+          setUser(snapshot.data())
         })
       firebase.firestore()
         .collection("Posts")
@@ -117,7 +113,6 @@ function Profile(props, { navigation }) {
             const id = doc.id;
             return { id, ...data }
           })
-          console.log(posts)
           setUserPosts(posts)
         })
     }
@@ -126,7 +121,6 @@ function Profile(props, { navigation }) {
     } else {
       setFollowing(false);
     }
-    console.log(following)
 
   }, [props.route.params.uid, props.following])
   // console.log("1",props.currentUser)
@@ -182,6 +176,7 @@ function Profile(props, { navigation }) {
       })
   }
 
+
   const handleChat = () => { 
     firebase.database().ref('Users/' + props.route.params.uid).set({name:user.name})
     props.navigation.navigate('Messenger')
@@ -189,11 +184,27 @@ function Profile(props, { navigation }) {
     //   uid:props.route.params.uid,
     //   name:user.name
     // });
+
+  const AddNotifications = (userId, nameUser) => {
+    firebase.firestore()
+      .collection("Notifications")
+      .doc(userId)
+      .collection("UserNotifications")
+      .add({
+        name: 'Test',
+        kid: "null",
+        image: firebase.auth().currentUser.photoURL,
+        nameUser: nameUser,
+        type: ' đã theo dõi bạn bạn',
+        seen:'yes'
+      })
+
   }
 
   if (user === null) {
     return <View />
   }
+  console.log(userPosts)
   return (
 
     <View style={styles.container}>
@@ -227,6 +238,7 @@ function Profile(props, { navigation }) {
           <View style={styles.containerInfo}>
 
             <View style={{ justifyContent: 'flex-start', flexDirection: 'row' }}>
+
               <Text style={styles.text}>{user.name}</Text>
               {props.route.params.uid !== firebase.auth().currentUser.uid ? (
                 <View style={{ marginLeft: 20 }}>
@@ -244,6 +256,8 @@ function Profile(props, { navigation }) {
                   }
                 </View>
               ) : null}
+              <Text style={styles.text}>{user.nickname[user.nickname.length-1]}</Text>
+
               {props.route.params.uid == firebase.auth().currentUser.uid ? (
                 <View style={{ marginLeft: 20 }}>
 
@@ -255,6 +269,7 @@ function Profile(props, { navigation }) {
 
                 </View>
               ) : null}
+
 
               {/* User header basic info */}
             </View>
@@ -278,10 +293,50 @@ function Profile(props, { navigation }) {
               >
                 <Feather name="message-circle" size={30} color="black" />
               </TouchableOpacity>
+
+            </View>
+            <View style={styles.userInfo}>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Posts}</Text>
+                <Text style={styles.userInfoView}>Post</Text>
+
+              </View>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Followers}</Text>
+                <Text style={styles.userInfoView}>Followers</Text>
+              </View>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Following}</Text>
+                <Text style={styles.userInfoView}>Following</Text>
+              </View>
+
+
             </View>
 
           </View>
         </View>
+
+        {props.route.params.uid !== firebase.auth().currentUser.uid ? (
+                <View style={{ width:'80%',alignItems:'center' }}>
+                  {following ? (
+                    <Button
+                    title={'Bỏ theo dõi'}
+                      onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
+                      
+                    </Button>
+                  ) : (
+                    <Button
+                    title ={'theo dõi'}
+                      onPress={() => { onfollowing(), AddFollow(), AddFollowing()
+                      ,AddNotifications(props.route.params.uid,
+                      props.currentUser.nickname[props.currentUser.nickname.length-1]) }}>
+                     
+                    </Button>
+                  )
+                  }
+                </View>
+              ) : null}
+
         <View
           style={styles.deviler} />
         <View style={styles.comtainerGalley}
@@ -292,10 +347,19 @@ function Profile(props, { navigation }) {
             data={userPosts}
             renderItem={({ item }) => (
               <View style={styles.containerImage}>
+
+                <TouchableOpacity
+                onPress ={() => props.navigation.navigate("Post", {
+                  postId: item.id,
+                  uid: firebase.auth().currentUser.uid, nameUser: user.nickname[user.nickname.length-1]
+              })}>
+
                 <Image
                   style={styles.image}
                   source={{ uri: item.downloadURL }}
                 />
+
+                </TouchableOpacity>
               </View>
             )}
           />
@@ -306,9 +370,8 @@ function Profile(props, { navigation }) {
 }
 
 const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser,
-  posts: store.userState.posts,
   following: store.userState.following,
+  currentUser: store.userState.currentUser,
 })
 const styles = StyleSheet.create({
   container: {

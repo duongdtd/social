@@ -5,7 +5,7 @@ import {
   ImageBackground, StyleSheet, Text,
   View, Image, TextInput, Dimensions, TouchableWithoutFeedback, Keyboard, TouchableOpacity, SafeAreaView
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons,AntDesign } from '@expo/vector-icons';
 import firebase from 'firebase'
 import firestore from '@react-native-firebase/firestore';
 const { width: WIDTH } = Dimensions.get('window')
@@ -14,7 +14,6 @@ export default function Register({navigation}) {
   const [name, setname]=useState("")
   const [email, setemail]=useState("")
   const [password, setpassword]=useState("")
-  const [ImageURL, setImageURL]=useState("")
   const [phone, setPhone]=useState("")
 
   function generateSearchIndex(str) {
@@ -47,9 +46,16 @@ export default function Register({navigation}) {
       .doc(firebase.auth().currentUser.uid)
       .set({
         name: name,
+        password:password,
         email: email,
         downloadURL: 'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg',
-        phone : generateSearchIndex(phone)
+        phone : generateSearchIndex(phone),
+        Followers:0,
+        Following:0,
+        Posts:0,
+        nickname:generateSearchIndex(name),
+        status :'online'
+
       })
       .then(() => {
         console.log('User added!');
@@ -59,6 +65,25 @@ export default function Register({navigation}) {
         displayName : name,
         photoURL :'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg',
       })
+      firebase
+      .firestore()
+      .collection('following')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('userFollowing')
+      .doc(firebase.auth().currentUser.uid)
+      .set({});
+
+      firebase.firestore()
+      .collection("Posts")
+      .doc(firebase.auth().currentUser.uid)
+      .collection('UserPosts')
+      .add ({
+          downloadURL:'https://blog.lingoda.com/wp-content/uploads/2020/10/How-To-Say-Hello-in-10-Languages.jpg',
+          caption:'Hello everyone',
+          LikesCount :0,
+          cmts:0,
+          creation : firebase.firestore.FieldValue.serverTimestamp() 
+      })
     })
     .catch((error)=> alert(error.message))
       }
@@ -66,12 +91,15 @@ export default function Register({navigation}) {
     <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <StatusBar style='light' />
+        <View style={styles.logocontainer}>
+          <Text style={styles.logotext}>Đăng kí</Text>
+        </View>
         <View >
-          <Ionicons name="md-person" size={30} color="rgba(255,255,255,0.8)" style={styles.inputIcon1} />
+          <Ionicons name="md-person" size={30} color="rgba(255,255,255,1)" style={styles.inputIcon1} />
           <TextInput
             style={styles.input1}
             placeholder="Enter username" 
-            placeholderTextColor='rgba(255,255,255,0.8)'
+            placeholderTextColor='rgba(255,255,255,1)'
             keyboardType='email-address'
             returnKeyType="next" 
             type='text'
@@ -79,11 +107,11 @@ export default function Register({navigation}) {
             onChangeText={(text) =>setemail(text)} 
           >
           </TextInput>
-          <Ionicons name="md-lock-closed" size={30} color="rgba(255,255,255,0.8)" style={styles.inputIcon2} />
+          <Ionicons name="md-lock-closed" size={30} color="rgba(255,255,255,1)" style={styles.inputIcon2} />
           <TextInput
             style={styles.input2} 
             placeholder="Password" 
-            placeholderTextColor='rgba(255,255,255,0.8)'
+            placeholderTextColor='rgba(255,255,255,1)'
             returnKeyType="go"
             secureTextEntry={isShow}
             type='text'
@@ -91,20 +119,22 @@ export default function Register({navigation}) {
             onChangeText={(text) =>setpassword(text)} 
           >
           </TextInput>
+          <AntDesign name="filetext1" size={30} color="rgba(255,255,255,1)" style={styles.inputIcon5} />
           <TextInput
             style={styles.input2} 
             placeholder="Name" 
-            placeholderTextColor='rgba(255,255,255,0.8)'
+            placeholderTextColor='rgba(255,255,255,1)'
             returnKeyType="go"
             type='text'
             value={name}
             onChangeText={(text) =>setname(text)} 
           >
           </TextInput>
+          <AntDesign name="phone" size={30} color="rgba(255,255,255,1)" style={styles.inputIcon4} />
           <TextInput
             style={styles.input2} 
             placeholder="Phone Number" 
-            placeholderTextColor='rgba(255,255,255,0.8)'
+            placeholderTextColor='rgba(255,255,255,1)'
             returnKeyType="go"
             type='text'
             value={phone}
@@ -112,7 +142,7 @@ export default function Register({navigation}) {
           >
           </TextInput>
           <TouchableOpacity  style={styles.inputIcon3} onPress ={() => {setIs((x)=>!x)}} >
-          <Ionicons name={isShow ? "md-eye" : "md-eye-off" }size={30} color="rgba(255,255,255,0.8)" />
+          <Ionicons name={isShow ? "md-eye" : "md-eye-off" }size={30} color="rgba(255,255,255,1)" />
           </TouchableOpacity>
         </View>
         <View  alignItems = 'center'>
@@ -120,7 +150,7 @@ export default function Register({navigation}) {
           style={styles.login}
           onPress ={sign}
         >
-          <Text style={styles.textlogin}>Sign</Text>
+          <Text style={styles.textlogin}>Register</Text>
         </TouchableOpacity>
         </View>
       </View>
@@ -146,15 +176,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '500',
     marginTop: 10,
-    opacity: 0.5,
   },
   input1: {
     width: WIDTH - 55,
     height: 45,
     borderRadius: 45,
     fontSize: 16,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    color: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(0,0,0,1)',
+    color: 'rgba(255,255,255,1)',
     marginHorizontal: 25,
     paddingHorizontal: 50,
     marginTop: 20,
@@ -163,8 +192,8 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 45,
     fontSize: 16,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    color: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(0,0,0,1)',
+    color: 'rgba(255,255,255,1)',
     marginHorizontal: 25,
     paddingHorizontal: 50,
     marginTop: 5,
@@ -187,11 +216,23 @@ const styles = StyleSheet.create({
     right: 37,
     zIndex: 10,
   },
+  inputIcon4: {
+    position: 'absolute',
+    top: 175,
+    left: 37,
+    zIndex: 10,
+  },
+  inputIcon5: {
+    position: 'absolute',
+    top: 125,
+    left: 37,
+    zIndex: 10,
+  },
   login: {
     width: WIDTH - 55,
     height: 45,
     borderRadius: 45,
-    backgroundColor: `#e0ffff`,
+    backgroundColor: `#FF6347`,
     marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -203,7 +244,7 @@ const styles = StyleSheet.create({
   },
   textlogin: {
     fontSize: 16,
-    color: 'rgba(0,0,0,0.8)',
+    color: 'rgba(0,0,0,1)',
     fontWeight: '900',
   },
   textlogin2: {
