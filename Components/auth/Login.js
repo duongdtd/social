@@ -2,16 +2,18 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import {
-  ImageBackground, StyleSheet, Text,
-  View, Image, TextInput, Dimensions, TouchableWithoutFeedback, Alert,Keyboard, TouchableOpacity, SafeAreaView
+  ImageBackground, StyleSheet, Text,View, Image, TextInput, Dimensions, TouchableWithoutFeedback, Alert,Keyboard, TouchableOpacity, SafeAreaView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 const { width: WIDTH } = Dimensions.get('window')
 import firebase from 'firebase'
+import User from '../main/User';
 export default function Login({navigation} ) {
   const [isShow,setIs] =useState(true)
   const [email, setemail]=useState("")
   const [password, setpassword]=useState("")
+
+  const [uid,setUID] = useState("");
 
   const  forgotPassword = (Email) => {
     firebase.auth().sendPasswordResetEmail(Email)
@@ -21,21 +23,45 @@ export default function Login({navigation} ) {
         console.log(e)
       })
   }
+
   const SignIn = () => {
     firebase.auth()
     .signInWithEmailAndPassword(email, password)
   .then((userCredential) => {
     var user = userCredential.user;
+
+    //firebase.database().ref('user')
+
     firebase.firestore()
     .collection('Users')
     .doc(firebase.auth().currentUser.uid)
     .update({
       status: "online",
     })
+
     // ...
+    //User.uid = user.uid;
+    console.log(user.uid)
   })
   .catch((error)=> alert(error.message))
   }
+
+//   useEffect(()=>{
+//     const unsubcrible =auth.onAuthStateChanged(
+//       function(user){
+//         if(user)
+//         {
+//           navigation.replace('Chat')
+//         }
+//         else {
+//             navigation.canGoBack() && navigation.popToTop();
+//           }
+
+//       })
+//       return unsubcrible;
+//   })
+
+
   return (
     <View style={{flex:1, flexDirection:'row',alignItems:'center',justifyContent:'center'}}> 
     <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>

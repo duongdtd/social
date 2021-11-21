@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
+import 'firebase/database'
 import { useLayoutEffect, useEffect } from 'react'
 import { useState } from 'react';
 import { AntDesign } from '@expo/vector-icons';
@@ -9,7 +10,12 @@ import { Avatar } from 'react-native-elements';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 require('firebase/firestore')
-import { SimpleLineIcons } from '@expo/vector-icons';
+require('firebase/database');
+import { SimpleLineIcons, Feather } from '@expo/vector-icons';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+
 function Profile(props, { navigation }) {
   var bs = React.useRef(null);
   var fall = new Animated.Value(1);
@@ -53,7 +59,15 @@ function Profile(props, { navigation }) {
   const [userPosts, setUserPosts] = useState([])
   const [user, setUser] = useState(null)
   const [following, setFollowing] = useState(false)
+  
   useEffect(() => {
+
+    const { currentUser, posts } = props;
+    // console.log({ currentUser, posts })
+    // console.log("1",props.currentUser)
+    // console.log(props.currentUser.uid)
+    // console.log("2",props.route.params)
+
     if (props.route.params.uid === firebase.auth().currentUser.uid) {
       firebase.firestore()
         .collection("Users")
@@ -109,6 +123,10 @@ function Profile(props, { navigation }) {
     }
 
   }, [props.route.params.uid, props.following])
+  // console.log("1",props.currentUser)
+  // console.log(props.currentUser.uid)
+  //console.log("2",props.route.params.name)
+
   const onfollowing = () => {
     firebase.firestore()
       .collection("following")
@@ -157,6 +175,16 @@ function Profile(props, { navigation }) {
         Following: firebase.firestore.FieldValue.increment(-1)
       })
   }
+
+
+  const handleChat = () => { 
+    firebase.database().ref('Users/' + props.route.params.uid).set({name:user.name})
+    props.navigation.navigate('Messenger')
+    // props.navigation.navigate('Messenger',{
+    //   uid:props.route.params.uid,
+    //   name:user.name
+    // });
+
   const AddNotifications = (userId, nameUser) => {
     firebase.firestore()
       .collection("Notifications")
@@ -170,6 +198,7 @@ function Profile(props, { navigation }) {
         type: ' đã theo dõi bạn bạn',
         seen:'yes'
       })
+
   }
 
   if (user === null) {
@@ -209,7 +238,26 @@ function Profile(props, { navigation }) {
           <View style={styles.containerInfo}>
 
             <View style={{ justifyContent: 'flex-start', flexDirection: 'row' }}>
+
+              <Text style={styles.text}>{user.name}</Text>
+              {props.route.params.uid !== firebase.auth().currentUser.uid ? (
+                <View style={{ marginLeft: 20 }}>
+                  {following ? (
+                    <TouchableOpacity
+                      onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
+                      <SimpleLineIcons name="user-following" size={24} color="black" />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => { onfollowing(), AddFollow(), AddFollowing() }}>
+                      <SimpleLineIcons name="user-unfollow" size={24} color="black" />
+                    </TouchableOpacity>
+                  )
+                  }
+                </View>
+              ) : null}
               <Text style={styles.text}>{user.nickname[user.nickname.length-1]}</Text>
+
               {props.route.params.uid == firebase.auth().currentUser.uid ? (
                 <View style={{ marginLeft: 20 }}>
 
@@ -221,6 +269,31 @@ function Profile(props, { navigation }) {
 
                 </View>
               ) : null}
+
+
+              {/* User header basic info */}
+            </View>
+            <View style={styles.userInfo}>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Posts}</Text>
+                <Text style={styles.userInfoView}>Post</Text>
+
+              </View>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Followers}</Text>
+                <Text style={styles.userInfoView}>Followers</Text>
+              </View>
+              <View style={styles.userInfoItem}>
+                <Text style={styles.userInfoTitle}>{user.Following}</Text>
+                <Text style={styles.userInfoView}>Following</Text>
+              </View>
+              <TouchableOpacity 
+                style={styles.button}
+                onPress ={handleChat}
+              >
+                <Feather name="message-circle" size={30} color="black" />
+              </TouchableOpacity>
+
             </View>
             <View style={styles.userInfo}>
               <View style={styles.userInfoItem}>
@@ -237,10 +310,12 @@ function Profile(props, { navigation }) {
                 <Text style={styles.userInfoView}>Following</Text>
               </View>
 
+
             </View>
 
           </View>
         </View>
+
         {props.route.params.uid !== firebase.auth().currentUser.uid ? (
                 <View style={{ width:'80%',alignItems:'center' }}>
                   {following ? (
@@ -261,6 +336,7 @@ function Profile(props, { navigation }) {
                   }
                 </View>
               ) : null}
+
         <View
           style={styles.deviler} />
         <View style={styles.comtainerGalley}
@@ -271,15 +347,18 @@ function Profile(props, { navigation }) {
             data={userPosts}
             renderItem={({ item }) => (
               <View style={styles.containerImage}>
+
                 <TouchableOpacity
                 onPress ={() => props.navigation.navigate("Post", {
                   postId: item.id,
                   uid: firebase.auth().currentUser.uid, nameUser: user.nickname[user.nickname.length-1]
               })}>
+
                 <Image
                   style={styles.image}
                   source={{ uri: item.downloadURL }}
                 />
+
                 </TouchableOpacity>
               </View>
             )}
