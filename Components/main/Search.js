@@ -9,7 +9,7 @@ export default function Search(props, { navigation }) {
     const fetchUsers = (search) => {
         firebase.firestore()
             .collection('Users')
-            .where('phone', 'array-contains', search)
+            .where('nickname', 'array-contains', search)
             .get()
             .then((snapshot) => {
                 let users = snapshot.docs.map(doc => {
