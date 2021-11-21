@@ -46,9 +46,16 @@ export default function Register({navigation}) {
       .doc(firebase.auth().currentUser.uid)
       .set({
         name: name,
+        password:password,
         email: email,
         downloadURL: 'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg',
-        phone : generateSearchIndex(phone)
+        phone : generateSearchIndex(phone),
+        Followers:0,
+        Following:0,
+        Posts:0,
+        nickname:generateSearchIndex(name),
+        status :'online'
+
       })
       .then(() => {
         console.log('User added!');
@@ -57,6 +64,25 @@ export default function Register({navigation}) {
       user.updateProfile({
         displayName : name,
         photoURL :'https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg',
+      })
+      firebase
+      .firestore()
+      .collection('following')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('userFollowing')
+      .doc(firebase.auth().currentUser.uid)
+      .set({});
+
+      firebase.firestore()
+      .collection("Posts")
+      .doc(firebase.auth().currentUser.uid)
+      .collection('UserPosts')
+      .add ({
+          downloadURL:'https://blog.lingoda.com/wp-content/uploads/2020/10/How-To-Say-Hello-in-10-Languages.jpg',
+          caption:'Hello everyone',
+          LikesCount :0,
+          cmts:0,
+          creation : firebase.firestore.FieldValue.serverTimestamp() 
       })
     })
     .catch((error)=> alert(error.message))
@@ -124,7 +150,7 @@ export default function Register({navigation}) {
           style={styles.login}
           onPress ={sign}
         >
-          <Text style={styles.textlogin}>Sign</Text>
+          <Text style={styles.textlogin}>Register</Text>
         </TouchableOpacity>
         </View>
       </View>

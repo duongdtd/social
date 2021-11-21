@@ -199,10 +199,6 @@ const saveData = (downloadURL) => {
         onPress={() =>(showAlert,uploadImage())}>
           <Text style={styles.panelButtonTitle}>Update</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.panelButton}
-        onPress={() =>(navigation.navigate('ChangePassword'))}>
-          <Text style={styles.panelButtonTitle}>Change Password</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );

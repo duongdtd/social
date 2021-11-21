@@ -12,13 +12,13 @@ function NewFeeds(props, { navigation }) {
 
   useEffect(() => {
     if (props.usersFollowingLoaded == props.following.length && props.following.length !== 0) {
-
       props.feed.sort(function (x, y) {
         return y.creation - x.creation;
       })
       setPosts(props.feed)
     }
   }, [props.usersFollowingLoaded, props.feed])
+  console.log(props.feed)
   const onLikePress = (userId, postId) => {
     firebase.firestore()
       .collection("Posts")
@@ -36,7 +36,7 @@ function NewFeeds(props, { navigation }) {
       .collection("UserPosts")
       .doc(postId)
       .update({
-        likesCouter: firebase.firestore.FieldValue.increment(1)
+        LikesCount: firebase.firestore.FieldValue.increment(1)
       })
   }
   const AddNotifications = (userId, postId, nameUser) => {
@@ -61,7 +61,7 @@ function NewFeeds(props, { navigation }) {
       .collection("UserPosts")
       .doc(postId)
       .update({
-        likesCouter: firebase.firestore.FieldValue.increment(-1)
+        LikesCount: firebase.firestore.FieldValue.increment(-1)
       })
   }
   const DisLikePress = (userId, postId) => {
@@ -74,7 +74,10 @@ function NewFeeds(props, { navigation }) {
       .doc(firebase.auth().currentUser.uid)
       .delete({})
   }
- 
+  if(posts.length ==0)
+  {
+    return <View/>
+  }
   return (
 
     <View style={styles.container}>
@@ -89,12 +92,14 @@ function NewFeeds(props, { navigation }) {
                 <View style={styles.userInfo}>
                   <View style={styles.userInfo}>
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                      <TouchableOpacity onPress={() =>props.navigation.navigate("Profile", { uid: item.user.uid })}>
                     <Image style={styles.userImg}
                       source={{
                         uri: item.user.downloadURL
                       }}>
                      
                     </Image>
+                    </TouchableOpacity>
                     {item.user.status == 'online' ? (
                         <Badge
                           status="success"
@@ -111,7 +116,7 @@ function NewFeeds(props, { navigation }) {
                     </View>
                     <View style={styles.userInfoText}>
                       <Text style={styles.userName}>
-                        {item.user.name}
+                        {item.user.nickname[item.user.nickname.length-1]}
                       </Text>
                     </View>
                   </View>
@@ -122,7 +127,7 @@ function NewFeeds(props, { navigation }) {
                 <Image
                   style={styles.postImg}
                   source={{ uri: item.downloadURL }}
-                /><Text>{String(item.likesCouter)} likes</Text>
+                /><Text>{String(item.LikesCount)} likes</Text>
                 <View style={styles.deviler} />
                 <View style={styles.interReactionWrapper}>
                   {item.currentUserLike ?
@@ -144,7 +149,7 @@ function NewFeeds(props, { navigation }) {
                         onPress={() => {
                           onLikePress(item.user.uid, item.id),
                           LikePress(item.user.uid, item.id), item.LikesCount++,
-                          AddNotifications(item.user.uid, item.id, props.currentUser.name)
+                          AddNotifications(item.user.uid, item.id, props.currentUser.nickname[props.currentUser.nickname.length-1])
                         }}
                       >
                         <AntDesign name="hearto" size={30} color="black" />
@@ -156,7 +161,11 @@ function NewFeeds(props, { navigation }) {
                   <TouchableOpacity
                     title="Comments"
                     style={styles.interReaction}
-                    onPress={() => props.navigation.navigate('Comments', { postId: item.id, uid: item.user.uid }
+                    onPress={() => 
+                      props.navigation.navigate('Comments', { postId: item.id,
+                         uid: item.user.uid,caption:item.caption,
+                        image: item.user.downloadURL,
+                      name:item.user.nickname[item.user.nickname.length-1]}
                     )}
                   >
                     <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />

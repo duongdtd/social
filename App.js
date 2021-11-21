@@ -23,14 +23,14 @@ import Post from './Components/main/Post';
 import ChangePassword from './Components/main/ChangePassword';
 const store = createStore(rootReducer, applyMiddleware(thunk))
 const firebaseConfig = {
-  apiKey: "AIzaSyBm0GkkdkMO8iz9tLtssu9v4XtcXB1wvns",
-  authDomain: "data-c4893.firebaseapp.com",
-  databaseURL: "https://data-c4893-default-rtdb.firebaseio.com",
-  projectId: "data-c4893",
-  storageBucket: "data-c4893.appspot.com",
-  messagingSenderId: "958934199875",
-  appId: "1:958934199875:web:4dea931ea7b99663116ef6",
-  measurementId: "G-4XZ0Q0JEBF"
+  apiKey: "AIzaSyBSZEWL2hKfM64C4ZJEcKBxYhsoo5DtCfE",
+  authDomain: "social-cee8e.firebaseapp.com",
+  databaseURL: "https://social-cee8e-default-rtdb.firebaseio.com",
+  projectId: "social-cee8e",
+  storageBucket: "social-cee8e.appspot.com",
+  messagingSenderId: "603980226181",
+  appId: "1:603980226181:web:ad95757a499e2e3a5193ec",
+  measurementId: "G-JTSMRCB9PV"
 };
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig)

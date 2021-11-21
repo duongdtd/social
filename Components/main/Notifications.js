@@ -33,9 +33,11 @@ export default function Notifications({ navigation }) {
                 setNotifications(notification)
             })
     }, [notifications.length])
+    console.log(notifications)
     if (notifications.length == 0) {
         return <View />
     }
+    
     else {
         return (
             <View style={{ backgroundColor: '#fff', flex: 1 }} >

@@ -175,6 +175,7 @@ function Profile(props, { navigation }) {
   if (user === null) {
     return <View />
   }
+  console.log(userPosts)
   return (
 
     <View style={styles.container}>
@@ -208,7 +209,7 @@ function Profile(props, { navigation }) {
           <View style={styles.containerInfo}>
 
             <View style={{ justifyContent: 'flex-start', flexDirection: 'row' }}>
-              <Text style={styles.text}>{user.name}</Text>
+              <Text style={styles.text}>{user.nickname[user.nickname.length-1]}</Text>
               {props.route.params.uid == firebase.auth().currentUser.uid ? (
                 <View style={{ marginLeft: 20 }}>
 
@@ -252,7 +253,8 @@ function Profile(props, { navigation }) {
                     <Button
                     title ={'theo dõi'}
                       onPress={() => { onfollowing(), AddFollow(), AddFollowing()
-                      ,AddNotifications(props.route.params.uid,props.currentUser.name) }}>
+                      ,AddNotifications(props.route.params.uid,
+                      props.currentUser.nickname[props.currentUser.nickname.length-1]) }}>
                      
                     </Button>
                   )
@@ -269,10 +271,16 @@ function Profile(props, { navigation }) {
             data={userPosts}
             renderItem={({ item }) => (
               <View style={styles.containerImage}>
+                <TouchableOpacity
+                onPress ={() => props.navigation.navigate("Post", {
+                  postId: item.id,
+                  uid: firebase.auth().currentUser.uid, nameUser: user.nickname[user.nickname.length-1]
+              })}>
                 <Image
                   style={styles.image}
                   source={{ uri: item.downloadURL }}
                 />
+                </TouchableOpacity>
               </View>
             )}
           />

@@ -81,7 +81,7 @@ function Post(props) {
       matchUserToComment(comments)
     }
 
-  }, [props.route.params.postId, props.users, props.route.params.postId.likesCouter])
+  }, [props.route.params.postId, props.users, props.route.params.postId.LikesCount])
 
 
   const onCommentSend = () => {
@@ -113,7 +113,7 @@ function Post(props) {
       .collection("UserPosts")
       .doc(postId)
       .update({
-        likesCouter: firebase.firestore.FieldValue.increment(1)
+        LikesCount: firebase.firestore.FieldValue.increment(1)
       })
   }
 
@@ -124,7 +124,7 @@ function Post(props) {
       .collection("UserPosts")
       .doc(postId)
       .update({
-        likesCouter: firebase.firestore.FieldValue.increment(-1)
+        LikesCount: firebase.firestore.FieldValue.increment(-1)
       })
   }
   const DisLikePress = (userId, postId) => {
@@ -164,7 +164,7 @@ function Post(props) {
         <Image
           style={styles.postImg}
           source={{ uri: post.downloadURL }}
-        /><Text>{String(post.likesCouter)} likes</Text>
+        /><Text>{String(post.LikesCount)} likes</Text>
         <View style={styles.deviler} />
         <View style={styles.interReactionWrapper}>
           {currentUserLike ?
