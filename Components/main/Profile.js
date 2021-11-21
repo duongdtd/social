@@ -236,26 +236,7 @@ function Profile(props, { navigation }) {
             }}
           />
           <View style={styles.containerInfo}>
-
             <View style={{ justifyContent: 'flex-start', flexDirection: 'row' }}>
-
-              <Text style={styles.text}>{user.name}</Text>
-              {props.route.params.uid !== firebase.auth().currentUser.uid ? (
-                <View style={{ marginLeft: 20 }}>
-                  {following ? (
-                    <TouchableOpacity
-                      onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
-                      <SimpleLineIcons name="user-following" size={24} color="black" />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => { onfollowing(), AddFollow(), AddFollowing() }}>
-                      <SimpleLineIcons name="user-unfollow" size={24} color="black" />
-                    </TouchableOpacity>
-                  )
-                  }
-                </View>
-              ) : null}
               <Text style={styles.text}>{user.nickname[user.nickname.length-1]}</Text>
 
               {props.route.params.uid == firebase.auth().currentUser.uid ? (
@@ -269,7 +250,6 @@ function Profile(props, { navigation }) {
 
                 </View>
               ) : null}
-
 
               {/* User header basic info */}
             </View>
