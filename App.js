@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Register from './Components/auth/Register';
 import Login from './Components/auth/Login';
 import MainScreen from './Components/Main'
-import * as firebase from 'firebase'
+import firebase from 'firebase'
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './redux/reducers'
@@ -17,10 +17,13 @@ import Save from './Components/main/Save'
 import Search from './Components/main/Search';
 import NewFeeds from './Components/main/NewFeeds'
 import Comments from './Components/main/Comments';
-import Messanger from './Components/main/Messenger';
+import Messenger from './Components/main/Messenger';
+import Chat from './Components/main/Chat';
 import EditProfile from './Components/main/EditProfile';
+import User from './Components/main/User';
 import Post from './Components/main/Post';
 import ChangePassword from './Components/main/ChangePassword';
+
 const store = createStore(rootReducer, applyMiddleware(thunk))
 const firebaseConfig = {
   apiKey: "AIzaSyBSZEWL2hKfM64C4ZJEcKBxYhsoo5DtCfE",
@@ -43,6 +46,7 @@ export class App extends Component {
     super(props);
     this.state = {
       loaded: false,
+      loggedIn: null,
     }
   }
   componentDidMount() {
@@ -54,11 +58,17 @@ export class App extends Component {
         })
       }
       else {
+        const uid = user.uid;
+        //const UserUid = User.uid;
         this.setState({
           loggedIn: true,
           loaded: true,
         })
-
+        //console.log(user.uid)
+        if(this.state.loggedIn) {
+          User.uid = uid; 
+        }
+        console.log(User.uid)
       }
     })
   }
@@ -89,6 +99,9 @@ export class App extends Component {
            
           }}>
             <Stack.Screen name="Main" component={MainScreen} options ={{headerShown : false}} />
+            <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} />
+            <Stack.Screen name="Messenger"  component={Messenger} navigation={this.props.navigation}/>
+            <Stack.Screen name="Chat" component={Chat} navigation={this.props.navigation} options={{title: 'Default'}}/>
             <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} options ={{headerLeft :null}} />
             <Stack.Screen name="Messenger" component={Messanger} navigation={this.props.navigation}/>
             <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation}options={{ headerShown: false }} />
