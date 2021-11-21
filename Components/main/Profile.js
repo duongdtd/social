@@ -184,7 +184,7 @@ function Profile(props, { navigation }) {
     //   uid:props.route.params.uid,
     //   name:user.name
     // });
-
+  }
   const AddNotifications = (userId, nameUser) => {
     firebase.firestore()
       .collection("Notifications")
@@ -293,23 +293,6 @@ function Profile(props, { navigation }) {
               >
                 <Feather name="message-circle" size={30} color="black" />
               </TouchableOpacity>
-
-            </View>
-            <View style={styles.userInfo}>
-              <View style={styles.userInfoItem}>
-                <Text style={styles.userInfoTitle}>{user.Posts}</Text>
-                <Text style={styles.userInfoView}>Post</Text>
-
-              </View>
-              <View style={styles.userInfoItem}>
-                <Text style={styles.userInfoTitle}>{user.Followers}</Text>
-                <Text style={styles.userInfoView}>Followers</Text>
-              </View>
-              <View style={styles.userInfoItem}>
-                <Text style={styles.userInfoTitle}>{user.Following}</Text>
-                <Text style={styles.userInfoView}>Following</Text>
-              </View>
-
 
             </View>
 
