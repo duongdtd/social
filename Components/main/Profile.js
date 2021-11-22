@@ -240,14 +240,19 @@ function Profile(props, { navigation }) {
               <Text style={styles.text}>{user.nickname[user.nickname.length-1]}</Text>
 
               {props.route.params.uid == firebase.auth().currentUser.uid ? (
-                <View style={{ marginLeft: 20 }}>
+                <View style={{ marginLeft: 20,flexDirection:'row',}}>
 
                   <TouchableOpacity
                     onPress={() => bs.current.snapTo(0)}
                   >
-                    <AntDesign name="setting" size={24} color="black" />
+                    <AntDesign name="setting" size={30} color="black" />
                   </TouchableOpacity>
-
+                  <TouchableOpacity
+                  style={{marginLeft:20}}
+                  onPress ={() => props.navigation.navigate('QRscreen',{data :firebase.auth().currentUser.uid})}
+                  >
+                   <AntDesign name="qrcode" size={30} color="black" />
+                  </TouchableOpacity>
                 </View>
               ) : null}
 

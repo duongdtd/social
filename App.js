@@ -23,7 +23,8 @@ import EditProfile from './Components/main/EditProfile';
 import User from './Components/main/User';
 import Post from './Components/main/Post';
 import ChangePassword from './Components/main/ChangePassword';
-
+import QRcode from './Components/main/Image/QRcode';
+import QRscreen from './Components/main/QRscreen'
 const store = createStore(rootReducer, applyMiddleware(thunk))
 const firebaseConfig = {
   apiKey: "AIzaSyBSZEWL2hKfM64C4ZJEcKBxYhsoo5DtCfE",
@@ -104,12 +105,14 @@ export class App extends Component {
             <Stack.Screen name="Chat" component={Chat} navigation={this.props.navigation} options={{title: 'Default'}}/>
             {/* <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} options ={{headerLeft :null}} /> */}
             <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation}options={{ headerShown: false }} />
+            <Stack.Screen name="QRcode" component={QRcode} navigation={this.props.navigation}options={{ headerShown: false }} />
             <Stack.Screen name="Search" component={Search} navigation={this.props.navigation}/>
             <Stack.Screen name="Save" component={Save} navigation={this.props.navigation} />
+            <Stack.Screen name="QRscreen" component={QRscreen} navigation={this.props.navigation} />
             <Stack.Screen name="Comments" component={Comments} navigation={this.props.navigation} />
             <Stack.Screen name="Post" component={Post} navigation={this.props.navigation} />
             <Stack.Screen name="ChangePassword" component={ChangePassword} navigation={this.props.navigation} />
-        
+
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

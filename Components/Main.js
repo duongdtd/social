@@ -67,7 +67,13 @@ export class Main extends Component {
                     options={{
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name="account-search" color={color} size={26} />
-                        )
+                        ),
+                        headerRight: () => <View style={styles.container}>
+                        <TouchableOpacity style={styles.button}
+                        onPress ={() =>this.props.navigation.navigate("QRcode")}>
+                        <AntDesign name="qrcode" size={30} color="black" />
+                        </TouchableOpacity>
+                    </View>,
                     }}
                 />
             </Tab.Navigator>
