@@ -124,6 +124,8 @@ function NewFeeds(props, { navigation }) {
                 <Text style={styles.postText}>
                   {item.caption}
                 </Text>
+                        <Text>{ new Date(item.creation.seconds * 1000 +  item.creation.nanoseconds / 1000000).toDateString()} 
+                         at { new Date(item.creation.seconds * 1000 +  item.creation.nanoseconds / 1000000).toLocaleTimeString()}</Text>
                 <Image
                   style={styles.postImg}
                   source={{ uri: item.downloadURL }}
