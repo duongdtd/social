@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { View, TextInput,Button,Image,StyleSheet,ActivityIndicator } from "react-native";
+import { View, TextInput,Button,Image,StyleSheet,ActivityIndicator,Alert } from "react-native";
 import firebase from "firebase";
 import { Avatar } from "react-native-elements/dist/avatar/Avatar";
+import { NavigationContainer } from "@react-navigation/native";
 require("firebase/firestore")
 require("firebase/firebase-firestore")
 export default function Save(props) {
-    console.log(props)
     const [caption,setCaption] =useState("")
     const [running, setRunning] =useState(false)
-
     const uploadImage = async () => {
         const uri = props.route.params.image;
         const childPath =`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
@@ -45,7 +44,16 @@ export default function Save(props) {
             LikesCount :0,
             cmts:0,
             creation : firebase.firestore.FieldValue.serverTimestamp() 
-        }).then(setRunning(false))
+        }).then(() => {
+            Alert.alert('Alert', 'successful', [
+                {
+                  text: 'OK',
+                  onPress: () => props.navigation.navigate('NewFeeds'),
+                  style: 'cancel',
+                },
+              ]);
+              setRunning(false)
+        })
 
     }
 const addPost =() => {

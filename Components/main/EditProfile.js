@@ -83,7 +83,7 @@ const saveData = (downloadURL) => {
     [
       {
         text: "Cancel",
-        onPress: () => navigation.navigate('NewFeeds'),
+        onPress: () => props.navigation.navigate('NewFeeds'),
         style: "cancel",
       },
       {
@@ -196,7 +196,7 @@ const saveData = (downloadURL) => {
         style={styles.deviler} />
       <View style={styles.container}>
         <TouchableOpacity style={styles.panelButton}
-        onPress={() =>(showAlert,uploadImage())}>
+        onPress={() =>(showAlert())}>
           <Text style={styles.panelButtonTitle}>Update</Text>
         </TouchableOpacity>
       </View>
