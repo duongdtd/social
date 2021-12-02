@@ -18,7 +18,6 @@ function NewFeeds(props, { navigation }) {
       setPosts(props.feed)
     }
   }, [props.usersFollowingLoaded, props.feed])
-  console.log(props.feed)
   const onLikePress = (userId, postId) => {
     firebase.firestore()
       .collection("Posts")
@@ -100,19 +99,6 @@ function NewFeeds(props, { navigation }) {
                      
                     </Image>
                     </TouchableOpacity>
-                    {item.user.status == 'online' ? (
-                        <Badge
-                          status="success"
-                          
-                          containerStyle={{ position: 'absolute', top: 40, right: -2 }}
-                        />
-                      ) : (
-                        <Badge
-                          status="error"
-                       
-                          containerStyle={{ position: 'absolute', top: 40, right: -2, }}
-                        />
-                      )}
                     </View>
                     <View style={styles.userInfoText}>
                       <Text style={styles.userName}>

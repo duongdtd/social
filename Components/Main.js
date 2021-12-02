@@ -9,7 +9,7 @@ import firebase from "firebase";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Profile from "./main/Profile";
 import NewFeeds from "./main/NewFeeds"
-import { MaterialCommunityIcons,Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons,Ionicons ,MaterialIcons} from "@expo/vector-icons";
 import Search from "./main/Search";
 import Notifications from "./main/Notifications";
 const Tab = createBottomTabNavigator();
@@ -56,6 +56,7 @@ export class Main extends Component {
                         )
                     }}
                 />
+             
                  <Tab.Screen name="Notifications" component={Notifications} navigation={this.props.navigation}
                     options={{
                         tabBarIcon: ({ color, size }) => (

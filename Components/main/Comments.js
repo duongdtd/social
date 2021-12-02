@@ -13,7 +13,7 @@ function Comments(props) {
     const [comments, setComments] = useState([])
     const [postId, setPostId] = useState("")
     const [text, setText] = useState("")
-    const [user, setUser] = useState(null)
+    const [change, setChage] = useState(false)
     useEffect(() => {
         function matchUserToComment(comments) {
             for (let i = 0; i < comments.length; i++) {
@@ -38,8 +38,7 @@ function Comments(props) {
                 .collection('UserPosts')
                 .doc(props.route.params.postId)
                 .collection('Comments')
-                .get()
-                .then((snapshot) => {
+                .onSnapshot((snapshot) => {
                     let comments = snapshot.docs.map(doc => {
                         const data = doc.data();
                         const id = doc.id;
@@ -54,10 +53,8 @@ function Comments(props) {
             matchUserToComment(comments)
         }
 
-
-    }, [props.route.params.postId, props.users, props.route.params.postId.likesCouter,comments.length])
-
-
+    }, [props.route.params.postId, props.users, props.route.params.postId.likesCouter,comments])
+console.log(comments)
     const onCommentSend = () => {
         firebase.firestore()
             .collection('Posts')
@@ -124,74 +121,98 @@ function Comments(props) {
             <View>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                     <Avatar
-                        size="small" rounded source={{ uri:props.route.params.image }} />
+                        size="small" rounded source={{ uri: props.route.params.image }} />
                     <Text>
                         {props.route.params.name}
                     </Text>
-                    </View>
-                    <Text>{props.route.params.caption}</Text>
+                </View>
+                <Text>{props.route.params.caption}</Text>
 
-                </View>
-                <View style={{
-                    borderBottomColor: '#dddddd',
-                    borderBottomWidth: 1,
-                    width: '92%',
-                    alignSelf: 'center',
-                    marginTop: 15,
-                    marginBottom: 15,
-                }} />
-                <FlatList
-                    numColumns={1}
-                    horizontal={false}
-                    data={comments}
-                    renderItem={({ item }) => (
-                        <View>
-                            {item.user !== undefined ?
-                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                                    <Avatar
-                                        size="small" rounded source={{ uri: item.user.downloadURL }} />
-                                    <Text>
-                                        {item.user.nickname[item.user.nickname.length-1]}
-                                    </Text>
-                                    {
-                                        item.user.uid === firebase.auth().currentUser.uid ? (
-                                            <View>
-                                                <TouchableOpacity
-                                                    onPress={() => {
-                                                        onCommentDelete(item.id)
-                                                        deleteCmts(props.route.params.uid, props.route.params.postId)
-                                                    }}>
-                                                    <AntDesign name="delete" size={24} color="black" />
-                                                </TouchableOpacity>
-                                            </View>
-                                        ) : null
-                                    }
-                                </View>
-                                : null}
-                            <Text>{item.text}</Text>
-                        </View>
-                    )}
-                />
-                <View >
-                    <TextInput
-                        placeholder='comment.....'
-                        onChangeText={(text) => setText(text)}>
-                    </TextInput>
-                    <Button
-                        onPress={() => {
-                            onCommentSend(), cmts(props.route.params.uid, props.route.params.postId)
-                                , AddNotifications(props.route.params.uid, props.route.params.postId, props.currentUser.name)
-                        }}
-                        title="send"
-                    />
-                </View>
             </View>
-            )
+            <View style={{
+                borderBottomColor: '#dddddd',
+                borderBottomWidth: 1,
+                width: '92%',
+                alignSelf: 'center',
+                marginTop: 15,
+                marginBottom: 15,
+            }} />
+            <FlatList
+                numColumns={1}
+                horizontal={false}
+                data={comments}
+                renderItem={({ item }) => (
+                    <View>
+                        {item.user !== undefined ?
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                                <Avatar
+                                    size="small" rounded source={{ uri: item.user.downloadURL }} />
+                                <Text>
+                                    {item.user.nickname[item.user.nickname.length - 1]}
+                                </Text>
+                                {
+                                    item.user.uid === firebase.auth().currentUser.uid ? (
+                                        <View>
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    onCommentDelete(item.id),
+                                                    deleteCmts(props.route.params.uid, props.route.params.postId)
+                                                }}>
+                                                <AntDesign name="delete" size={24} color="black" />
+                                            </TouchableOpacity>
+                                        </View>
+                                    ) : null
+                                }
+                            </View>
+                            : null}
+                        <Text>{item.text}</Text>
+                    </View>
+                )}
+            />
+            <View style={{
+                borderBottomColor: '#dddddd',
+                borderBottomWidth: 1,
+                width: '100%',
+                alignSelf: 'center',
+                marginTop: 15,
+                marginBottom: 15,
+            }} />
+            <View style={styles.Container}>
+                <Avatar
+                size ={'small'}
+                rounded
+                source={{uri : firebase.auth().currentUser.photoURL}}
+                />
+                <TextInput
+                    style={styles.inputStyle}
+                    placeholder="Add a comment "
+                    onChangeText={(text) => setText(text)}
+                />
+                <TouchableOpacity style={{marginRight :10}}
+                     onPress={() => {
+                    onCommentSend(), cmts(props.route.params.uid, props.route.params.postId)
+                        , AddNotifications(props.route.params.uid, props.route.params.postId, props.currentUser.name)
+                }}>
+                <Text>Post</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
 }
-
-const mapStateToProps = (store) => ({
-                users: store.usersState.users,
-            currentUser: store.userState.currentUser,
+const styles = StyleSheet.create({
+    Container: {
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderColor: '#000',
+        paddingBottom: 10,
+      },
+      inputStyle: {
+        flex: 1,
+      },
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({fetchUsersData}, dispatch);
-            export default connect(mapStateToProps, mapDispatchProps)(Comments)
+const mapStateToProps = (store) => ({
+    users: store.usersState.users,
+    currentUser: store.userState.currentUser,
+})
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUsersData }, dispatch);
+export default connect(mapStateToProps, mapDispatchProps)(Comments)

@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -51,7 +51,10 @@ export class App extends Component {
     }
   }
   componentDidMount() {
+
+
     firebase.auth().onAuthStateChanged((user) => {
+
       if (!user) {
         this.setState({
           loggedIn: false,
@@ -60,24 +63,43 @@ export class App extends Component {
       }
       else {
         const uid = user.uid;
-        //const UserUid = User.uid;
+        // This is where we will store data about being online/offline.
+        var userStatusDatabaseRef = firebase.database().ref('/Users/' + uid);
+        // or online.
+        var isOfflineForDatabase = {
+          state: 'offline',
+          last_changed: firebase.database.ServerValue.TIMESTAMP,
+        };
+        var isOnlineForDatabase = {
+          state: 'online',
+          last_changed: firebase.database.ServerValue.TIMESTAMP,
+        };
+        firebase.database().ref('.info/connected').on('value', function (snapshot) {
+          // If we're not currently connected, don't do anything.
+          if (snapshot.val() == false) {
+            return;
+          };
+          userStatusDatabaseRef.onDisconnect().update(isOfflineForDatabase).then(function () {
+            userStatusDatabaseRef.update(isOnlineForDatabase);
+          });
+        });
         this.setState({
           loggedIn: true,
           loaded: true,
         })
-        //console.log(user.uid)
-        if(this.state.loggedIn) {
-          User.uid = uid; 
+        if (this.state.loggedIn) {
+          User.uid = uid;
         }
         console.log(User.uid)
       }
     })
   }
+
   render() {
     const { loggedIn, loaded } = this.state;
     if (!loaded) {
       return (
-        <View style={{ flex: 1, justifyContent: 'center',alignItems:'center' }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text>Loading Screen</Text>
         </View>
       )
@@ -87,7 +109,7 @@ export class App extends Component {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-            <Stack.Screen name="Register" component={Register} options ={{headerShown : false}}/>
+            <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
       );
@@ -97,16 +119,16 @@ export class App extends Component {
       <Provider store={store}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Main" screenOptions={{
-           
+
           }}>
-            <Stack.Screen name="Main" component={MainScreen} options ={{headerShown : false}} />
+            <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
             <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} />
-            <Stack.Screen name="Messenger"  component={Messenger} navigation={this.props.navigation}/>
-            <Stack.Screen name="Chat" component={Chat} navigation={this.props.navigation} options={{title: 'Default'}}/>
+            <Stack.Screen name="Messenger" component={Messenger} navigation={this.props.navigation} />
+            <Stack.Screen name="Chat" component={Chat} navigation={this.props.navigation} options={{ title: 'Default' }} />
             {/* <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} options ={{headerLeft :null}} /> */}
-            <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation}options={{ headerShown: false }} />
-            <Stack.Screen name="QRcode" component={QRcode} navigation={this.props.navigation}options={{ headerShown: false }} />
-            <Stack.Screen name="Search" component={Search} navigation={this.props.navigation}/>
+            <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation} options={{ headerShown: false }} />
+            <Stack.Screen name="QRcode" component={QRcode} navigation={this.props.navigation} options={{ headerShown: false }} />
+            <Stack.Screen name="Search" component={Search} navigation={this.props.navigation} />
             <Stack.Screen name="Save" component={Save} navigation={this.props.navigation} />
             <Stack.Screen name="QRscreen" component={QRscreen} navigation={this.props.navigation} />
             <Stack.Screen name="Comments" component={Comments} navigation={this.props.navigation} />

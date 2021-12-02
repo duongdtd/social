@@ -20,12 +20,6 @@ function Profile(props, { navigation }) {
   var bs = React.useRef(null);
   var fall = new Animated.Value(1);
   const logout = () => {
-    firebase.firestore()
-      .collection('Users')
-      .doc(firebase.auth().currentUser.uid)
-      .update({
-        status: "offline",
-      })
     firebase.auth().signOut();
   }
   const renderInner = () => (
@@ -61,12 +55,7 @@ function Profile(props, { navigation }) {
   const [following, setFollowing] = useState(false)
   
   useEffect(() => {
-
     const { currentUser, posts } = props;
-    // console.log({ currentUser, posts })
-    // console.log("1",props.currentUser)
-    // console.log(props.currentUser.uid)
-    // console.log("2",props.route.params)
 
     if (props.route.params.uid === firebase.auth().currentUser.uid) {
       firebase.firestore()
@@ -123,9 +112,6 @@ function Profile(props, { navigation }) {
     }
 
   }, [props.route.params.uid, props.following])
-  // console.log("1",props.currentUser)
-  // console.log(props.currentUser.uid)
-  //console.log("2",props.route.params.name)
 
   const onfollowing = () => {
     firebase.firestore()
@@ -204,7 +190,6 @@ function Profile(props, { navigation }) {
   if (user === null) {
     return <View />
   }
-  console.log(userPosts)
   return (
 
     <View style={styles.container}>

@@ -1,10 +1,10 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import { View, Text, TextInput, FlatList, TouchableOpacity } from "react-native";
 import firebase from "firebase";
 import { Avatar, Badge } from 'react-native-elements';
+import { Button } from "react-native-elements/dist/buttons/Button";
 require('firebase/firestore')
 export default function Search(props, { navigation }) {
-
     const [users, setUsers] = useState([])
     const fetchUsers = (search) => {
         firebase.firestore()
@@ -20,7 +20,6 @@ export default function Search(props, { navigation }) {
                 setUsers(users)
             })
     }
-    console.log(users)
     return (
         <View>
             <TextInput onChangeText={(search) => fetchUsers(search)}
@@ -43,25 +42,13 @@ export default function Search(props, { navigation }) {
                                             uri: item.downloadURL
                                         }}
                                     />
-                                          {item.status == 'online' ? (
-                                             <Badge
-                                             status="success"
-                                            //  value=" "
-                                            //  textStyle={{fontSize:30}}
-                                             containerStyle={{ position: 'absolute', top: 28, right: -4 }}
-                                           /> 
-                                          ) :(
-                                            <Badge
-                                            status="error"
-                                            // value=" "
-                                            // textStyle={{fontSize:30}}
-                                            containerStyle={{ position: 'absolute', top: 28, right: -4 ,}}
-                                          />
-                                          )}  
+                                
+                                    
                                     </View>
                                     <View style={{ flexDirection: 'column', justifyContent: 'space-between', marginLeft: 10 }}>
                                         <Text>{item.name}</Text>
                                         <Text>{item.email}</Text>
+                                       
                                     </View>
                                 </View>
 

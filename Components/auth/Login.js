@@ -23,7 +23,7 @@ export default function Login({navigation} ) {
         console.log(e)
       })
   }
-
+  console.log('test')
   const SignIn = () => {
     firebase.auth()
     .signInWithEmailAndPassword(email, password)
