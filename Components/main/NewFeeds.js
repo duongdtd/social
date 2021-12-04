@@ -82,14 +82,12 @@ function NewFeeds(props, { navigation }) {
         <View style={styles.containerView}>
           <View style={styles.container1}>
             <View style={styles.userInfo}>
-              <View style={styles.userInfo}>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                   <TouchableOpacity onPress={() => props.navigation.navigate("Profile", { uid: item.user.uid })}>
                     <Image style={styles.userImg}
                       source={{
                         uri: item.user.downloadURL
                       }}>
-
                     </Image>
                   </TouchableOpacity>
                 </View>
@@ -97,20 +95,20 @@ function NewFeeds(props, { navigation }) {
                   <Text style={styles.userName}>
                     {item.user.nickname[item.user.nickname.length - 1]}
                   </Text>
-                </View>
               </View>
             </View>
             <Text style={styles.postText}>
               {item.caption}
             </Text>
-            <Text>{new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toDateString()}
+            <Text style={styles.date}>{new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toDateString()}
               at {new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toLocaleTimeString()}</Text>
             <Image
               style={styles.postImg}
               source={{ uri: item.downloadURL }}
-            /><Text>{String(item.LikesCount)} likes</Text>
+            /><Text style={styles.like}>{String(item.LikesCount)} likes</Text>
             <View style={styles.deviler} />
             <View style={styles.interReactionWrapper}>
+              <View style={styles.reaction}>
               {item.currentUserLike ?
                 (
                   <TouchableOpacity
@@ -134,30 +132,33 @@ function NewFeeds(props, { navigation }) {
                           props.currentUser.nickname[props.currentUser.nickname.length - 1],item.type,item.user.downloadURL)
                     }}
                   >
-                    <AntDesign name="hearto" size={30} color="black" />
+                    <AntDesign name="hearto" size={30} color="#ffb412" />
                   </TouchableOpacity>
                 )}
-              <Text style={styles.interReactionText}>
-                likes
-              </Text>
-              <TouchableOpacity
-                title="Comments"
-                style={styles.interReaction}
-                onPress={() =>
-                  props.navigation.navigate('Comments', {
-                    postId: item.id,
-                    uid: item.user.uid, caption: item.caption,
-                    image: item.user.downloadURL,
-                    type :item.type,
-                    name: item.user.nickname[item.user.nickname.length - 1]
-                  }
-                  )}
-              >
-                <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
-              </TouchableOpacity>
-              <Text style={styles.interReactionText}>
-                Comments
-              </Text>
+                  <Text style={styles.interReactionText}>
+                    Likes
+                  </Text>
+              </View> 
+              <View style={styles.reaction}> 
+                <TouchableOpacity
+                  title="Comments"
+                  style={styles.interReaction}
+                  onPress={() =>
+                    props.navigation.navigate('Comments', {
+                      postId: item.id,
+                      uid: item.user.uid, caption: item.caption,
+                      image: item.user.downloadURL,
+                      type :item.type,
+                      name: item.user.nickname[item.user.nickname.length - 1]
+                    }
+                    )}
+                >
+                  <Ionicons name="chatbubble-ellipses-outline" size={27} color="#ffb412" />
+                </TouchableOpacity>
+                <Text style={styles.interReactionText}>
+                  Comments
+                </Text>
+              </View>
             </View>
           </View>
         </View>
@@ -168,7 +169,6 @@ function NewFeeds(props, { navigation }) {
         <View style={styles.containerView}>
           <View style={styles.container1}>
             <View style={styles.userInfo}>
-              <View style={styles.userInfo}>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                   <TouchableOpacity onPress={() => props.navigation.navigate("Profile", { uid: item.user.uid })}>
                     <Image style={styles.userImg}
@@ -184,13 +184,12 @@ function NewFeeds(props, { navigation }) {
                     {item.user.nickname[item.user.nickname.length - 1]}
                   </Text>
                 </View>
-              </View>
             </View>
             <Text style={styles.postText}>
               {item.caption}
             </Text>
-            <Text>{new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toDateString()}
-              at {new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toLocaleTimeString()}</Text>
+            <Text style={styles.date}>{new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toDateString()}
+             at {new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toLocaleTimeString()}</Text>
               <View style={styles.postImg}>
             <FlatList
               data={item.downloadURL}
@@ -202,9 +201,10 @@ function NewFeeds(props, { navigation }) {
               decelerationRate={'normal'}
             />
             </View>
-            <Text>{String(item.LikesCount)} likes</Text>
+            <Text style={styles.like}>{String(item.LikesCount)} Likes</Text>
             <View style={styles.deviler} />
             <View style={styles.interReactionWrapper}>
+            <View style={styles.reaction}>
               {item.currentUserLike ?
                 (
                   <TouchableOpacity
@@ -229,12 +229,14 @@ function NewFeeds(props, { navigation }) {
                           item.type,item.user.downloadURL)
                     }}
                   >
-                    <AntDesign name="hearto" size={30} color="black" />
+                    <AntDesign name="hearto" size={30} color="#ffb412" />
                   </TouchableOpacity>
                 )}
               <Text style={styles.interReactionText}>
-                likes
+                Likes
               </Text>
+              </View>
+              <View style={styles.reaction}>
               <TouchableOpacity
                 title="Comments"
                 style={styles.interReaction}
@@ -248,11 +250,12 @@ function NewFeeds(props, { navigation }) {
                   }
                   )}
               >
-                <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
+                <Ionicons name="chatbubble-ellipses-outline" size={27} color="#ffb412" />
               </TouchableOpacity>
               <Text style={styles.interReactionText}>
                 Comments
               </Text>
+              </View>
             </View>
           </View>
         </View>
@@ -302,7 +305,7 @@ const mapStateToProps = (store) => ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#ffb412'
   },
   containerInfo: {
     margin: 20
@@ -329,7 +332,7 @@ const styles = StyleSheet.create({
   container1: {
     backgroundColor: '#f8f8f8',
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 12,
     borderRadius: 10
   },
   containerView: {
@@ -337,13 +340,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 20
+    paddingHorizontal: 8
   },
   userInfo: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },
   userImg: {
+    marginLeft:12,
+    marginTop:12,
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -358,9 +363,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
   },
+  date: {
+    fontSize:11,
+    marginLeft:12
+  },
   postText: {
-    fontSize: 15,
-    paddingLeft: 15,
+    marginTop:10,
+    fontStyle:'Italic',
+    fontSize: 16,
+    paddingLeft: 12,
     paddingRight: 15,
   },
   postImg: {
@@ -369,9 +380,15 @@ const styles = StyleSheet.create({
     marginTop: 15,
 
   },
+  like: {
+    marginTop:10,
+    fontSize:20,
+    fontWeight:'bold',
+    paddingLeft:36
+  },
   interReactionWrapper: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    //justifyContent: 'space-between',
     padding: 8,
 
   },
@@ -380,6 +397,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 5,
     padding: 5,
+  },
+  reaction: {
+    flexDirection: 'row',
+    flex:1,
+    paddingLeft:24
   },
   interReactionText: {
     fontSize: 15,
@@ -394,7 +416,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     width: '92%',
     alignSelf: 'center',
-    marginTop: 15,
+    marginTop: 10,
   }
 })
 export default connect(mapStateToProps, null)(NewFeeds)
