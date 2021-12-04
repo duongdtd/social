@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { Dimensions, StatusBar } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Avatar, Badge } from 'react-native-elements'
-import messaging from '@react-native-firebase/messaging';
 require('firebase/firestore')
 function NewFeeds(props, { navigation }) {
   const [posts, setPosts] = useState([])

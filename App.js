@@ -26,7 +26,6 @@ import Post from './Components/main/Post';
 import ChangePassword from './Components/main/ChangePassword';
 import QRcode from './Components/main/Image/QRcode';
 import QRscreen from './Components/main/QRscreen'
-import messaging from '@react-native-firebase/messaging';
 import SearchImage from './Components/main/Image/SearchImage';
 const store = createStore(rootReducer, applyMiddleware(thunk))
 const firebaseConfig = {
