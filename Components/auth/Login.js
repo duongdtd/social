@@ -63,12 +63,12 @@ export default function Login({navigation} ) {
 
 
   return (
-    <View style={{flex:1, flexDirection:'row',alignItems:'center',justifyContent:'center'}}> 
+    <View style={{flex:1, backgroundColor:'white', flexDirection:'row',alignItems:'center',justifyContent:'center'}}> 
     <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
       <View>
         <StatusBar style='light' />
         <View style={styles.logocontainer}>
-          <Text style={styles.logotext}>Wellcome</Text>
+          <Image style={{ width: 200, height: 140 }} source={require('../../image/logo.png')}/>
         </View>
         <View >
           <Ionicons name="md-person" size={30} color="rgba(255,255,255,1)" style={styles.inputIcon1} />
@@ -129,6 +129,9 @@ const styles = StyleSheet.create({
   },
   logocontainer: {
     alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft:30,
+    //marginBottom:10,
   },
   logo: {
     width: 48 * 2,
@@ -184,8 +187,9 @@ const styles = StyleSheet.create({
     width: WIDTH - 55,
     height: 45,
     borderRadius: 45,
-    backgroundColor: `#FF6347`,
+    backgroundColor: `#FFA500`,
     marginTop: 20,
+    marginHorizontal: 25,
     justifyContent: 'center',
     alignItems: 'center',
     opacity: 0.8,

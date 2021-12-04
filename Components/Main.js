@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, TouchableOpacity,StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity,StyleSheet, Image } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from "@expo/vector-icons";
 import { connect } from "react-redux";
@@ -12,6 +12,7 @@ import NewFeeds from "./main/NewFeeds"
 import { MaterialCommunityIcons,Ionicons ,MaterialIcons} from "@expo/vector-icons";
 import Search from "./main/Search";
 import Notifications from "./main/Notifications";
+
 const Tab = createBottomTabNavigator();
 export class Main extends Component {
     componentDidMount() {
@@ -29,15 +30,15 @@ export class Main extends Component {
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name="home" color={color} size={26} />
                         ),
-                        headerTitle:"Social Clone",
+                        headerTitle:()=> <Image style={{ width: 120, height: 62 }} source={require('../image/logo.png')}/>,
                         headerRight: () => <View style={styles.container}>
                             <TouchableOpacity style={styles.button}
                             onPress ={() =>this.props.navigation.navigate("Photo")}>
-                            <AntDesign name="pluscircleo" size={30} color="black" />
+                            <AntDesign name="pluscircleo" size={29} color="black" />
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.button}
                              onPress ={() =>this.props.navigation.navigate("Messenger")}>
-                            <Feather name="message-circle" size={30} color="black" />
+                            <Feather name="message-circle" size={32} color="black" />
                             </TouchableOpacity>
                         </View>,
                     }}
@@ -60,7 +61,7 @@ export class Main extends Component {
                  <Tab.Screen name="Notifications" component={Notifications} navigation={this.props.navigation}
                     options={{
                         tabBarIcon: ({ color, size }) => (
-                            <Ionicons name="notifications" size={26} color={color} />
+                            <Ionicons name="notifications" size={22} color={color} />
                         )
                     }}
                 />
@@ -98,6 +99,6 @@ const styles =StyleSheet.create({
         alignItems:'center'
     },
     button : {
-        margin :20,
+        marginRight :16,
     }
 })
