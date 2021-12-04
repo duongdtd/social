@@ -14,6 +14,7 @@ import thunk from 'redux-thunk';
 import Photo from './Components/main/Image/Photo'
 import Profile from './Components/main/Profile'
 import Save from './Components/main/Save'
+import CheckUser from './Components/main/CheckUser'
 import Search from './Components/main/Search';
 import NewFeeds from './Components/main/NewFeeds'
 import Comments from './Components/main/Comments';
@@ -25,6 +26,8 @@ import Post from './Components/main/Post';
 import ChangePassword from './Components/main/ChangePassword';
 import QRcode from './Components/main/Image/QRcode';
 import QRscreen from './Components/main/QRscreen'
+import messaging from '@react-native-firebase/messaging';
+import SearchImage from './Components/main/Image/SearchImage';
 const store = createStore(rootReducer, applyMiddleware(thunk))
 const firebaseConfig = {
   apiKey: "AIzaSyBSZEWL2hKfM64C4ZJEcKBxYhsoo5DtCfE",
@@ -40,7 +43,6 @@ if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig)
 }
 const Stack = createNativeStackNavigator();
-
 export class App extends Component {
 
   constructor(props) {
@@ -50,11 +52,11 @@ export class App extends Component {
       loggedIn: null,
     }
   }
+  componentDidMount(){
+    
+  }
   componentDidMount() {
-
-
     firebase.auth().onAuthStateChanged((user) => {
-
       if (!user) {
         this.setState({
           loggedIn: false,
@@ -127,9 +129,11 @@ export class App extends Component {
             <Stack.Screen name="Chat" component={Chat} navigation={this.props.navigation} options={{ title: 'Default' }} />
             {/* <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} options ={{headerLeft :null}} /> */}
             <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation} options={{ headerShown: false }} />
+            <Stack.Screen name="SearchImage" component={SearchImage} navigation={this.props.navigation} options={{ headerShown: false }} />
             <Stack.Screen name="QRcode" component={QRcode} navigation={this.props.navigation} options={{ headerShown: false }} />
             <Stack.Screen name="Search" component={Search} navigation={this.props.navigation} />
             <Stack.Screen name="Save" component={Save} navigation={this.props.navigation} />
+            <Stack.Screen name="CheckUser" component={CheckUser} navigation={this.props.navigation} />
             <Stack.Screen name="QRscreen" component={QRscreen} navigation={this.props.navigation} />
             <Stack.Screen name="Comments" component={Comments} navigation={this.props.navigation} />
             <Stack.Screen name="Post" component={Post} navigation={this.props.navigation} />

@@ -56,7 +56,6 @@ function Profile(props, { navigation }) {
   
   useEffect(() => {
     const { currentUser, posts } = props;
-
     if (props.route.params.uid === firebase.auth().currentUser.uid) {
       firebase.firestore()
         .collection("Users")
@@ -162,14 +161,10 @@ function Profile(props, { navigation }) {
       })
   }
 
-
   const handleChat = () => { 
     firebase.database().ref('Users/' + props.route.params.uid).set({name:user.name})
     props.navigation.navigate('Messenger')
-    // props.navigation.navigate('Messenger',{
-    //   uid:props.route.params.uid,
-    //   name:user.name
-    // });
+
   }
   const AddNotifications = (userId, nameUser) => {
     firebase.firestore()
@@ -303,15 +298,20 @@ function Profile(props, { navigation }) {
 
                 <TouchableOpacity
                 onPress ={() => props.navigation.navigate("Post", {
-                  postId: item.id,
+                  postId: item.id, type :item.type,
                   uid: firebase.auth().currentUser.uid, nameUser: user.nickname[user.nickname.length-1]
               })}>
-
-                <Image
+                {item.type =="list" ? 
+                (<Image
+                  style={styles.image}
+                  source={{ uri: item.downloadURL[0] }}
+                />) :(
+                  <Image
                   style={styles.image}
                   source={{ uri: item.downloadURL }}
                 />
-
+                )
+                }
                 </TouchableOpacity>
               </View>
             )}

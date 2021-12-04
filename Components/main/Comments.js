@@ -54,7 +54,6 @@ function Comments(props) {
         }
 
     }, [props.route.params.postId, props.users, props.route.params.postId.likesCouter,comments])
-console.log(comments)
     const onCommentSend = () => {
         firebase.firestore()
             .collection('Posts')
@@ -97,7 +96,7 @@ console.log(comments)
             .doc(id)
             .delete()
     }
-    const AddNotifications = (userId, postId, nameUser) => {
+    const AddNotifications = (userId, postId, nameUser,type,img) => {
         firebase.firestore()
             .collection("Notifications")
             .doc(userId)
@@ -107,7 +106,10 @@ console.log(comments)
                 image: firebase.auth().currentUser.photoURL,
                 nameUser: nameUser,
                 type: ' đã bình luận bài viết của bạn',
-                seen: 'no'
+                seen: 'no',
+                typePost :type,
+                imageOwn:img
+
             })
     }
 
@@ -191,7 +193,8 @@ console.log(comments)
                 <TouchableOpacity style={{marginRight :10}}
                      onPress={() => {
                     onCommentSend(), cmts(props.route.params.uid, props.route.params.postId)
-                        , AddNotifications(props.route.params.uid, props.route.params.postId, props.currentUser.name)
+                        , AddNotifications(props.route.params.uid, 
+                            props.route.params.postId, props.currentUser.name,props.route.params.type,props.route.params.image)
                 }}>
                 <Text>Post</Text>
                 </TouchableOpacity>

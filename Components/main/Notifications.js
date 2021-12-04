@@ -52,7 +52,9 @@ export default function Notifications({ navigation }) {
                                     <TouchableOpacity style={{ backgroundColor: '#f8f8f8', marginTop: 10 }}
                                         onPress={() => {navigation.navigate("Post", {
                                             postId: item.kid,
-                                            uid: firebase.auth().currentUser.uid, nameUser: item.nameUser
+                                            type :item.typePost,
+                                            uid: firebase.auth().currentUser.uid, nameUser: item.nameUser,
+                                            imgOwn :item.imageOwn
                                         }),change(item.id)}}>
                                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
 
@@ -72,8 +74,9 @@ export default function Notifications({ navigation }) {
                                 ) : (
                                     <TouchableOpacity style={{ backgroundColor: '#fff', marginTop: 10 }}
                                         onPress={() => navigation.navigate("Post", {
-                                            postId: item.kid,
-                                            uid: firebase.auth().currentUser.uid, nameUser: item.nameUser
+                                            postId: item.kid,type :item.typePost,
+                                            uid: firebase.auth().currentUser.uid, nameUser: item.nameUser,
+                                            imgOwn :item.imageOwn
                                         })}>
                                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                                         <Image style={{

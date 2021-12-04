@@ -74,6 +74,10 @@ export class Main extends Component {
                         onPress ={() =>this.props.navigation.navigate("QRcode")}>
                         <AntDesign name="qrcode" size={30} color="black" />
                         </TouchableOpacity>
+                        <TouchableOpacity style={styles.button}
+                        onPress ={() =>this.props.navigation.navigate("SearchImage")}>
+                        <AntDesign name="camerao" size={30} color="black" />
+                        </TouchableOpacity>
                     </View>,
                     }}
                 />

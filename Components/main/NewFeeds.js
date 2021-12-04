@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { useLayoutEffect, useEffect } from 'react'
 import { useState } from 'react';
+import { Dimensions, StatusBar } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { Avatar,Badge } from 'react-native-elements'
+import { Avatar, Badge } from 'react-native-elements'
+import messaging from '@react-native-firebase/messaging';
 require('firebase/firestore')
 function NewFeeds(props, { navigation }) {
   const [posts, setPosts] = useState([])
-
+ 
   useEffect(() => {
     if (props.usersFollowingLoaded == props.following.length && props.following.length !== 0) {
       props.feed.sort(function (x, y) {
@@ -38,7 +40,7 @@ function NewFeeds(props, { navigation }) {
         LikesCount: firebase.firestore.FieldValue.increment(1)
       })
   }
-  const AddNotifications = (userId, postId, nameUser) => {
+  const AddNotifications = (userId, postId, nameUser,type,img) => {
     firebase.firestore()
       .collection("Notifications")
       .doc(userId)
@@ -49,7 +51,9 @@ function NewFeeds(props, { navigation }) {
         image: firebase.auth().currentUser.photoURL,
         nameUser: nameUser,
         type: ' đã thích bài viết của bạn',
-        seen:'no'
+        seen: 'no',
+        typePost :type,
+        imageOwn:img
       })
   }
 
@@ -73,9 +77,205 @@ function NewFeeds(props, { navigation }) {
       .doc(firebase.auth().currentUser.uid)
       .delete({})
   }
-  if(posts.length ==0)
-  {
-    return <View/>
+  const renderMainItem = ({ item }) => {
+    if (item.type === 'row') {
+      return (
+        <View style={styles.containerView}>
+          <View style={styles.container1}>
+            <View style={styles.userInfo}>
+              <View style={styles.userInfo}>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                  <TouchableOpacity onPress={() => props.navigation.navigate("Profile", { uid: item.user.uid })}>
+                    <Image style={styles.userImg}
+                      source={{
+                        uri: item.user.downloadURL
+                      }}>
+
+                    </Image>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.userInfoText}>
+                  <Text style={styles.userName}>
+                    {item.user.nickname[item.user.nickname.length - 1]}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <Text style={styles.postText}>
+              {item.caption}
+            </Text>
+            <Text>{new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toDateString()}
+              at {new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toLocaleTimeString()}</Text>
+            <Image
+              style={styles.postImg}
+              source={{ uri: item.downloadURL }}
+            /><Text>{String(item.LikesCount)} likes</Text>
+            <View style={styles.deviler} />
+            <View style={styles.interReactionWrapper}>
+              {item.currentUserLike ?
+                (
+                  <TouchableOpacity
+                    style={styles.interReaction}
+                    title="Dislike"
+                    onPress={() => {
+                      onDisLikePress(item.user.uid, item.id),
+                        DisLikePress(item.user.uid, item.id), item.LikesCount--
+                    }}>
+                    <AntDesign name="heart" size={30} color="red" />
+                  </TouchableOpacity>
+                )
+                : (
+                  <TouchableOpacity
+                    title="Like"
+                    style={styles.interReaction}
+                    onPress={() => {
+                      onLikePress(item.user.uid, item.id),
+                        LikePress(item.user.uid, item.id), item.LikesCount++,
+                        AddNotifications(item.user.uid, item.id, 
+                          props.currentUser.nickname[props.currentUser.nickname.length - 1],item.type,item.user.downloadURL)
+                    }}
+                  >
+                    <AntDesign name="hearto" size={30} color="black" />
+                  </TouchableOpacity>
+                )}
+              <Text style={styles.interReactionText}>
+                likes
+              </Text>
+              <TouchableOpacity
+                title="Comments"
+                style={styles.interReaction}
+                onPress={() =>
+                  props.navigation.navigate('Comments', {
+                    postId: item.id,
+                    uid: item.user.uid, caption: item.caption,
+                    image: item.user.downloadURL,
+                    type :item.type,
+                    name: item.user.nickname[item.user.nickname.length - 1]
+                  }
+                  )}
+              >
+                <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
+              </TouchableOpacity>
+              <Text style={styles.interReactionText}>
+                Comments
+              </Text>
+            </View>
+          </View>
+        </View>
+      );
+    }
+    if (item.type === 'list') {
+      return (
+        <View style={styles.containerView}>
+          <View style={styles.container1}>
+            <View style={styles.userInfo}>
+              <View style={styles.userInfo}>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                  <TouchableOpacity onPress={() => props.navigation.navigate("Profile", { uid: item.user.uid })}>
+                    <Image style={styles.userImg}
+                      source={{
+                        uri: item.user.downloadURL
+                      }}>
+
+                    </Image>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.userInfoText}>
+                  <Text style={styles.userName}>
+                    {item.user.nickname[item.user.nickname.length - 1]}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <Text style={styles.postText}>
+              {item.caption}
+            </Text>
+            <Text>{new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toDateString()}
+              at {new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toLocaleTimeString()}</Text>
+              <View style={styles.postImg}>
+            <FlatList
+              data={item.downloadURL}
+              keyExtractor={keyExtractor}
+              renderItem={renderHorizontalItem}
+              horizontal={true}
+              snapToInterval={Dimensions.get('window').width}
+              snapToAlignment={'start'}
+              decelerationRate={'normal'}
+            />
+            </View>
+            <Text>{String(item.LikesCount)} likes</Text>
+            <View style={styles.deviler} />
+            <View style={styles.interReactionWrapper}>
+              {item.currentUserLike ?
+                (
+                  <TouchableOpacity
+                    style={styles.interReaction}
+                    title="Dislike"
+                    onPress={() => {
+                      onDisLikePress(item.user.uid, item.id),
+                        DisLikePress(item.user.uid, item.id), item.LikesCount--
+                    }}>
+                    <AntDesign name="heart" size={30} color="red" />
+                  </TouchableOpacity>
+                )
+                : (
+                  <TouchableOpacity
+                    title="Like"
+                    style={styles.interReaction}
+                    onPress={() => {
+                      onLikePress(item.user.uid, item.id),
+                        LikePress(item.user.uid, item.id), item.LikesCount++,
+                        AddNotifications(item.user.uid, item.id, 
+                          props.currentUser.nickname[props.currentUser.nickname.length - 1],
+                          item.type,item.user.downloadURL)
+                    }}
+                  >
+                    <AntDesign name="hearto" size={30} color="black" />
+                  </TouchableOpacity>
+                )}
+              <Text style={styles.interReactionText}>
+                likes
+              </Text>
+              <TouchableOpacity
+                title="Comments"
+                style={styles.interReaction}
+                onPress={() =>
+                  props.navigation.navigate('Comments', {
+                    postId: item.id,
+                    uid: item.user.uid, caption: item.caption,
+                    image: item.user.downloadURL,
+                    type :item.type,
+                    name: item.user.nickname[item.user.nickname.length - 1]
+                  }
+                  )}
+              >
+                <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
+              </TouchableOpacity>
+              <Text style={styles.interReactionText}>
+                Comments
+              </Text>
+            </View>
+          </View>
+        </View>
+      );
+    }
+  }
+  const keyExtractor = (item, index) => {
+    return index.toString();
+  }
+   const renderHorizontalItem = ({item}) => {
+    return (
+        <Image
+        style={styles.horizontalItem}
+        source={{uri :item}}>
+        </Image>
+    );
+  }
+
+  console.log(posts)
+
+  if (posts.length == 0) {
+    return <View />
   }
   return (
 
@@ -85,89 +285,9 @@ function NewFeeds(props, { navigation }) {
           numColumns={1}
           horizontal={false}
           data={posts}
-          renderItem={({ item }) => (
-            <View style={styles.containerView}>
-              <View style={styles.container1}>
-                <View style={styles.userInfo}>
-                  <View style={styles.userInfo}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                      <TouchableOpacity onPress={() =>props.navigation.navigate("Profile", { uid: item.user.uid })}>
-                    <Image style={styles.userImg}
-                      source={{
-                        uri: item.user.downloadURL
-                      }}>
-                     
-                    </Image>
-                    </TouchableOpacity>
-                    </View>
-                    <View style={styles.userInfoText}>
-                      <Text style={styles.userName}>
-                        {item.user.nickname[item.user.nickname.length-1]}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <Text style={styles.postText}>
-                  {item.caption}
-                </Text>
-                        <Text>{ new Date(item.creation.seconds * 1000 +  item.creation.nanoseconds / 1000000).toDateString()} 
-                         at { new Date(item.creation.seconds * 1000 +  item.creation.nanoseconds / 1000000).toLocaleTimeString()}</Text>
-                <Image
-                  style={styles.postImg}
-                  source={{ uri: item.downloadURL }}
-                /><Text>{String(item.LikesCount)} likes</Text>
-                <View style={styles.deviler} />
-                <View style={styles.interReactionWrapper}>
-                  {item.currentUserLike ?
-                    (
-                      <TouchableOpacity
-                        style={styles.interReaction}
-                        title="Dislike"
-                        onPress={() => {
-                          onDisLikePress(item.user.uid, item.id),
-                          DisLikePress(item.user.uid, item.id), item.LikesCount--
-                        }}>
-                        <AntDesign name="heart" size={30} color="red" />
-                      </TouchableOpacity>
-                    )
-                    : (
-                      <TouchableOpacity
-                        title="Like"
-                        style={styles.interReaction}
-                        onPress={() => {
-                          onLikePress(item.user.uid, item.id),
-                          LikePress(item.user.uid, item.id), item.LikesCount++,
-                          AddNotifications(item.user.uid, item.id, props.currentUser.nickname[props.currentUser.nickname.length-1])
-                        }}
-                      >
-                        <AntDesign name="hearto" size={30} color="black" />
-                      </TouchableOpacity>
-                    )}
-                  <Text style={styles.interReactionText}>
-                    likes
-                  </Text>
-                  <TouchableOpacity
-                    title="Comments"
-                    style={styles.interReaction}
-                    onPress={() => 
-                      props.navigation.navigate('Comments', { postId: item.id,
-                         uid: item.user.uid,caption:item.caption,
-                        image: item.user.downloadURL,
-                      name:item.user.nickname[item.user.nickname.length-1]}
-                    )}
-                  >
-                    <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
-                  </TouchableOpacity>
-                  <Text style={styles.interReactionText}>
-                    Comments
-                  </Text>
-                </View>
-              </View>
-            </View>
-          )}
-
+          renderItem={renderMainItem}
+          keyExtractor={keyExtractor}
         />
-
       </View>
     </View>
   );
@@ -194,6 +314,10 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     aspectRatio: 1 / 1
+  },
+  horizontalItem: {
+    width: Dimensions.get('screen').width , 
+    height:250,
   },
   containerImage: {
     flex: 1 / 3

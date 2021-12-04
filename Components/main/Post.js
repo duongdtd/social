@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { useLayoutEffect, useEffect } from 'react'
 import { useState } from 'react';
+import { Dimensions, StatusBar } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Avatar } from 'react-native-elements';
 require('firebase/firestore');
@@ -116,7 +117,7 @@ function Post(props) {
         LikesCount: firebase.firestore.FieldValue.increment(1)
       })
   }
-
+console.log(props.route.params.item)
   const onDisLikePress = (userId, postId) => {
     firebase.firestore()
       .collection("Posts")
@@ -126,6 +127,34 @@ function Post(props) {
       .update({
         LikesCount: firebase.firestore.FieldValue.increment(-1)
       })
+  }
+
+  const renderMainItem = ({ item }) => {
+    if (item.type === 'row') {
+      return (
+        <View style={styles.containerView}>
+         
+        </View>
+      );
+    }
+    if (item.type === 'list') {
+      return (
+        <View style={styles.containerView}>
+       
+        </View>
+      );
+    }
+  }
+  const keyExtractor = (item, index) => {
+    return index.toString();
+  }
+   const renderHorizontalItem = ({item}) => {
+    return (
+        <Image
+        style={styles.horizontalItem}
+        source={{uri :item}}>
+        </Image>
+    );
   }
   const DisLikePress = (userId, postId) => {
     firebase.firestore()
@@ -143,12 +172,94 @@ function Post(props) {
   }
   return (
     <View style={styles.containerView}>
-      <View style={styles.container1}>
+      {props.route.params.type =="list" ? (
+            <View style={styles.container1}>
         <View style={styles.userInfo}>
           <View style={styles.userInfo}>
             <Image style={styles.userImg}
               source={{
-                uri: firebase.auth().currentUser.photoURL
+                uri: props.route.params.imgOwn
+              }}>
+            </Image>
+            <View style={styles.userInfoText}>
+              <Text style={styles.userName}>
+                { props.currentUser.name}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <Text style={styles.postText}>
+          {post.caption}
+        </Text>
+              <View style={styles.postImg}>
+            <FlatList
+              data={post.downloadURL}
+              keyExtractor={keyExtractor}
+              renderItem={renderHorizontalItem}
+              horizontal={true}
+              snapToInterval={Dimensions.get('window').width}
+              snapToAlignment={'start'}
+              decelerationRate={'normal'}
+            />
+            </View>
+            <Text>{String(post.LikesCount)} likes</Text>
+            <View style={styles.deviler} />
+            <View style={styles.interReactionWrapper}>
+            {currentUserLike ?
+            (
+              <TouchableOpacity
+                style={styles.interReaction}
+                title="Dislike"
+                onPress={() => {
+                  onDisLikePress(props.route.params.uid ,props.route.params.postId),
+                  DisLikePress(props.route.params.uid, props.route.params.postId), post.LikesCount--
+                }}>
+                <AntDesign name="heart" size={30} color="red" />
+              </TouchableOpacity>
+            )
+            : (
+              <TouchableOpacity
+                title="Like"
+                style={styles.interReaction}
+                onPress={() => {
+                  onLikePress(props.route.params.uid, props.route.params.postId),
+                  LikePress(props.route.params.uid, props.route.params.postId), post.LikesCount++
+                }}
+              >
+                <AntDesign name="hearto" size={30} color="black" />
+              </TouchableOpacity>
+            )}
+              <Text style={styles.interReactionText}>
+                likes
+              </Text>
+              <TouchableOpacity
+                title="Comments"
+                style={styles.interReaction}
+                onPress={() =>
+                  props.navigation.navigate('Comments',
+                   { postId: props.route.params.postId, 
+                     uid: firebase.auth().currentUser.uid,
+                     image :props.route.params.imgOwn,
+                     name:props.currentUser.name,
+                     type:props.route.params.type,
+                   }
+               )}
+              >
+                <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
+              </TouchableOpacity>
+              <Text style={styles.interReactionText}>
+                Comments
+              </Text>
+            </View>
+          </View>
+          
+      ):(
+<View style={styles.container1}>
+        <View style={styles.userInfo}>
+          <View style={styles.userInfo}>
+            <Image style={styles.userImg}
+              source={{
+                uri: props.route.params.imgOwn
               }}>
             </Image>
             <View style={styles.userInfoText}>
@@ -197,7 +308,14 @@ function Post(props) {
           <TouchableOpacity
             title="Comments"
             style={styles.interReaction}
-            onPress={() => props.navigation.navigate('Comments', { postId: props.route.params.postId, uid: firebase.auth().currentUser.uid }
+            onPress={() =>
+               props.navigation.navigate('Comments',
+                { postId: props.route.params.postId, 
+                  uid: firebase.auth().currentUser.uid,
+                  image :props.route.params.imgOwn,
+                  name:props.currentUser.name,
+                  type:props.route.params.type,
+                }
             )}
           >
             <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
@@ -207,6 +325,8 @@ function Post(props) {
           </Text>
         </View>
       </View>
+      )
+      }
       <View style={styles.deviler} />
       <View style={styles.container}>
         <FlatList
@@ -366,7 +486,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.35)',
     color: 'rgba(255,255,255,0.8)',
     paddingHorizontal: 50,
-  }
+  },
+  horizontalItem: {
+    width: Dimensions.get('screen').width , 
+    height:250,
+  },
+
 })
 const mapStateToProps = (store) => ({
   users: store.usersState.users,
