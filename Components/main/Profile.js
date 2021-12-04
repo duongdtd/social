@@ -208,41 +208,20 @@ function Profile(props, { navigation }) {
         marginTop: 40,
         opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
       }}>
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-        }}>
+        <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+        <View style={{flex:1/3,alignItems:'center'}}>  
           <Avatar
             rounded
-            size="large"
-            marginLeft={20}
+            size={90}
+            //containerStyle={{marginLeft:20}}
             source={{
               uri: user.downloadURL
             }}
           />
+          <Text style={styles.text}>{user.nickname[user.nickname.length-1]}</Text>
+        </View>  
           <View style={styles.containerInfo}>
-            <View style={{ justifyContent: 'flex-start', flexDirection: 'row' }}>
-              <Text style={styles.text}>{user.nickname[user.nickname.length-1]}</Text>
-
-              {props.route.params.uid == firebase.auth().currentUser.uid ? (
-                <View style={{ marginLeft: 20,flexDirection:'row',}}>
-
-                  <TouchableOpacity
-                    onPress={() => bs.current.snapTo(0)}
-                  >
-                    <AntDesign name="setting" size={30} color="black" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                  style={{marginLeft:20}}
-                  onPress ={() => props.navigation.navigate('QRscreen',{data :firebase.auth().currentUser.uid})}
-                  >
-                   <AntDesign name="qrcode" size={30} color="black" />
-                  </TouchableOpacity>
-                </View>
-              ) : null}
-
-              {/* User header basic info */}
-            </View>
+              {/* User header basic info */}           
             <View style={styles.userInfo}>
               <View style={styles.userInfoItem}>
                 <Text style={styles.userInfoTitle}>{user.Posts}</Text>
@@ -257,34 +236,53 @@ function Profile(props, { navigation }) {
                 <Text style={styles.userInfoTitle}>{user.Following}</Text>
                 <Text style={styles.userInfoView}>Following</Text>
               </View>
-              <TouchableOpacity 
-                style={styles.button}
-                onPress ={handleChat}
-              >
-                <Feather name="message-circle" size={30} color="black" />
-              </TouchableOpacity>
-
             </View>
+            <View style={styles.Header}>
+              {/* <Text style={styles.text}>{user.nickname[user.nickname.length-1]}</Text> */}
+              {props.route.params.uid == firebase.auth().currentUser.uid ? (
+                <View style={{flexDirection:'row',justifyContent:'space-between'}}>
 
+                  <TouchableOpacity
+                    onPress={() => bs.current.snapTo(0)} //style={styles.button}
+                  >
+                    <AntDesign name="setting" size={30} color="black" />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                  style={styles.button}
+                  onPress ={() => props.navigation.navigate('QRscreen',{data :firebase.auth().currentUser.uid})}
+                  >
+                   <AntDesign name="qrcode" size={30} color="black" />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity 
+                    style={styles.button}
+                    onPress ={handleChat}
+                  >
+                    <Feather name="message-circle" size={30} color="black" />
+                  </TouchableOpacity>
+                </View>
+              ) : null}
+            </View>
           </View>
         </View>
 
         {props.route.params.uid !== firebase.auth().currentUser.uid ? (
-                <View style={{ width:'80%',alignItems:'center' }}>
+                <View style={{ width:'100%',alignItems:'center',alignContent:'center' }}>
                   {following ? (
-                    <Button
-                    title={'Bỏ theo dõi'}
+                    <TouchableOpacity
+                      style={styles.btnFollow}                    
                       onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
-                      
-                    </Button>
+                      <Text style={styles.followText}>Unfollow</Text>
+                    </TouchableOpacity>
                   ) : (
-                    <Button
-                    title ={'theo dõi'}
+                    <TouchableOpacity
+                      style={styles.btnFollow}
                       onPress={() => { onfollowing(), AddFollow(), AddFollowing()
                       ,AddNotifications(props.route.params.uid,
-                      props.currentUser.nickname[props.currentUser.nickname.length-1]) }}>
-                     
-                    </Button>
+                      props.currentUser.nickname[props.currentUser.nickname.length-1]) }}>                     
+                     <Text style={styles.followText}>follow</Text>
+                    </TouchableOpacity>
                   )
                   }
                 </View>
@@ -329,15 +327,23 @@ const mapStateToProps = (store) => ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
   },
   containerInfo: {
-    marginLeft: 30
+    //marginLeft: 30
+    flex:3/5
+  },
+  button: {
+    marginLeft: 40
   },
   text: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginLeft: 20
+    //marginLeft: 20
+  },
+  Header: {
+    //justifyContent: 'flex-start',
+    flexDirection: 'row', 
+    //justifyContent: 'space-between',
   },
   comtainerGalley: {
     flex: 1,
@@ -359,7 +365,7 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     width: '80%',
     marginVertical: 10,
   },
@@ -452,7 +458,22 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#FFFFFF',
     paddingTop: 20,
+  },
+  btnFollow: {
+    textAlign:'center',
+    alignItems:'center',
+    height:38,
+    width:'30%',
+    border:1,
+    paddingTop:8,
+    paddingBottom:8,
+    borderRadius:12,
+    backgroundColor:'#ffb412',    
+  },
+  followText: {
+    textTransform:'uppercase',
+    fontWeight:'bold',
+    fontSize:18
   }
-
 })
 export default connect(mapStateToProps, null)(Profile)

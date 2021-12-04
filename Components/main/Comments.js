@@ -120,15 +120,59 @@ console.log(comments)
         }}>
             <View>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                    <Avatar
-                        size="small" rounded source={{ uri: props.route.params.image }} />
+                    <View style={styles.Avatar}>
+                        <Avatar size="small" rounded source={{ uri: props.route.params.image }} />
+                    </View>
                     <Text>
                         {props.route.params.name}
                     </Text>
                 </View>
-                <Text>{props.route.params.caption}</Text>
+                <Text style={styles.comment, styles.Caption}>{props.route.params.caption}</Text>
 
             </View>
+            <View style={{
+                //borderBottomColor: '#dddddd',
+                borderBottomWidth: 1,
+                width: '92%',
+                alignSelf: 'center',
+                marginTop: 15,
+                marginBottom: 15,
+                borderColor: '#FFCC00',
+            }} />
+            <FlatList
+                numColumns={1}
+                horizontal={false}
+                data={comments}
+                renderItem={({ item }) => (
+                    <View style={styles.commentRow}>
+                        {item.user !== undefined ?
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                                <View style={styles.Avatar}>
+                                    <Avatar size="small" rounded source={{ uri: item.user.downloadURL }} />                
+                                </View>                                               
+                                <Text style={{flex:5}}>
+                                    {item.user.nickname[item.user.nickname.length - 1]}
+                                </Text>
+                                {
+                                    item.user.uid === firebase.auth().currentUser.uid ? (
+                                        <View style={{flexGrow:0.5}}>
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    onCommentDelete(item.id),
+                                                    deleteCmts(props.route.params.uid, props.route.params.postId)
+                                                }}
+                                                style={{alignItems:'flex-end',marginRight:10}}>
+                                                <AntDesign name="delete" size={18} color="black" />
+                                            </TouchableOpacity>
+                                        </View>
+                                    ) : null
+                                }
+                            </View>
+                            : null}
+                        <Text style={styles.comment}>{item.text}</Text>
+                    </View>
+                )}
+            />
             <View style={{
                 borderBottomColor: '#dddddd',
                 borderBottomWidth: 1,
@@ -136,59 +180,22 @@ console.log(comments)
                 alignSelf: 'center',
                 marginTop: 15,
                 marginBottom: 15,
-            }} />
-            <FlatList
-                numColumns={1}
-                horizontal={false}
-                data={comments}
-                renderItem={({ item }) => (
-                    <View>
-                        {item.user !== undefined ?
-                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                                <Avatar
-                                    size="small" rounded source={{ uri: item.user.downloadURL }} />
-                                <Text>
-                                    {item.user.nickname[item.user.nickname.length - 1]}
-                                </Text>
-                                {
-                                    item.user.uid === firebase.auth().currentUser.uid ? (
-                                        <View>
-                                            <TouchableOpacity
-                                                onPress={() => {
-                                                    onCommentDelete(item.id),
-                                                    deleteCmts(props.route.params.uid, props.route.params.postId)
-                                                }}>
-                                                <AntDesign name="delete" size={24} color="black" />
-                                            </TouchableOpacity>
-                                        </View>
-                                    ) : null
-                                }
-                            </View>
-                            : null}
-                        <Text>{item.text}</Text>
-                    </View>
-                )}
-            />
-            <View style={{
-                borderBottomColor: '#dddddd',
-                borderBottomWidth: 1,
-                width: '100%',
-                alignSelf: 'center',
-                marginTop: 15,
-                marginBottom: 15,
+                borderColor: '#FFCC00',
             }} />
             <View style={styles.Container}>
-                <Avatar
-                size ={'small'}
-                rounded
-                source={{uri : firebase.auth().currentUser.photoURL}}
-                />
+                <View style={styles.Avatar}>
+                    <Avatar 
+                    size ={'small'}
+                    rounded
+                    source={{uri : firebase.auth().currentUser.photoURL}}               
+                    />
+                </View>
                 <TextInput
                     style={styles.inputStyle}
                     placeholder="Add a comment "
                     onChangeText={(text) => setText(text)}
                 />
-                <TouchableOpacity style={{marginRight :10}}
+                <TouchableOpacity style={{alignItems:'flex-end',marginRight :10}}
                      onPress={() => {
                     onCommentSend(), cmts(props.route.params.uid, props.route.params.postId)
                         , AddNotifications(props.route.params.uid, props.route.params.postId, props.currentUser.name)
@@ -202,13 +209,43 @@ console.log(comments)
 const styles = StyleSheet.create({
     Container: {
         flexDirection: 'row',
-        borderBottomWidth: 1,
-        borderColor: '#000',
+        //borderTopWidth:1,
+        //borderColor: '#FFCC00',
+        paddingTop:10,
         paddingBottom: 10,
-      },
-      inputStyle: {
-        flex: 1,
-      },
+        justifyContent: 'flex-start',
+        alignItems: 'center' 
+    },
+    inputStyle: {
+        width:'100%',
+        height:30,
+        padding:8,
+        marginLeft: 6,
+        marginRight: 10
+    },
+    Avatar: {
+        marginLeft:12,
+        marginRight:10,
+    },
+    comment: {
+        marginLeft:12,
+        fontSize:18
+    },
+    Caption: {
+        fontSize:22,
+        fontWeight:'bold',
+        marginLeft:12
+    },
+    commentRow: {
+        //width:'100%',
+        borderWidth:1,
+        borderRadius:18,
+        borderColor:'#EEB422',
+        backgroundColor:'#f5d941',
+        padding:5,
+        marginHorizontal:10,
+        marginVertical:6
+    }
 })
 const mapStateToProps = (store) => ({
     users: store.usersState.users,

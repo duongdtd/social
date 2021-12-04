@@ -92,7 +92,7 @@ export default function Register({navigation}) {
       <View style={styles.container}>
         <StatusBar style='light' />
         <View style={styles.logocontainer}>
-          <Text style={styles.logotext}>Đăng kí</Text>
+          <Text style={styles.logotext}>Đăng ký</Text>
         </View>
         <View >
           <Ionicons name="md-person" size={30} color="rgba(255,255,255,1)" style={styles.inputIcon1} />
@@ -232,8 +232,9 @@ const styles = StyleSheet.create({
     width: WIDTH - 55,
     height: 45,
     borderRadius: 45,
-    backgroundColor: `#FF6347`,
+    backgroundColor: `#00FA9A`,
     marginTop: 20,
+    marginHorizontal: 25,
     justifyContent: 'center',
     alignItems: 'center',
     opacity: 0.8,

@@ -3,6 +3,7 @@ import { View, Text, TextInput, FlatList, TouchableOpacity } from "react-native"
 import firebase from "firebase";
 import { Avatar, Badge } from 'react-native-elements';
 import { Button } from "react-native-elements/dist/buttons/Button";
+import styles from "../constants/style";
 require('firebase/firestore')
 export default function Search(props, { navigation }) {
     const [users, setUsers] = useState([])
@@ -22,8 +23,8 @@ export default function Search(props, { navigation }) {
     }
     return (
         <View>
-            <TextInput onChangeText={(search) => fetchUsers(search)}
-                placeholder="type" />
+            <TextInput style={styles.inputSearch} onChangeText={(search) => fetchUsers(search)}
+                placeholder="Type number, name here" />
             <View style={{marginBottom: 40}}>
                 <FlatList
                     numColumns={1}
