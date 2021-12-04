@@ -34,11 +34,11 @@ export class Main extends Component {
                         headerRight: () => <View style={styles.container}>
                             <TouchableOpacity style={styles.button}
                             onPress ={() =>this.props.navigation.navigate("Photo")}>
-                            <AntDesign name="pluscircleo" size={29} color="black" />
+                            <AntDesign name="pluscircleo" size={29} color="#ffb412" />
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.button}
                              onPress ={() =>this.props.navigation.navigate("Messenger")}>
-                            <Feather name="message-circle" size={32} color="black" />
+                            <Feather name="message-circle" size={32} color="#ffb412" />
                             </TouchableOpacity>
                         </View>,
                     }}
