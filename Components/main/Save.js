@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TextInput,Button,Image,StyleSheet,ActivityIndicator,Alert } from "react-native";
 import firebase from "firebase";
 import { Avatar } from "react-native-elements/dist/avatar/Avatar";
@@ -10,13 +10,30 @@ export default function Save(props) {
     const [running, setRunning] =useState(false)
     const [url,setUrl] =useState([])
     const [img, setImg] =useState("")
-    const asd =() =>{
-        console.log(url.length)
-    }
+    useEffect(() =>{
+        if(url.length == props.route.params.data.length )
+        {
+            setRunning(false);
+            Alert.alert(
+                "Profile Updated",
+                "Thành công",
+                [
+                  {
+                    text: "OK",
+                    onPress: () => {check(),addPost(),props.navigation.navigate('NewFeeds')},
+                    style: "cancel",
+                  },
+                ],
+           
+              );
+        }
+    },[url.length])
+    console.log(props.route.params.data.length)
+    console.log(url.length)
     const uploadImage = async () => {
         for(let i=0;i<props.route.params.data.length;i++)
         {
-            setRunning(true);
+        setRunning(props.route.params.data.length);
         const uri = props.route.params.data[i];
         const childPath =`post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
         console.log(childPath)
@@ -33,13 +50,13 @@ export default function Save(props) {
             task.snapshot.ref.getDownloadURL().then((snapshot)=>{
                 setUrl(url => [...url,snapshot])
                 setImg(snapshot)
-                setRunning(false);
             })
         }
         const taskError =snapshot => {
             console.log(snapshot) 
         }
         task.on("state_changed", taskProgress, taskError, taskCompleted);
+        // up(`data:image/png;base64,${props.route.params.images[i]}`)
         }
     }
         const up = (source) => {
@@ -58,25 +75,6 @@ export default function Save(props) {
             )
           });
     }
-    const Uparray = () =>{
-        for(let i=0;i<props.route.params.images.length;i++)
-        {
-            up(`data:image/png;base64,${props.route.params.images[i]}`)
-        }
-        Alert.alert(
-            "Profile Updated",
-            "My Alert Msg",
-            [
-              {
-                text: "OK",
-                onPress: () => {check(),addPost(),props.navigation.navigate('NewFeeds')},
-                style: "cancel",
-              },
-            ],
-       
-          );
-        
-    } 
     const check = () => {
         if(url.length === 1)
         {
@@ -141,7 +139,7 @@ const addPost =() => {
             <View style={styles.deviler}></View>
             <Button
             title ='Save'
-            onPress = {() =>{ Uparray(),uploadImage()}}
+            onPress = {() =>{uploadImage()}}
             ></Button>
         </View>
     )

@@ -5,6 +5,8 @@ import { useIsFocused } from '@react-navigation/core';
 import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { Dimensions } from 'react-native';
+import { Avatar, Badge, Icon, withBadge } from 'react-native-elements'
 export default function Photo({ navigation }) {
   const [hasCameraPermission, setCameraHasPermission] = useState(null);
   const [hasGalleyPermission, setGalleyHasPermission] = useState(null);
@@ -14,7 +16,7 @@ export default function Photo({ navigation }) {
   const [imagesURL, setImagesURL] =useState([])
   const [type, setType] = useState(Camera.Constants.Type.back);
   const isFocused = useIsFocused();
-  console.log('111')
+  
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
@@ -32,6 +34,8 @@ export default function Photo({ navigation }) {
       });
       console.log(data.base64);
       setImage(data.base64);
+      setImages(images => [...images,data.base64])
+      setImagesURL(imagesURL => [...imagesURL,data.uri])
     }
   }
   const pickImage = async () => {
@@ -62,12 +66,16 @@ export default function Photo({ navigation }) {
           type={type}
           ratio={['1:1']}>
             
-             {image && <TouchableOpacity onPress={() => navigation.navigate('Save', { images,data : imagesURL })}><Image source={{ uri: `data:image/png;base64,${image}` }} style={{
+             {image && <View style={{marginTop :30}}>
+               <TouchableOpacity onPress={() => 
+               navigation.navigate('Save', { images,data : imagesURL })}><Image source={{ uri: `data:image/png;base64,${image}` }} style={{
             width: 100,
             height: 100,
             margin: 20,
             resizeMode: 'contain'
-          }} /></TouchableOpacity>}
+          }} /></TouchableOpacity>
+          
+          </View> }
           
           <View style={styles.camera}>
             <TouchableOpacity
@@ -82,12 +90,12 @@ export default function Photo({ navigation }) {
             >
               <AntDesign name="retweet" size={30} color="white" />
             </TouchableOpacity>
-            <Text>{images.length}</Text>
             <TouchableOpacity style={styles.button}
               onPress={() => takeImage()}
             >
               <Ionicons name="md-radio-button-on-sharp" size={90} color="white" />
             </TouchableOpacity>
+            <Badge value={images.length} status="error"  size={30} containerStyle={{ position: 'absolute', top: 30 , right: 20}} />
             <TouchableOpacity style={styles.button}
               onPress={() => pickImage()}>
               <AntDesign name="picture" size={30} color="white" />

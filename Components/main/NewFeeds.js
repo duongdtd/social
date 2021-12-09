@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
   },
   postText: {
     marginTop:10,
-    fontStyle:'Italic',
+    fontStyle:'italic',
     fontSize: 16,
     paddingLeft: 12,
     paddingRight: 15,
