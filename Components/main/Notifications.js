@@ -54,7 +54,7 @@ export default function Notifications({ navigation }) {
                                             postId: item.kid,
                                             type :item.typePost,
                                             uid: firebase.auth().currentUser.uid, nameUser: item.nameUser,
-                                            imgOwn :item.imageOwn
+                                            imgOwn :item.imageOwn,uid1: firebase.auth().currentUser.uid
                                         }),change(item.id)}}>
                                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
 
@@ -76,7 +76,7 @@ export default function Notifications({ navigation }) {
                                         onPress={() => navigation.navigate("Post", {
                                             postId: item.kid,type :item.typePost,
                                             uid: firebase.auth().currentUser.uid, nameUser: item.nameUser,
-                                            imgOwn :item.imageOwn
+                                            imgOwn :item.imageOwn,uid1: firebase.auth().currentUser.uid
                                         })}>
                                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                                         <Image style={{

@@ -10,16 +10,17 @@ import { Avatar } from 'react-native-elements';
 require('firebase/firestore');
 import { bindActionCreators } from "redux";
 import { fetchUsersData } from "../../redux/actions/index";
-function Post(props) {
+function Post(props,{navigation}) {
   const [comments, setComments] = useState([])
   const [postId, setPostId] = useState("")
   const [text, setText] = useState("")
   const [post, setPost] = useState(null)
+  const [u, setU] = useState(null)
   const [currentUserLike, setCurrentUserLike] = useState(false)
   function check(postid) {
     firebase.firestore()
       .collection("Posts")
-      .doc(firebase.auth().currentUser.uid)
+      .doc(props.route.params.uid1)
       .collection("UserPosts")
       .doc(postid)
       .collection("likes")
@@ -31,18 +32,27 @@ function Post(props) {
         }
       })
   }
+  function checkUser() {
+    firebase.firestore()
+        .collection("Users")
+        .doc(props.route.params.uid1)
+        .get()
+        .then((snapshot) => {
+          setU(snapshot.data())
+        })
+  }
   useEffect(() => {
     firebase.firestore()
       .collection("Posts")
-      .doc(firebase.auth().currentUser.uid)
+      .doc(props.route.params.uid1)/////
       .collection("UserPosts")
       .doc(props.route.params.postId)
       .get()
       .then((snapshot) => {
         setPost(snapshot.data());
-        check(props.route.params.postId)
+        check(props.route.params.postId);
+        checkUser(props.route.params.uid1)
       })
-
     function matchUserToComment(comments) {
       for (let i = 0; i < comments.length; i++) {
         if (comments[i].hasOwnProperty('user')) {
@@ -84,7 +94,7 @@ function Post(props) {
 
   }, [props.route.params.postId, props.users, props.route.params.postId.LikesCount])
 
-
+  console.log(u)
   const onCommentSend = () => {
     firebase.firestore()
       .collection('Posts')
@@ -117,7 +127,6 @@ function Post(props) {
         LikesCount: firebase.firestore.FieldValue.increment(1)
       })
   }
-console.log(props.route.params.item)
   const onDisLikePress = (userId, postId) => {
     firebase.firestore()
       .collection("Posts")
@@ -166,8 +175,8 @@ console.log(props.route.params.item)
       .doc(firebase.auth().currentUser.uid)
       .delete({})
   }
-  console.log(comments)
-  if (post === null) {
+
+  if (post ==  null || u == null) {
     return <View />
   }
   return (
@@ -178,12 +187,12 @@ console.log(props.route.params.item)
           <View style={styles.userInfo}>
             <Image style={styles.userImg}
               source={{
-                uri: props.route.params.imgOwn
+                uri: u.downloadURL
               }}>
             </Image>
             <View style={styles.userInfoText}>
               <Text style={styles.userName}>
-                { props.currentUser.name}
+                {u.nickname[u.nickname.length -1]}
               </Text>
             </View>
           </View>
@@ -259,19 +268,16 @@ console.log(props.route.params.item)
           <View style={styles.userInfo}>
             <Image style={styles.userImg}
               source={{
-                uri: props.route.params.imgOwn
+                uri: u.downloadURL
               }}>
             </Image>
             <View style={styles.userInfoText}>
               <Text style={styles.userName}>
-                { props.currentUser.name}
+              {u.nickname[u.nickname.length -1]}
               </Text>
             </View>
           </View>
         </View>
-        <Text style={styles.postText}>
-          {post.caption}
-        </Text>
         <Image
           style={styles.postImg}
           source={{ uri: post.downloadURL }}

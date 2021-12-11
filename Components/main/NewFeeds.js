@@ -95,13 +95,13 @@ function NewFeeds(props, { navigation }) {
                   <Text style={styles.userName}>
                     {item.user.nickname[item.user.nickname.length - 1]}
                   </Text>
+                  <Text style={styles.date}>{new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toDateString()}
+              at {new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toLocaleTimeString()}</Text>
               </View>
             </View>
             <Text style={styles.postText}>
               {item.caption}
             </Text>
-            <Text style={styles.date}>{new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toDateString()}
-              at {new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toLocaleTimeString()}</Text>
             <Image
               style={styles.postImg}
               source={{ uri: item.downloadURL }}

@@ -5,7 +5,7 @@ import { Avatar } from "react-native-elements/dist/avatar/Avatar";
 import { NavigationContainer } from "@react-navigation/native";
 require("firebase/firestore")
 require("firebase/firebase-firestore")
-export default function Save(props) {
+export default function CheckUser(props) {
     const [running, setRunning] =useState(false)
     const [data, setData] =useState("")
     useEffect(() => {
@@ -47,7 +47,7 @@ export default function Save(props) {
             <Image source ={{uri :`data:image/png;base64,${props.route.params.image}`}} style ={styles.image} />
             <View style={styles.deviler}></View>
             <Button
-            title ='Save'
+            title ='Check'
             onPress = {() =>{ up()}}
             ></Button>
         </View>
