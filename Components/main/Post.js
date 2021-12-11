@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button, TextInput,KeyboardAvoidingView } from 'react-native';
+import { Text, View, Image, FlatList, StyleSheet,ScrollView, TouchableOpacity, Button, TextInput,KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { useLayoutEffect, useEffect } from 'react'
@@ -76,8 +76,7 @@ function Post(props,{navigation}) {
         .collection('UserPosts')
         .doc(props.route.params.postId)
         .collection('Comments')
-        .get()
-        .then((snapshot) => {
+        .onSnapshot((snapshot) => {
           let comments = snapshot.docs.map(doc => {
             const data = doc.data();
             const id = doc.id;
@@ -94,7 +93,7 @@ function Post(props,{navigation}) {
 
   }, [props.route.params.postId, props.users, props.route.params.postId.LikesCount])
 
-  console.log(u)
+  console.log(props.currentUser.nickname[props.currentUser.nickname.length-1])
   const onCommentSend = () => {
     firebase.firestore()
       .collection('Posts')
@@ -104,9 +103,27 @@ function Post(props,{navigation}) {
       .collection('Comments')
       .add({
         creator: firebase.auth().currentUser.uid,
-        text
+        text,
+        creation:firebase.firestore.FieldValue.serverTimestamp(),
       })
   }
+  const AddNotifications = () => {
+    firebase.firestore()
+        .collection("Notifications")
+        .doc(props.route.params.uid1)
+        .collection("UserNotifications")
+        .add({
+            kid: String(props.route.params.postId),
+            image: firebase.auth().currentUser.photoURL,
+            nameUser: props.currentUser.nickname[props.currentUser.nickname.length-1],
+            type: ' đã bình luận bài viết của bạn',
+            seen: 'no',
+            typePost :props.route.params.type,
+            imageOwn:props.route.params.imgOwn,
+            creation:firebase.firestore.FieldValue.serverTimestamp(),
+            caption:post.caption,
+        })
+}
   const onLikePress = (userId, postId) => {
     firebase.firestore()
       .collection("Posts")
@@ -379,7 +396,7 @@ function Post(props,{navigation}) {
           onChangeText={(text) => setText(text)}>
         </TextInput>
         <Button
-          onPress={() => onCommentSend()}
+          onPress={() => {onCommentSend(),AddNotifications()}}
           title="send"
         />
     </View>

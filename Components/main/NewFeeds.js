@@ -39,7 +39,7 @@ function NewFeeds(props, { navigation }) {
         LikesCount: firebase.firestore.FieldValue.increment(1)
       })
   }
-  const AddNotifications = (userId, postId, nameUser,type,img) => {
+  const AddNotifications = (userId, postId, nameUser,type,img,caption) => {
     firebase.firestore()
       .collection("Notifications")
       .doc(userId)
@@ -52,7 +52,9 @@ function NewFeeds(props, { navigation }) {
         type: ' đã thích bài viết của bạn',
         seen: 'no',
         typePost :type,
-        imageOwn:img
+        imageOwn:img,
+        caption:caption,
+        creation:firebase.firestore.FieldValue.serverTimestamp(),
       })
   }
 
@@ -96,7 +98,8 @@ function NewFeeds(props, { navigation }) {
                     {item.user.nickname[item.user.nickname.length - 1]}
                   </Text>
                   <Text style={styles.date}>{new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toDateString()}
-              at {new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toLocaleTimeString()}</Text>
+              at {new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toLocaleTimeString()}
+              </Text>
               </View>
             </View>
             <Text style={styles.postText}>
@@ -129,7 +132,8 @@ function NewFeeds(props, { navigation }) {
                       onLikePress(item.user.uid, item.id),
                         LikePress(item.user.uid, item.id), item.LikesCount++,
                         AddNotifications(item.user.uid, item.id, 
-                          props.currentUser.nickname[props.currentUser.nickname.length - 1],item.type,item.user.downloadURL)
+                          props.currentUser.nickname[props.currentUser.nickname.length - 1]
+                          ,item.type,item.user.downloadURL,item.caption)
                     }}
                   >
                     <AntDesign name="hearto" size={30} color="#ffb412" />
@@ -226,7 +230,7 @@ function NewFeeds(props, { navigation }) {
                         LikePress(item.user.uid, item.id), item.LikesCount++,
                         AddNotifications(item.user.uid, item.id, 
                           props.currentUser.nickname[props.currentUser.nickname.length - 1],
-                          item.type,item.user.downloadURL)
+                          item.type,item.user.downloadURL,item.caption)
                     }}
                   >
                     <AntDesign name="hearto" size={30} color="#ffb412" />

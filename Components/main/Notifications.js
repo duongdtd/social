@@ -24,6 +24,7 @@ export default function Notifications({ navigation }) {
             .collection('Notifications')
             .doc(firebase.auth().currentUser.uid)
             .collection('UserNotifications')
+            .orderBy("creation","asc")
             .onSnapshot((snapshot) => {
                 let notification = snapshot.docs.map(doc => {
                     const data = doc.data();

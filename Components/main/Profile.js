@@ -177,7 +177,9 @@ function Profile(props, { navigation }) {
         image: firebase.auth().currentUser.photoURL,
         nameUser: nameUser,
         type: ' đã theo dõi bạn bạn',
-        seen: 'yes'
+        seen: 'yes',
+        time:firebase.firestore.FieldValue.serverTimestamp(),
+        
       })
 
   }

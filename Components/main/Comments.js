@@ -38,6 +38,7 @@ function Comments(props) {
                 .collection('UserPosts')
                 .doc(props.route.params.postId)
                 .collection('Comments')
+                .orderBy("creation","asc")
                 .onSnapshot((snapshot) => {
                     let comments = snapshot.docs.map(doc => {
                         const data = doc.data();
@@ -63,7 +64,8 @@ function Comments(props) {
             .collection('Comments')
             .add({
                 creator: firebase.auth().currentUser.uid,
-                text
+                text,
+                creation:firebase.firestore.FieldValue.serverTimestamp(),
             })
     }
     const cmts = (userId, postId) => {
@@ -96,7 +98,7 @@ function Comments(props) {
             .doc(id)
             .delete()
     }
-    const AddNotifications = (userId, postId, nameUser,type,img) => {
+    const AddNotifications = (userId, postId, nameUser,type,img,caption) => {
         firebase.firestore()
             .collection("Notifications")
             .doc(userId)
@@ -108,8 +110,9 @@ function Comments(props) {
                 type: ' đã bình luận bài viết của bạn',
                 seen: 'no',
                 typePost :type,
-                imageOwn:img
-
+                imageOwn:img,
+                time:firebase.firestore.FieldValue.serverTimestamp(),
+                caption:caption,
             })
     }
 
@@ -201,7 +204,9 @@ function Comments(props) {
                      onPress={() => {
                     onCommentSend(), cmts(props.route.params.uid, props.route.params.postId)
                         , AddNotifications(props.route.params.uid, 
-                            props.route.params.postId, props.currentUser.name,props.route.params.type,props.route.params.image)
+                            props.route.params.postId,
+                             props.currentUser.name,props.route.params.type,props.route.params.image
+                             ,props.route.params.caption)
                 }}>
                 <Text>Post</Text>
                 </TouchableOpacity>
