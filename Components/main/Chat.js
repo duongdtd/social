@@ -64,9 +64,9 @@ export default class Chat extends React.Component {
     let c = new Date();
     let result = (d.getHours() < 10 ? '0' : '') + d.getHours() + ':';
     result += (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
-    if (c.getDay() != d.getDay()) {
-      result = d.getDay() + ' ' + d.getMonth() + ' ' + result;
-    }
+    // if (c.getDay() != d.getDay()) {
+    //   result = d.getDay() + ' ' + d.getMonth() + ' ' + result;
+    // }
     return result;
   }
 

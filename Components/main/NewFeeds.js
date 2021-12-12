@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Dimensions, StatusBar } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Avatar, Badge } from 'react-native-elements'
-import moment from 'moment';
+//import moment from 'moment';
 require('firebase/firestore')
 
 function findDaysDiffrent(seconds,nanoseconds) {

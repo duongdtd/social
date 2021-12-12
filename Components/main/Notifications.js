@@ -75,10 +75,10 @@ export default function Notifications({ navigation }) {
                     horizontal={false}
                     data={notifications}
                     renderItem={({ item }) => (
-                        <View style={{ backgroundColor: '#fff' }} >
+                        <View style={{ flex: 1, backgroundColor: '#fff' }} >
                             {(item.kid != "null") ? (
                                 item.seen == 'no' ? (
-                                    <TouchableOpacity style={{ backgroundColor: '#fff', marginTop: 10 }}
+                                    <TouchableOpacity style={{ backgroundColor: '#fff' }}
                                         onPress={() => {
                                             navigation.navigate("Post", {
                                                 postId: item.kid,
@@ -87,13 +87,13 @@ export default function Notifications({ navigation }) {
                                                 imgOwn: item.imageOwn, uid1: firebase.auth().currentUser.uid
                                             }), change(item.id)
                                         }}>
-                                        <View style={{ height:82, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                                        <View style={{ width:'100%', height:82, flexDirection: 'row', alignItems: 'center', }}>
 
                                             <Image style={{
-                                                width: 44,
-                                                height: 44,
+                                                width: 52,
+                                                height: 52,
                                                 borderRadius: 25,
-                                                marginHorizontal:8
+                                                marginHorizontal:10
                                             }}
                                                 source={{ uri: item.image }}>
                                             </Image>
@@ -109,7 +109,7 @@ export default function Notifications({ navigation }) {
                                                 </Text>
 
                                             </View>
-                                            <TouchableOpacity onPress={() => deleteNotification(item.id)}>
+                                            <TouchableOpacity onPress={() => deleteNotification(item.id)} style={{position:'absolute', right:20}}>
                                                 <Entypo name="dots-three-horizontal" size={24} color="black" />
                                             </TouchableOpacity>
                                         </View>
@@ -122,12 +122,12 @@ export default function Notifications({ navigation }) {
                                             uid: firebase.auth().currentUser.uid, nameUser: item.nameUser,
                                             imgOwn: item.imageOwn, uid1: firebase.auth().currentUser.uid
                                         })}>
-                                        <View style={{ height:82, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                                        <View style={{ width:'100%', height:82, flexDirection: 'row', alignItems: 'center', }}>
                                             <Image style={{
-                                                width: 44,
-                                                height: 44,
+                                                width: 52,
+                                                height: 52,
                                                 borderRadius: 25,
-                                                marginHorizontal:8
+                                                marginHorizontal:10
                                             }}
                                                 source={{ uri: item.image }}>
                                             </Image>
@@ -142,18 +142,19 @@ export default function Notifications({ navigation }) {
                                                     {findDaysDiffrent(item.creation.seconds, item.creation.nanoseconds)}
                                                 </Text>
                                             </View>
-                                            <TouchableOpacity onPress={() => deleteNotification(item.id)}>
+                                            <TouchableOpacity onPress={() => deleteNotification(item.id)} style={{position:'absolute', right:20}}>
                                                 <Entypo name="dots-three-horizontal" size={24} color="black" />
                                             </TouchableOpacity>
                                         </View>
                                     </TouchableOpacity>
                                 )
                             ) : (
-                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: 10 }}>
+                                <View style={{ width:'100%', height:82, flexDirection: 'row', alignItems: 'center', }}>
                                     <Image style={{
-                                        width: 50,
-                                        height: 50,
+                                        width: 52,
+                                        height: 52,
                                         borderRadius: 25,
+                                        marginHorizontal:10
                                     }}
                                         source={{ uri: item.image }}>
                                     </Image>
@@ -166,7 +167,7 @@ export default function Notifications({ navigation }) {
                                         </Text>
 
                                     </View>
-                                    <TouchableOpacity onPress={() => deleteNotification(item.id)}>
+                                    <TouchableOpacity onPress={() => deleteNotification(item.id)} style={{position:'absolute', right:20}}>
                                         <Entypo name="dots-three-horizontal" size={24} color="black" />
                                     </TouchableOpacity>
                                 </View>
