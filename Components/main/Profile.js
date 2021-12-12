@@ -401,7 +401,8 @@ const styles = StyleSheet.create({
   },
   comtainerGalley: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 16,
+    marginHorizontal:5,
     flexDirection: 'column'
   },
   image: {
@@ -409,7 +410,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1
   },
   containerImage: {
-    flex: 1 / 2
+    flex: 1 / 2,
   },
   userImage: {
     height: 100,
@@ -535,7 +536,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#eee',
-    height: 150, width: 180,
+    height: 150,
   }
 })
 export default connect(mapStateToProps, null)(Profile)
