@@ -125,7 +125,7 @@ function Comments(props) {
                     <View style={styles.Avatar}>
                         <Avatar size="small" rounded source={{ uri: props.route.params.image }} />
                     </View>
-                    <Text>
+                    <Text style={{fontFamily: 'Poppins, sans-serif',fontSize:18,fontWeight:'bold'}}>
                         {props.route.params.name}
                     </Text>
                 </View>
@@ -152,7 +152,7 @@ function Comments(props) {
                                 <View style={styles.Avatar}>
                                     <Avatar size="small" rounded source={{ uri: item.user.downloadURL }} />                
                                 </View>                                               
-                                <Text style={{flex:5}}>
+                                <Text style={{flex:5,fontWeight:'bold'}}>
                                     {item.user.nickname[item.user.nickname.length - 1]}
                                 </Text>
                                 {
@@ -232,12 +232,14 @@ const styles = StyleSheet.create({
     },
     comment: {
         marginLeft:12,
-        fontSize:18
+        fontSize:18,
+        fontFamily: 'Open Sans, san-serif'
     },
     Caption: {
         fontSize:22,
-        fontWeight:'bold',
-        marginLeft:12
+        fontWeight:450,
+        marginLeft:12,
+        //fontFamily: 'Open Sans, san-serif'
     },
     commentRow: {
         //width:'100%',

@@ -42,15 +42,15 @@ export default class Messenger extends React.Component {
     return (
       <TouchableOpacity
         onPress={() => this.props.navigation.navigate('Chat', item)}
-        style={{ padding: 10, borderBottonColor: '#ccc', borderBottomWidth: 1 }}>
-        <Text style={{ fontSize: 20 }}>{item.name}</Text>
+        style={{ padding: 17, borderColor: '#DDDDDD', borderBottomWidth: 0.5 }}>
+        <Text style={{ fontSize: 24 }}>{item.name}</Text>
       </TouchableOpacity>
     )
   }
 
   render() {
     //console.log(this.state.users)
-    console.log("User.uid la:",User.uid)
+    //console.log("User.uid la:",User.uid)
     return (
       <SafeAreaView>
         <FlatList

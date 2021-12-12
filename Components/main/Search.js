@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useEffect } from "react";
-import { View, Text, TextInput, FlatList, TouchableOpacity } from "react-native";
+import { Image, View, Text, TextInput, FlatList, TouchableOpacity,StyleSheet } from "react-native";
 import firebase from "firebase";
 import { Avatar, Badge } from 'react-native-elements';
 import { Button } from "react-native-elements/dist/buttons/Button";
@@ -22,7 +22,12 @@ export default function Search(props, { navigation }) {
             })
     }
     return (
-        <View>
+        <View style={{flex:1}}>
+            <Image 
+                source={require('../../image/bg2.jpg')}
+                style={StyleSheet.absoluteFillObject }
+                blurRadius={30}
+            />
             <TextInput style={styles.inputSearch} onChangeText={(search) => fetchUsers(search)}
                 placeholder="Type number, name here" />
             <View style={{marginBottom: 40}}>
@@ -34,17 +39,15 @@ export default function Search(props, { navigation }) {
                         <View style={{marginTop: 20}}>
                             <TouchableOpacity
                                 onPress={() => props.navigation.navigate("Profile", { uid: item.id })}>
-                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center',paddingHorizontal:12 }}>
+                                    <View >
                                     <Avatar
                                         size="small"
                                         rounded
                                         source={{
                                             uri: item.downloadURL
                                         }}
-                                    />
-                                
-                                    
+                                    />                                  
                                     </View>
                                     <View style={{ flexDirection: 'column', justifyContent: 'space-between', marginLeft: 10 }}>
                                         <Text>{item.name}</Text>

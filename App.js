@@ -134,7 +134,7 @@ export class App extends Component {
             <Stack.Screen name="Save" component={Save} navigation={this.props.navigation} />
             <Stack.Screen name="CheckUser" component={CheckUser} navigation={this.props.navigation} />
             <Stack.Screen name="QRscreen" component={QRscreen} navigation={this.props.navigation} />
-            <Stack.Screen name="Comments" component={Comments} navigation={this.props.navigation} />
+            <Stack.Screen name="Comments" component={Comments} options={{headerTitle:()=><Text style={{fontFamily:'Bungee',fontWeight:'bold',fontSize:26}}>Comments</Text>}} navigation={this.props.navigation} />
             <Stack.Screen name="Post" component={Post} navigation={this.props.navigation} />
             <Stack.Screen name="ChangePassword" component={ChangePassword} navigation={this.props.navigation} />
 
