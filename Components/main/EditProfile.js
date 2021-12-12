@@ -14,6 +14,7 @@ require('firebase/firestore')
 function EditProfile(props, { navigation }) {
   const [user, setUser] = useState(null)
   const [name, setname]=useState("")
+  const [nickname, setNickname]=useState("")
   const [phone, setphone]=useState("")
   const [hasCameraPermission, setCameraHasPermission] = useState(null);
   const [hasGalleyPermission, setGalleyHasPermission] = useState(null);
@@ -106,6 +107,7 @@ const saveData = (downloadURL) => {
   .doc(firebase.auth().currentUser.uid)
   .update({
     name: name,
+    nickname :generateSearchIndex(nickname),
     phone : generateSearchIndex(phone)
   })
   .then(() => {
@@ -175,6 +177,21 @@ const saveData = (downloadURL) => {
           type='text'
           value={name}
           onChangeText={(text) =>setname(text)} 
+        ></TextInput>
+      </View>
+      <View
+        style={styles.deviler} />
+      <View style={{ justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', marginTop: 20 }
+      }>
+        <Text>Nickname :</Text>
+        <TextInput style={{ marginLeft: 30 }}
+          placeholder={user.nickname[user.nickname.length-1]}
+          placeholderTextColor='rgba(0,0,0,1)'
+          keyboardType='email-address'
+          returnKeyType="next"
+          type='text'
+          value={name}
+          onChangeText={(text) =>setNickname(text)} 
         ></TextInput>
       </View>
       <View

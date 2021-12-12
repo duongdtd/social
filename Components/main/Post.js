@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button, TextInput,KeyboardAvoidingView } from 'react-native';
+import { Text, View, Image, FlatList, StyleSheet,ScrollView, TouchableOpacity, Button, TextInput,KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { useLayoutEffect, useEffect } from 'react'
@@ -10,16 +10,17 @@ import { Avatar } from 'react-native-elements';
 require('firebase/firestore');
 import { bindActionCreators } from "redux";
 import { fetchUsersData } from "../../redux/actions/index";
-function Post(props) {
+function Post(props,{navigation}) {
   const [comments, setComments] = useState([])
   const [postId, setPostId] = useState("")
   const [text, setText] = useState("")
   const [post, setPost] = useState(null)
+  const [u, setU] = useState(null)
   const [currentUserLike, setCurrentUserLike] = useState(false)
   function check(postid) {
     firebase.firestore()
       .collection("Posts")
-      .doc(firebase.auth().currentUser.uid)
+      .doc(props.route.params.uid1)
       .collection("UserPosts")
       .doc(postid)
       .collection("likes")
@@ -31,18 +32,27 @@ function Post(props) {
         }
       })
   }
+  function checkUser() {
+    firebase.firestore()
+        .collection("Users")
+        .doc(props.route.params.uid1)
+        .get()
+        .then((snapshot) => {
+          setU(snapshot.data())
+        })
+  }
   useEffect(() => {
     firebase.firestore()
       .collection("Posts")
-      .doc(firebase.auth().currentUser.uid)
+      .doc(props.route.params.uid1)/////
       .collection("UserPosts")
       .doc(props.route.params.postId)
       .get()
       .then((snapshot) => {
         setPost(snapshot.data());
-        check(props.route.params.postId)
+        check(props.route.params.postId);
+        checkUser(props.route.params.uid1)
       })
-
     function matchUserToComment(comments) {
       for (let i = 0; i < comments.length; i++) {
         if (comments[i].hasOwnProperty('user')) {
@@ -66,6 +76,7 @@ function Post(props) {
         .collection('UserPosts')
         .doc(props.route.params.postId)
         .collection('Comments')
+        .orderBy("creation","asc")
         .onSnapshot((snapshot) => {
           let comments = snapshot.docs.map(doc => {
             const data = doc.data();
@@ -80,22 +91,63 @@ function Post(props) {
     else {
       matchUserToComment(comments)
     }
-
+    return function cleanup()
+    {
+      setCurrentUserLike(false);
+      setComments([]);
+    }
   }, [props.route.params.postId, props.users, props.route.params.postId.LikesCount])
 
 
   const onCommentSend = () => {
     firebase.firestore()
       .collection('Posts')
-      .doc(props.route.params.uid)
+      .doc(props.route.params.uid1)
       .collection('UserPosts')
       .doc(props.route.params.postId)
       .collection('Comments')
       .add({
         creator: firebase.auth().currentUser.uid,
-        text
+        text,
+        creation:firebase.firestore.FieldValue.serverTimestamp(),
       })
   }
+  const AddNotifications = () => {
+    if(props.route.params.uid1 != firebase.auth().currentUser.uid)
+        {firebase.firestore()
+        .collection("Notifications")
+        .doc(props.route.params.uid1)
+        .collection("UserNotifications")
+        .add({
+            kid: String(props.route.params.postId),
+            image: firebase.auth().currentUser.photoURL,
+            nameUser: props.currentUser.nickname[props.currentUser.nickname.length-1],
+            type: ' đã bình luận bài viết của bạn',
+            seen: 'no',
+            typePost :props.route.params.type,
+            imageOwn:props.route.params.imgOwn,
+            creation:firebase.firestore.FieldValue.serverTimestamp(),
+            caption:post.caption,
+        })}
+}
+const AddLikeNotifications = () => {
+  if(props.route.params.uid1 != firebase.auth().currentUser.uid)
+      {firebase.firestore()
+      .collection("Notifications")
+      .doc(props.route.params.uid1)
+      .collection("UserNotifications")
+      .add({
+          kid: String(props.route.params.postId),
+          image: firebase.auth().currentUser.photoURL,
+          nameUser: props.currentUser.nickname[props.currentUser.nickname.length-1],
+          type: ' đã thích bài viết của bạn',
+          seen: 'no',
+          typePost :props.route.params.type,
+          imageOwn:props.route.params.imgOwn,
+          creation:firebase.firestore.FieldValue.serverTimestamp(),
+          caption:post.caption,
+      })}
+}
   const onLikePress = (userId, postId) => {
     firebase.firestore()
       .collection("Posts")
@@ -116,7 +168,6 @@ function Post(props) {
         LikesCount: firebase.firestore.FieldValue.increment(1)
       })
   }
-console.log(props.route.params.item)
   const onDisLikePress = (userId, postId) => {
     firebase.firestore()
       .collection("Posts")
@@ -126,23 +177,6 @@ console.log(props.route.params.item)
       .update({
         LikesCount: firebase.firestore.FieldValue.increment(-1)
       })
-  }
-
-  const renderMainItem = ({ item }) => {
-    if (item.type === 'row') {
-      return (
-        <View style={styles.containerView}>
-         
-        </View>
-      );
-    }
-    if (item.type === 'list') {
-      return (
-        <View style={styles.containerView}>
-       
-        </View>
-      );
-    }
   }
   const keyExtractor = (item, index) => {
     return index.toString();
@@ -165,8 +199,8 @@ console.log(props.route.params.item)
       .doc(firebase.auth().currentUser.uid)
       .delete({})
   }
-  console.log(comments)
-  if (post === null) {
+
+  if (post ==  null || u == null) {
     return <View />
   }
   return (
@@ -177,13 +211,13 @@ console.log(props.route.params.item)
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
             <Image style={styles.userImg}
               source={{
-                uri: props.route.params.imgOwn
+                uri: u.downloadURL
               }}>
             </Image>
           </View>
             <View style={styles.userInfoText}>
               <Text style={styles.userName}>
-                { props.currentUser.name}
+                {u.nickname[u.nickname.length -1]}
               </Text>
           </View>
         </View>
@@ -211,8 +245,8 @@ console.log(props.route.params.item)
                 style={styles.interReaction}
                 title="Dislike"
                 onPress={() => {
-                  onDisLikePress(props.route.params.uid ,props.route.params.postId),
-                  DisLikePress(props.route.params.uid, props.route.params.postId), post.LikesCount--
+                  onDisLikePress(props.route.params.uid1 ,props.route.params.postId),
+                  DisLikePress(props.route.params.uid1, props.route.params.postId), post.LikesCount--
                 }}>
                 <AntDesign name="heart" size={30} color="red" />
               </TouchableOpacity>
@@ -222,8 +256,8 @@ console.log(props.route.params.item)
                 title="Like"
                 style={styles.interReaction}
                 onPress={() => {
-                  onLikePress(props.route.params.uid, props.route.params.postId),
-                  LikePress(props.route.params.uid, props.route.params.postId), post.LikesCount++
+                  onLikePress(props.route.params.uid1, props.route.params.postId),AddLikeNotifications(),
+                  LikePress(props.route.params.uid1, props.route.params.postId), post.LikesCount++
                 }}
               >
                 <AntDesign name="hearto" size={30} color="#ffb412" />
@@ -262,19 +296,16 @@ console.log(props.route.params.item)
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
             <Image style={styles.userImg}
               source={{
-                uri: props.route.params.imgOwn
+                uri: u.downloadURL
               }}>
             </Image>
           </View>
             <View style={styles.userInfoText}>
               <Text style={styles.userName}>
-                { props.currentUser.name}
+              {u.nickname[u.nickname.length -1]}
               </Text>
             </View>
         </View>
-        <Text style={styles.postText}>
-          {post.caption}
-        </Text>
         <Image
           style={styles.postImg}
           source={{ uri: post.downloadURL }}
@@ -288,8 +319,8 @@ console.log(props.route.params.item)
                 style={styles.interReaction}
                 title="Dislike"
                 onPress={() => {
-                  onDisLikePress(props.route.params.uid ,props.route.params.postId),
-                  DisLikePress(props.route.params.uid, props.route.params.postId), post.LikesCount--
+                  onDisLikePress(props.route.params.uid1 ,props.route.params.postId),
+                  DisLikePress(props.route.params.uid1, props.route.params.postId), post.LikesCount--
                 }}>
                 <AntDesign name="heart" size={30} color="#ffb412" />
               </TouchableOpacity>
@@ -299,8 +330,8 @@ console.log(props.route.params.item)
                 title="Like"
                 style={styles.interReaction}
                 onPress={() => {
-                  onLikePress(props.route.params.uid, props.route.params.postId),
-                  LikePress(props.route.params.uid, props.route.params.postId), post.LikesCount++
+                  onLikePress(props.route.params.uid1, props.route.params.postId),AddLikeNotifications(),
+                  LikePress(props.route.params.uid1, props.route.params.postId), post.LikesCount++
                 }}
               >
                 <AntDesign name="hearto" size={30} color="#ffb412" />
@@ -384,13 +415,12 @@ console.log(props.route.params.item)
             onChangeText={(text) => setText(text)}>
           </TextInput>
           <TouchableOpacity
-            onPress={() => onCommentSend()}
+            onPress={() => {onCommentSend(),AddNotifications()}}
             style={{height:34,flex:1,backgroundColor:"#ffb412",alignItems:'center',justifyContent:'center',borderWidth:2, borderRadius:6,padding:5}}
           >
             <Text style={{color:'black',fontSize:16,fontWeight:'bold'}}>Send</Text>
           </TouchableOpacity>  
         </View>
-        
     </View>
 
   );

@@ -35,10 +35,11 @@ export default function Photo2({ navigation }) {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64 :true
     });
     console.log(result);
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImage(result.base64);
     }
   };
   if (hasCameraPermission === null || hasGalleyPermission === false) {
@@ -54,7 +55,7 @@ export default function Photo2({ navigation }) {
           style={styles.fixedRatio}
           type={type}
           ratio={['1:1']}>
-          {image && <TouchableOpacity onPress={() => navigation.navigate('CheckUser', { image })}><Image source={{ uri: image }} style={{
+          {image && <TouchableOpacity onPress={() => navigation.navigate('CheckUser', { image })}><Image source={{ uri: `data:image/png;base64,${image}` }} style={{
             width: 100,
             height: 100,
             margin: 20,
