@@ -62,9 +62,7 @@ function Profile(props, { navigation }) {
         .doc(firebase.auth().currentUser.uid)
         .get()
         .then((snapshot) => {
-
           setUser(snapshot.data())
-
         })
       firebase.firestore()
         .collection("Posts")
@@ -178,10 +176,67 @@ function Profile(props, { navigation }) {
         nameUser: nameUser,
         type: ' đã theo dõi bạn bạn',
         seen: 'yes',
-        time:firebase.firestore.FieldValue.serverTimestamp(),
-        
+        creation:firebase.firestore.FieldValue.serverTimestamp(),
       })
-
+  }
+  const renderHorizontalItem = ({item}) => {
+    return (
+      <View style={styles.containerImage}>
+      {props.route.params.uid == firebase.auth().currentUser.uid ? (
+        <TouchableOpacity
+        onPress ={() => props.navigation.navigate("Post", {
+          postId: item.id, type :item.type,
+          uid: firebase.auth().currentUser.uid,
+          uid1: firebase.auth().currentUser.uid,
+          imgOwn :firebase.auth().currentUser.photoURL
+      })}>
+        {item.type =="list" ? 
+        (
+        <View style={styles.item}>
+           <Image
+          style={styles.image}
+          source={{ uri: item.downloadURL[0] }}
+        />
+        </View>
+        ) :(
+        <View style={styles.item}>
+                 <Image
+          style={styles.image}
+          source={{ uri: item.downloadURL }}
+        />
+        </View>
+        )
+        }
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+      onPress ={() => props.navigation.navigate("Post", {
+        postId: item.id, type :item.type,
+        uid: firebase.auth().currentUser.uid,
+        uid1: props.route.params.uid,
+        imgOwn: user.downloadURL
+    })}>
+      {item.type =="list" ? 
+        (
+        <View style={styles.item}>
+           <Image
+          style={styles.image}
+          source={{ uri: item.downloadURL[0] }}
+        />
+        </View>
+        ) :(
+        <View style={styles.item}>
+                 <Image
+          style={styles.image}
+          source={{ uri: item.downloadURL }}
+        />
+        </View>
+        )
+        }
+      </TouchableOpacity>
+      )}
+    </View>
+    );
   }
   console.log(user)
   if (user === null) {
@@ -223,7 +278,6 @@ function Profile(props, { navigation }) {
               <View style={styles.userInfoItem}>
                 <Text style={styles.userInfoTitle}>{user.Posts}</Text>
                 <Text style={styles.userInfoView}>Post</Text>
-
               </View>
               <View style={styles.userInfoItem}>
                 <Text style={styles.userInfoTitle}>{user.Followers}</Text>
@@ -263,7 +317,6 @@ function Profile(props, { navigation }) {
             </View>
           </View>
         </View>
-
         {props.route.params.uid !== firebase.auth().currentUser.uid ? (
           <View style={{ width: '100%', alignItems: 'center', alignContent: 'center' }}>
             {following ? (
@@ -286,60 +339,15 @@ function Profile(props, { navigation }) {
             }
           </View>
         ) : null}
-
         <View
           style={styles.deviler} />
         <View style={styles.comtainerGalley}
         >
           <FlatList
-            numColumns={3}
+            numColumns={2}
             horizontal={false}
             data={userPosts}
-            renderItem={({ item }) => (
-              <View style={styles.containerImage}>
-                {props.route.params.uid == firebase.auth().currentUser.uid ? (
-                  <TouchableOpacity
-                  onPress ={() => props.navigation.navigate("Post", {
-                    postId: item.id, type :item.type,
-                    uid: firebase.auth().currentUser.uid,
-                    uid1: firebase.auth().currentUser.uid,
-                    imgOwn :firebase.auth().currentUser.photoURL
-                })}>
-                  {item.type =="list" ? 
-                  (<Image
-                    style={styles.image}
-                    source={{ uri: item.downloadURL[0] }}
-                  />) :(
-                    <Image
-                    style={styles.image}
-                    source={{ uri: item.downloadURL }}
-                  />
-                  )
-                  }
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                onPress ={() => props.navigation.navigate("Post", {
-                  postId: item.id, type :item.type,
-                  uid: firebase.auth().currentUser.uid,
-                  uid1: props.route.params.uid,
-                  imgOwn: user.downloadURL
-              })}>
-                {item.type =="list" ? 
-                (<Image
-                  style={styles.image}
-                  source={{ uri: item.downloadURL[0] }}
-                />) :(
-                  <Image
-                  style={styles.image}
-                  source={{ uri: item.downloadURL }}
-                />
-                )
-                }
-                </TouchableOpacity>
-                )}
-              </View>
-            )}
+            renderItem={renderHorizontalItem}
           />
         </View>
       </Animated.View>
@@ -354,6 +362,7 @@ const mapStateToProps = (store) => ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:'white'
   },
   containerInfo: {
     //marginLeft: 30
@@ -374,16 +383,15 @@ const styles = StyleSheet.create({
   },
   comtainerGalley: {
     flex: 1,
-    marginTop: 40,
+    marginTop: 20,
     flexDirection: 'column'
   },
   image: {
     flex: 1,
-    margin: 2,
     aspectRatio: 1 / 1
   },
   containerImage: {
-    flex: 1 / 3
+    flex: 1 / 2
   },
   userImage: {
     height: 100,
@@ -501,6 +509,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontWeight: 'bold',
     fontSize: 18
+  },
+  item: {
+    margin: 5,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#eee',
+    height: 150, width: 180,
   }
 })
 export default connect(mapStateToProps, null)(Profile)

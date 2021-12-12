@@ -52,7 +52,6 @@ function NewFeeds(props, { navigation }) {
       .doc(firebase.auth().currentUser.uid)
       .set({})
   }
-  console.log(moment().format('MMMM Do YYYY, h:mm:ss a'))
   const LikePress = (userId, postId) => {
     firebase.firestore()
       .collection("Posts")
@@ -64,7 +63,8 @@ function NewFeeds(props, { navigation }) {
       })
   }
   const AddNotifications = (userId, postId, nameUser,type,img,caption) => {
-    firebase.firestore()
+    if(userId != firebase.auth().currentUser.uid)
+    {firebase.firestore()
       .collection("Notifications")
       .doc(userId)
       .collection("UserNotifications")
@@ -79,7 +79,7 @@ function NewFeeds(props, { navigation }) {
         imageOwn:img,
         caption:caption,
         creation:firebase.firestore.FieldValue.serverTimestamp(),
-      })
+      })}
   }
 
   const onDisLikePress = (userId, postId) => {

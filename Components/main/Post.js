@@ -76,6 +76,7 @@ function Post(props,{navigation}) {
         .collection('UserPosts')
         .doc(props.route.params.postId)
         .collection('Comments')
+        .orderBy("creation","asc")
         .onSnapshot((snapshot) => {
           let comments = snapshot.docs.map(doc => {
             const data = doc.data();
@@ -90,14 +91,18 @@ function Post(props,{navigation}) {
     else {
       matchUserToComment(comments)
     }
-
+    return function cleanup()
+    {
+      setCurrentUserLike(false);
+      setComments([]);
+    }
   }, [props.route.params.postId, props.users, props.route.params.postId.LikesCount])
 
-  console.log(props.currentUser.nickname[props.currentUser.nickname.length-1])
+
   const onCommentSend = () => {
     firebase.firestore()
       .collection('Posts')
-      .doc(props.route.params.uid)
+      .doc(props.route.params.uid1)
       .collection('UserPosts')
       .doc(props.route.params.postId)
       .collection('Comments')
@@ -108,7 +113,8 @@ function Post(props,{navigation}) {
       })
   }
   const AddNotifications = () => {
-    firebase.firestore()
+    if(props.route.params.uid1 != firebase.auth().currentUser.uid)
+        {firebase.firestore()
         .collection("Notifications")
         .doc(props.route.params.uid1)
         .collection("UserNotifications")
@@ -122,7 +128,25 @@ function Post(props,{navigation}) {
             imageOwn:props.route.params.imgOwn,
             creation:firebase.firestore.FieldValue.serverTimestamp(),
             caption:post.caption,
-        })
+        })}
+}
+const AddLikeNotifications = () => {
+  if(props.route.params.uid1 != firebase.auth().currentUser.uid)
+      {firebase.firestore()
+      .collection("Notifications")
+      .doc(props.route.params.uid1)
+      .collection("UserNotifications")
+      .add({
+          kid: String(props.route.params.postId),
+          image: firebase.auth().currentUser.photoURL,
+          nameUser: props.currentUser.nickname[props.currentUser.nickname.length-1],
+          type: ' đã thích bài viết của bạn',
+          seen: 'no',
+          typePost :props.route.params.type,
+          imageOwn:props.route.params.imgOwn,
+          creation:firebase.firestore.FieldValue.serverTimestamp(),
+          caption:post.caption,
+      })}
 }
   const onLikePress = (userId, postId) => {
     firebase.firestore()
@@ -153,23 +177,6 @@ function Post(props,{navigation}) {
       .update({
         LikesCount: firebase.firestore.FieldValue.increment(-1)
       })
-  }
-
-  const renderMainItem = ({ item }) => {
-    if (item.type === 'row') {
-      return (
-        <View style={styles.containerView}>
-         
-        </View>
-      );
-    }
-    if (item.type === 'list') {
-      return (
-        <View style={styles.containerView}>
-       
-        </View>
-      );
-    }
   }
   const keyExtractor = (item, index) => {
     return index.toString();
@@ -237,8 +244,8 @@ function Post(props,{navigation}) {
                 style={styles.interReaction}
                 title="Dislike"
                 onPress={() => {
-                  onDisLikePress(props.route.params.uid ,props.route.params.postId),
-                  DisLikePress(props.route.params.uid, props.route.params.postId), post.LikesCount--
+                  onDisLikePress(props.route.params.uid1 ,props.route.params.postId),
+                  DisLikePress(props.route.params.uid1, props.route.params.postId), post.LikesCount--
                 }}>
                 <AntDesign name="heart" size={30} color="red" />
               </TouchableOpacity>
@@ -248,8 +255,8 @@ function Post(props,{navigation}) {
                 title="Like"
                 style={styles.interReaction}
                 onPress={() => {
-                  onLikePress(props.route.params.uid, props.route.params.postId),
-                  LikePress(props.route.params.uid, props.route.params.postId), post.LikesCount++
+                  onLikePress(props.route.params.uid1, props.route.params.postId),AddLikeNotifications(),
+                  LikePress(props.route.params.uid1, props.route.params.postId), post.LikesCount++
                 }}
               >
                 <AntDesign name="hearto" size={30} color="black" />
@@ -307,8 +314,8 @@ function Post(props,{navigation}) {
                 style={styles.interReaction}
                 title="Dislike"
                 onPress={() => {
-                  onDisLikePress(props.route.params.uid ,props.route.params.postId),
-                  DisLikePress(props.route.params.uid, props.route.params.postId), post.LikesCount--
+                  onDisLikePress(props.route.params.uid1 ,props.route.params.postId),
+                  DisLikePress(props.route.params.uid1, props.route.params.postId), post.LikesCount--
                 }}>
                 <AntDesign name="heart" size={30} color="red" />
               </TouchableOpacity>
@@ -318,8 +325,8 @@ function Post(props,{navigation}) {
                 title="Like"
                 style={styles.interReaction}
                 onPress={() => {
-                  onLikePress(props.route.params.uid, props.route.params.postId),
-                  LikePress(props.route.params.uid, props.route.params.postId), post.LikesCount++
+                  onLikePress(props.route.params.uid1, props.route.params.postId),AddLikeNotifications(),
+                  LikePress(props.route.params.uid1, props.route.params.postId), post.LikesCount++
                 }}
               >
                 <AntDesign name="hearto" size={30} color="black" />

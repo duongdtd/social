@@ -99,7 +99,8 @@ function Comments(props) {
             .delete()
     }
     const AddNotifications = (userId, postId, nameUser,type,img,caption) => {
-        firebase.firestore()
+        if(userId != firebase.auth().currentUser.uid)
+        {firebase.firestore()
             .collection("Notifications")
             .doc(userId)
             .collection("UserNotifications")
@@ -113,7 +114,7 @@ function Comments(props) {
                 imageOwn:img,
                 time:firebase.firestore.FieldValue.serverTimestamp(),
                 caption:caption,
-            })
+        })}
     }
 
     return (
