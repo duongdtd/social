@@ -208,17 +208,17 @@ const AddLikeNotifications = () => {
       {props.route.params.type =="list" ? (
             <View style={styles.container1}>
         <View style={styles.userInfo}>
-          <View style={styles.userInfo}>
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
             <Image style={styles.userImg}
               source={{
                 uri: u.downloadURL
               }}>
             </Image>
+          </View>
             <View style={styles.userInfoText}>
               <Text style={styles.userName}>
                 {u.nickname[u.nickname.length -1]}
               </Text>
-            </View>
           </View>
         </View>
         <Text style={styles.postText}>
@@ -235,9 +235,10 @@ const AddLikeNotifications = () => {
               decelerationRate={'normal'}
             />
             </View>
-            <Text>{String(post.LikesCount)} likes</Text>
+            <Text style={styles.like}>{String(post.LikesCount)} likes</Text>
             <View style={styles.deviler} />
             <View style={styles.interReactionWrapper}>
+            <View style={styles.reaction}>
             {currentUserLike ?
             (
               <TouchableOpacity
@@ -259,12 +260,14 @@ const AddLikeNotifications = () => {
                   LikePress(props.route.params.uid1, props.route.params.postId), post.LikesCount++
                 }}
               >
-                <AntDesign name="hearto" size={30} color="black" />
+                <AntDesign name="hearto" size={30} color="#ffb412" />
               </TouchableOpacity>
             )}
               <Text style={styles.interReactionText}>
-                likes
+                Likes
               </Text>
+              </View>
+              <View style={styles.reaction}>
               <TouchableOpacity
                 title="Comments"
                 style={styles.interReaction}
@@ -278,36 +281,38 @@ const AddLikeNotifications = () => {
                    }
                )}
               >
-                <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
+                <Ionicons name="chatbubble-ellipses-outline" size={24} color="#ffb412" />
               </TouchableOpacity>
               <Text style={styles.interReactionText}>
                 Comments
               </Text>
             </View>
+            </View>
           </View>
           
       ):(
 <View style={styles.container1}>
-        <View style={styles.userInfo}>
           <View style={styles.userInfo}>
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
             <Image style={styles.userImg}
               source={{
                 uri: u.downloadURL
               }}>
             </Image>
+          </View>
             <View style={styles.userInfoText}>
               <Text style={styles.userName}>
               {u.nickname[u.nickname.length -1]}
               </Text>
             </View>
-          </View>
         </View>
         <Image
           style={styles.postImg}
           source={{ uri: post.downloadURL }}
-        /><Text>{String(post.LikesCount)} likes</Text>
+        /><Text style={styles.like}>{String(post.LikesCount)} Likes</Text>
         <View style={styles.deviler} />
         <View style={styles.interReactionWrapper}>
+        <View style={styles.reaction}>
           {currentUserLike ?
             (
               <TouchableOpacity
@@ -317,7 +322,7 @@ const AddLikeNotifications = () => {
                   onDisLikePress(props.route.params.uid1 ,props.route.params.postId),
                   DisLikePress(props.route.params.uid1, props.route.params.postId), post.LikesCount--
                 }}>
-                <AntDesign name="heart" size={30} color="red" />
+                <AntDesign name="heart" size={30} color="#ffb412" />
               </TouchableOpacity>
             )
             : (
@@ -329,12 +334,14 @@ const AddLikeNotifications = () => {
                   LikePress(props.route.params.uid1, props.route.params.postId), post.LikesCount++
                 }}
               >
-                <AntDesign name="hearto" size={30} color="black" />
+                <AntDesign name="hearto" size={30} color="#ffb412" />
               </TouchableOpacity>
             )}
           <Text style={styles.interReactionText}>
-            likes
+            Likes
           </Text>
+          </View>
+          <View style={styles.reaction}>
           <TouchableOpacity
             title="Comments"
             style={styles.interReaction}
@@ -348,11 +355,12 @@ const AddLikeNotifications = () => {
                 }
             )}
           >
-            <Ionicons name="chatbubble-ellipses-outline" size={24} color="black" />
+            <Ionicons name="chatbubble-ellipses-outline" size={27} color="#ffb412" />
           </TouchableOpacity>
           <Text style={styles.interReactionText}>
             Comments
           </Text>
+        </View>
         </View>
       </View>
       )
@@ -367,9 +375,10 @@ const AddLikeNotifications = () => {
             <View>
               {item.user !== undefined ?
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                  <Avatar
-                    size="small" rounded source={{ uri: item.user.downloadURL }} />
-                  <Text>
+                  <View style={styles.Avatar}>
+                    <Avatar size="small" rounded source={{ uri: item.user.downloadURL }} />
+                  </View> 
+                  <Text style={{flex:5,fontWeight:'bold'}}>
                     {item.user.name}
                   </Text>
                   {
@@ -385,27 +394,33 @@ const AddLikeNotifications = () => {
                               .collection('Comments')
                               .doc(item.id)
                               .delete()
-                          }}>
-                          <AntDesign name="delete" size={24} color="black" />
+                          }}
+                          style={{alignItems:'flex-end',marginRight:10}}>
+                          <AntDesign name="delete" size={18} color="black" />
                         </TouchableOpacity>
                       </View>
                     ) : null
                   }
                 </View>
                 : null}
-              <Text>{item.text}</Text>
+              <Text style={styles.comment}>{item.text}</Text>
             </View>
           )}
         />
         </View>
-        <TextInput 
-          placeholder='comment.....'
-          onChangeText={(text) => setText(text)}>
-        </TextInput>
-        <Button
-          onPress={() => {onCommentSend(),AddNotifications()}}
-          title="send"
-        />
+        <View style={styles.sendComment}>
+          <TextInput 
+            style={{height:36,flex:4,borderWidth:1,borderColor:'#dddddd',padding:6,borderRadius:6,marginRight:12}}
+            placeholder=' Comment...'
+            onChangeText={(text) => setText(text)}>
+          </TextInput>
+          <TouchableOpacity
+            onPress={() => {onCommentSend(),AddNotifications()}}
+            style={{height:34,flex:1,backgroundColor:"#ffb412",alignItems:'center',justifyContent:'center',borderWidth:2, borderRadius:6,padding:5}}
+          >
+            <Text style={{color:'black',fontSize:16,fontWeight:'bold'}}>Send</Text>
+          </TouchableOpacity>  
+        </View>
     </View>
 
   );
@@ -440,6 +455,23 @@ const styles = StyleSheet.create({
     width: 100,
     borderRadius: 75
   },
+  Avatar: {
+    marginLeft:8,
+    marginRight:6,
+    marginTop:5
+  },
+  comment: {
+    marginLeft:12,
+    fontSize:18,
+    //fontFamily: 'Open Sans, san-serif'
+  },
+  sendComment: {
+    alignItems:'center',
+    flexDirection: 'row',
+    marginBottom:10,
+    width:'100%',
+    justifyContent:'space-between'
+  },
   container1: {
     backgroundColor: '#fff',
     width: '100%',
@@ -447,15 +479,18 @@ const styles = StyleSheet.create({
   },
   containerView: {
     flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#f8f8f8',
-    padding: 20
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingHorizontal: 8,
   },
   userInfo: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },
   userImg: {
+    marginLeft:12,
+    marginTop:12,
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -466,13 +501,15 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   userName: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'black',
   },
   postText: {
-    fontSize: 15,
-    paddingLeft: 15,
+    marginTop:10,
+    fontStyle:'Italic',
+    fontSize: 16,
+    paddingLeft: 12,
     paddingRight: 15,
   },
   postImg: {
@@ -481,9 +518,15 @@ const styles = StyleSheet.create({
     marginTop: 15,
 
   },
+  like: {
+    marginTop:10,
+    fontSize:20,
+    fontWeight:'bold',
+    paddingLeft:36
+  },
   interReactionWrapper: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    //justifyContent: 'space-around',
     padding: 8,
 
   },
@@ -501,12 +544,17 @@ const styles = StyleSheet.create({
     marginLeft: 10,
 
   },
+  reaction: {
+    flexDirection: 'row',
+    flex:1,
+    paddingLeft:24
+  },
   deviler: {
     borderBottomColor: '#dddddd',
     borderBottomWidth: 1,
-    width: '92%',
+    width: '96%',
     alignSelf: 'center',
-    marginTop: 15,
+    marginTop: 10,
   },
   input1: {
     width: '100%',

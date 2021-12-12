@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
+import styled from 'styled-components';
 
 const styles = StyleSheet.create ({
 	container: {
@@ -21,12 +22,14 @@ const styles = StyleSheet.create ({
 		fontSize:20
 	},
 	inputSearch: {
-		height:36,
-		borderWidth:1,
-		marginTop:15,
-		borderRadius:3,
-		padding:6
-	}
+		height:40,
+		borderWidth:2,
+		marginTop:20,
+		borderRadius:4,
+		padding:7,
+		zIndex:3
+	},
+	
 });
 
 export default styles

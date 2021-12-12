@@ -24,7 +24,16 @@ export class Main extends Component {
     }
     render() {
         return (
-            <Tab.Navigator>
+            <Tab.Navigator screenOptions={({route})=> ({
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+        
+                    // You can return any component that you like here!
+                    return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
+                  },
+                tabBarActiveTintColor: '#ffb412',
+                tabBarInactiveTintColor: '#333333',
+            })}>
                 <Tab.Screen name="NewFeeds" component={NewFeeds} navigation={this.props.navigation}
                     options={{
                         tabBarIcon: ({ color, size }) => (
@@ -54,7 +63,8 @@ export class Main extends Component {
                     options={{
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name="account" color={color} size={26} />
-                        )
+                        ),
+                        headerTitle:()=> <Text style={styles.header}>Profile</Text>
                     }}
                 />
              
@@ -62,7 +72,8 @@ export class Main extends Component {
                     options={{
                         tabBarIcon: ({ color, size }) => (
                             <Ionicons name="notifications" size={22} color={color} />
-                        )
+                        ),
+                        headerTitle:()=> <Text style={styles.header}>Notifications</Text>
                     }}
                 />
                 <Tab.Screen name="Search" component={Search} navigation={this.props.navigation}
@@ -70,6 +81,7 @@ export class Main extends Component {
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name="account-search" color={color} size={26} />
                         ),
+                        headerTitle:()=> <Text style={styles.header}>Search</Text>,
                         headerRight: () => <View style={styles.container}>
                         <TouchableOpacity style={styles.button}
                         onPress ={() =>this.props.navigation.navigate("QRcode")}>
@@ -100,5 +112,11 @@ const styles =StyleSheet.create({
     },
     button : {
         marginRight :16,
+    },
+    header: {
+        fontFamily: 'Bungee',
+        fontWeight:'bold',
+        fontSize:26
     }
+
 })

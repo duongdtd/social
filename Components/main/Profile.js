@@ -306,39 +306,57 @@ function Profile(props, { navigation }) {
                     <AntDesign name="qrcode" size={30} color="black" />
                   </TouchableOpacity>
 
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleChat}
-                  >
-                    <Feather name="message-circle" size={30} color="black" />
-                  </TouchableOpacity>
                 </View>
-              ) : null}
+              ) : (
+                <View style={{width:'100%', flexDirection:'row'}}>
+                  <TouchableOpacity 
+                      onPress ={handleChat}
+                    >
+                      <Feather name="message-circle" size={30} color="black" />
+                    </TouchableOpacity>
+                    {following ? (
+                    <TouchableOpacity
+                      style={styles.btnFollow}                    
+                      onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
+                      <Text style={styles.followText}>Unfollow</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      style={styles.btnFollow}
+                      onPress={() => { onfollowing(), AddFollow(), AddFollowing()
+                      ,AddNotifications(props.route.params.uid,
+                      props.currentUser.nickname[props.currentUser.nickname.length-1]) }}>                     
+                     <Text style={styles.followText}>follow</Text>
+                    </TouchableOpacity>
+                  )
+                  }
+                </View>
+              )}
             </View>
           </View>
         </View>
-        {props.route.params.uid !== firebase.auth().currentUser.uid ? (
-          <View style={{ width: '100%', alignItems: 'center', alignContent: 'center' }}>
-            {following ? (
-              <TouchableOpacity
-                style={styles.btnFollow}
-                onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
-                <Text style={styles.followText}>Unfollow</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={styles.btnFollow}
-                onPress={() => {
-                  onfollowing(), AddFollow(), AddFollowing()
-                  , AddNotifications(props.route.params.uid,
-                    props.currentUser.nickname[props.currentUser.nickname.length - 1])
-                }}>
-                <Text style={styles.followText}>follow</Text>
-              </TouchableOpacity>
-            )
-            }
-          </View>
-        ) : null}
+
+        {/* {props.route.params.uid !== firebase.auth().currentUser.uid ? (
+                <View style={{ display:'flex', width:'100%',alignItems:'center',alignContent:'center' }}>
+                  {following ? (
+                    <TouchableOpacity
+                      style={styles.btnFollow}                    
+                      onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
+                      <Text style={styles.followText}>Unfollow</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      style={styles.btnFollow}
+                      onPress={() => { onfollowing(), AddFollow(), AddFollowing()
+                      ,AddNotifications(props.route.params.uid,
+                      props.currentUser.nickname[props.currentUser.nickname.length-1]) }}>                     
+                     <Text style={styles.followText}>follow</Text>
+                    </TouchableOpacity>
+                  )
+                  }
+                </View>
+              ) : null} */}
+
         <View
           style={styles.deviler} />
         <View style={styles.comtainerGalley}
@@ -433,8 +451,8 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOpacity: 0.4,
     paddingTop: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
   },
   panelHeader: {
     alignItems: 'center'
@@ -452,8 +470,8 @@ const styles = StyleSheet.create({
   },
   panelButton: {
     padding: 13,
-    borderRadius: 10,
-    backgroundColor: '#FF6347',
+    borderRadius: 14,
+    backgroundColor: '#ffb412',
     alignItems: 'center',
     marginVertical: 7,
   },
@@ -466,7 +484,7 @@ const styles = StyleSheet.create({
   panelButtonTitle: {
     fontSize: 17,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'black',
   },
   action: {
     flexDirection: 'row',
@@ -490,25 +508,26 @@ const styles = StyleSheet.create({
     color: "#05375a",
   },
   panel: {
-    padding: 20,
     backgroundColor: '#FFFFFF',
-    paddingTop: 20,
+    paddingHorizontal:20,
+    paddingBottom: 20,
   },
   btnFollow: {
-    textAlign: 'center',
-    alignItems: 'center',
-    height: 38,
-    width: '30%',
-    borderWidth: 1,
-    paddingTop: 8,
-    paddingBottom: 8,
-    borderRadius: 12,
-    backgroundColor: '#ffb412',
+    marginLeft:'16%',
+    textAlign:'center',
+    alignItems:'center',
+    height:38,
+    width:'50%',
+    border:1,
+    paddingTop:8,
+    paddingBottom:8,
+    borderRadius:12,
+    backgroundColor:'#ffb412',    
   },
   followText: {
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-    fontSize: 18
+    textTransform:'uppercase',
+    fontWeight:'bold',
+    fontSize:17
   },
   item: {
     margin: 5,

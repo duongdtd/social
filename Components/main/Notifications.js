@@ -78,7 +78,7 @@ export default function Notifications({ navigation }) {
                         <View style={{ backgroundColor: '#fff' }} >
                             {(item.kid != "null") ? (
                                 item.seen == 'no' ? (
-                                    <TouchableOpacity style={{ backgroundColor: '#f8f8f8', marginTop: 10 }}
+                                    <TouchableOpacity style={{ backgroundColor: '#fff', marginTop: 10 }}
                                         onPress={() => {
                                             navigation.navigate("Post", {
                                                 postId: item.kid,
@@ -87,12 +87,13 @@ export default function Notifications({ navigation }) {
                                                 imgOwn: item.imageOwn, uid1: firebase.auth().currentUser.uid
                                             }), change(item.id)
                                         }}>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                                        <View style={{ height:82, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
 
                                             <Image style={{
-                                                width: 50,
-                                                height: 50,
+                                                width: 44,
+                                                height: 44,
                                                 borderRadius: 25,
+                                                marginHorizontal:8
                                             }}
                                                 source={{ uri: item.image }}>
                                             </Image>
@@ -115,17 +116,18 @@ export default function Notifications({ navigation }) {
                                     </TouchableOpacity>
 
                                 ) : (
-                                    <TouchableOpacity style={{ backgroundColor: '#fff', marginTop: 10 }}
+                                    <TouchableOpacity style={{ backgroundColor: '#ffb412d6', marginTop: 10 }}
                                         onPress={() => navigation.navigate("Post", {
                                             postId: item.kid, type: item.typePost,
                                             uid: firebase.auth().currentUser.uid, nameUser: item.nameUser,
                                             imgOwn: item.imageOwn, uid1: firebase.auth().currentUser.uid
                                         })}>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                                        <View style={{ height:82, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                                             <Image style={{
-                                                width: 50,
-                                                height: 50,
+                                                width: 44,
+                                                height: 44,
                                                 borderRadius: 25,
+                                                marginHorizontal:8
                                             }}
                                                 source={{ uri: item.image }}>
                                             </Image>
