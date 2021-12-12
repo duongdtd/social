@@ -7,7 +7,30 @@ import { useState } from 'react';
 import { Dimensions, StatusBar } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Avatar, Badge } from 'react-native-elements'
+import moment from 'moment';
 require('firebase/firestore')
+
+function findDaysDiffrent(seconds,nanoseconds) {
+
+  let CreatedDate = new Date(seconds * 1000 + nanoseconds / 1000000)
+  let today = new Date()
+  let requiredDiffrentDays
+  
+  const oneMinute =   60 * 1000;
+  const diffMinutes = Math.round(Math.abs((CreatedDate - today) / oneMinute));
+  if (diffMinutes >= 518400) {
+      requiredDiffrentDays = Math.floor(diffMinutes / 518400) == 1 ? `${Math.floor(diffMinutes / 525600)} year ago` : `${Math.floor(diffMinutes / 525600)} years ago`
+  } else if (diffMinutes >= 43200) {
+      requiredDiffrentDays = Math.floor(diffMinutes / 43200) == 1 ? `${Math.floor(diffMinutes / 43200)} month ago` : `${Math.floor(diffMinutes / 43200)} months ago`
+  } else if (diffMinutes >= 1440) {
+    requiredDiffrentDays = Math.floor(diffMinutes / 1440) == 1 ? `${Math.floor(diffMinutes / 1440)} day ago` : `${Math.floor(diffMinutes / 1440)} days ago`
+  }else if (diffMinutes >= 60) {
+    requiredDiffrentDays = Math.floor(diffMinutes / 60) == 1 ? `${Math.floor(diffMinutes / 60)} hour ago` : `${Math.floor(diffMinutes / 60)} hours ago`
+  }else if (diffMinutes < 60) {
+    requiredDiffrentDays = (diffMinutes == 1 || diffMinutes == 0) == 1 ? "just now" : `${Math.floor(diffMinutes)} minutes ago`
+  }
+  return requiredDiffrentDays;
+}
 function NewFeeds(props, { navigation }) {
   const [posts, setPosts] = useState([])
  
@@ -29,6 +52,7 @@ function NewFeeds(props, { navigation }) {
       .doc(firebase.auth().currentUser.uid)
       .set({})
   }
+  console.log(moment().format('MMMM Do YYYY, h:mm:ss a'))
   const LikePress = (userId, postId) => {
     firebase.firestore()
       .collection("Posts")
@@ -97,9 +121,7 @@ function NewFeeds(props, { navigation }) {
                   <Text style={styles.userName}>
                     {item.user.nickname[item.user.nickname.length - 1]}
                   </Text>
-                  <Text style={styles.date}>{new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toDateString()}
-              at {new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toLocaleTimeString()}
-              </Text>
+                  <Text style={styles.date}>{findDaysDiffrent(item.creation.seconds,item.creation.nanoseconds)}</Text>
               </View>
             </View>
             <Text style={styles.postText}>
@@ -192,8 +214,7 @@ function NewFeeds(props, { navigation }) {
             <Text style={styles.postText}>
               {item.caption}
             </Text>
-            <Text style={styles.date}>{new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toDateString()}
-             at {new Date(item.creation.seconds * 1000 + item.creation.nanoseconds / 1000000).toLocaleTimeString()}</Text>
+            <Text style={styles.date}>{findDaysDiffrent(item.creation.seconds,item.creation.nanoseconds)}</Text>
               <View style={styles.postImg}>
             <FlatList
               data={item.downloadURL}
@@ -277,9 +298,6 @@ function NewFeeds(props, { navigation }) {
         </Image>
     );
   }
-
-  console.log(posts)
-
   if (posts.length == 0) {
     return <View />
   }

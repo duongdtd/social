@@ -24,12 +24,9 @@ export default function Save(props) {
                     style: "cancel",
                   },
                 ],
-           
               );
         }
     },[url.length])
-    console.log(props.route.params.data.length)
-    console.log(url.length)
     const uploadImage = async () => {
         for(let i=0;i<props.route.params.data.length;i++)
         {
@@ -48,8 +45,8 @@ export default function Save(props) {
         }
         const taskCompleted  =   () => {
             task.snapshot.ref.getDownloadURL().then((snapshot)=>{
-                setUrl(url => [...url,snapshot])
-                setImg(snapshot)
+                setImg(snapshot);
+                setUrl(url => [...url,snapshot]);
             })
         }
         const taskError =snapshot => {
@@ -76,7 +73,7 @@ export default function Save(props) {
           });
     }
     const check = () => {
-        if(url.length === 1)
+        if(url.length == 1)
         {
             firebase.firestore()
             .collection("Posts")
