@@ -1,6 +1,6 @@
 
 import React, { Component, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Register from './Components/auth/Register';
@@ -91,7 +91,7 @@ export class App extends Component {
         if (this.state.loggedIn) {
           User.uid = uid;
         }
-        console.log(User.uid)
+        //console.log(User.uid)
       }
     })
   }
@@ -125,7 +125,7 @@ export class App extends Component {
             <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
             <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} />
             <Stack.Screen name="Messenger" component={Messenger} navigation={this.props.navigation} />
-            <Stack.Screen name="Chat" component={Chat} navigation={this.props.navigation} options={{ title: 'Default' }} />
+            <Stack.Screen name="Chat" component={Chat}  navigation={this.props.navigation} />
             {/* <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} options ={{headerLeft :null}} /> */}
             <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation} options={{ headerShown: false }} />
             <Stack.Screen name="SearchImage" component={SearchImage} navigation={this.props.navigation} options={{ headerShown: false }} />

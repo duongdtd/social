@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SafeAreaView, Button, Text, View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { SafeAreaView, Button, Text, View, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -39,12 +39,16 @@ export default class Messenger extends React.Component {
   }
 
   renderRow = ({ item }) => {
+    console.log(item.avatar)
     return (
-      <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('Chat', item)}
-        style={{ padding: 17, borderColor: '#DDDDDD', borderBottomWidth: 0.5 }}>
-        <Text style={{ fontSize: 24 }}>{item.name}</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('Chat', item)}
+          style={{ width:'100%', padding: 12, borderColor: '#DDDDDD', borderBottomWidth: 0.5}}>
+          <View style={{width:'100%',flexDirection:'row',alignItems:'center' }}>
+            <Image source={{uri: item.avatar }} style={styles.userImg}/>
+            <Text style={{ fontSize: 24 }}>{item.name}</Text>
+          </View>
+        </TouchableOpacity>
     )
   }
 
@@ -86,6 +90,14 @@ const styles = StyleSheet.create({
   btnText: {
     color: 'darkblue',
     fontSize: 20
+  },
+  userImg: {
+    // marginHorizontal:12,
+    // marginTop:12,
+    margin:12,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
 })
 

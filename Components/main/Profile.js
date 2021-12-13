@@ -160,7 +160,7 @@ function Profile(props, { navigation }) {
   }
 
   const handleChat = () => {
-    firebase.database().ref('Users/' + props.route.params.uid).set({ name: user.name })
+    firebase.database().ref('Users/' + props.route.params.uid).set({ name: user.name,avatar: user.downloadURL });
     props.navigation.navigate('Messenger')
 
   }

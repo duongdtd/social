@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Animated, StyleSheet, Pressable, SafeAreaView, FlatList, Text, 
-         Dimensions, View, TouchableOpacity, TextInput, Easing  } from 'react-native';
+         Dimensions, View, TouchableOpacity, TextInput, Easing, Image } from 'react-native';
 import { Feather, AntDesign, Ionicons } from '@expo/vector-icons';
 import styles from '../constants/style';
 import User from './User';
 import firebase from 'firebase';
+import { Avatar } from 'react-native-elements';
 
 export default class Chat extends React.Component {
 
@@ -13,17 +14,29 @@ export default class Chat extends React.Component {
     this.state = {
       person: {
         name: props.route.params.name,
-        uid: props.route.params.uid
+        uid: props.route.params.uid,
+        avatar: props.route.params.avatar
       },
       textMessage: '',
       messageList: [],
       messageId: []
     }
-    this.props.navigation.setOptions({ title: this.state.person.name })
-    this.chatRow = this.chatRow.bind(this);
-    //console.log("1",this.state.person.name)
+    this.props.navigation.setOptions({ headerTitle: ()=> 
+    <View style={Style.header}>
+      <Avatar size="medium" rounded source={{ uri: this.state.person.avatar }}/>
+      <Text style={Style.headerName}>{this.state.person.name}</Text>
+    </View>})
 
+    this.chatRow = this.chatRow.bind(this);
+    console.log("1",this.state.person.avatar)
   }
+  
+  // Avatar = createReactClass({
+  //   render: function() {
+  //     return  <Image style={styles.avatar} source={{uri:this.state.person.avatar}}/>;
+  //   }
+  // });
+
 
   handleChange = key => val => {
     this.setState({ [key]: val })
@@ -39,23 +52,15 @@ export default class Chat extends React.Component {
           }
         })
       })
-    // const messagesId = firebase.database().ref('messages').child(User.uid).child(this.state.person.uid).key
-    //   .then(function () {
-    //     this.setState((prevState) => {
-    //       return {
-    //         messageId: [...prevState, messagesId]
-    //       }
-    //     })
-    //     console.log(messageId)
+
+    // firebase.database().ref('messages').child(User.uid).child(this.state.person.uid)
+    // .on('child_added', (key) => {
+    //   this.setState((prevState) => {
+    //     return {
+    //       messageId: [...prevState.messageId, key.val()]
+    //     }
     //   })
-    firebase.database().ref('messages').child(User.uid).child(this.state.person.uid)
-    .on('child_added', (key) => {
-      this.setState((prevState) => {
-        return {
-          messageId: [...prevState.messageId, key.val()]
-        }
-      })
-    })
+    // })
 
     this.position = new Animated.ValueXY(0, 0);
   }
@@ -192,14 +197,29 @@ const Style = StyleSheet.create({
   rowChat: {
     //position: 'absolute',
     zIndex:10,
-    // padding:7,
-    // flex:1
-    //left:-30
   },
   rowTime: {
     width:'100%',
     position:'absolute',
     zIndex: 1,
     padding: 3
+  },
+  headerName: {
+    fontSize:21,
+    fontWeight:'bold',
+    marginLeft: 12,
+    
+  },
+  header: {
+    flexDirection:'row',
+    alignItems:'center',
   }
 })
+
+// class Avatar extends React.Component {
+//   render() {
+//     return (
+//       <Image style={styles.avatar} source={{uri:this.state.person.avatar}}/>
+//     )
+//   }
+// }
