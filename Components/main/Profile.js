@@ -225,7 +225,8 @@ function Profile(props, { navigation }) {
            <Image
           style={styles.image}
           source={{ uri: item.downloadURL[0] }}
-        />
+        /> <Foundation name="page-multiple" size={30}  color="rgba(255,255,255,0.8)" 
+        style={{ position: 'absolute', top: 8, right:8 }}/>
         </View>
         ) :(
         <View style={styles.item}>
@@ -299,14 +300,14 @@ function Profile(props, { navigation }) {
                   <TouchableOpacity
                     onPress={() => bs.current.snapTo(0)} //style={styles.button}
                   >
-                    <AntDesign name="setting" size={30} color="black" />
+                    <AntDesign name="setting" size={30} color="#ffb412" />
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={styles.button}
                     onPress={() => props.navigation.navigate('QRscreen', { data: firebase.auth().currentUser.uid })}
                   >
-                    <AntDesign name="qrcode" size={30} color="black" />
+                    <AntDesign name="qrcode" size={30} color="#ffb412" />
                   </TouchableOpacity>
 
                 </View>
@@ -315,7 +316,7 @@ function Profile(props, { navigation }) {
                   <TouchableOpacity 
                       onPress ={handleChat}
                     >
-                      <Feather name="message-circle" size={30} color="black" />
+                      <Feather name="message-circle" size={30} color="#ffb412" />
                     </TouchableOpacity>
                     {following ? (
                     <TouchableOpacity
