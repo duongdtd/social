@@ -11,7 +11,7 @@ import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 require('firebase/firestore')
 require('firebase/database');
-import { SimpleLineIcons, Feather } from '@expo/vector-icons';
+import { SimpleLineIcons, Feather,Foundation } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -68,7 +68,7 @@ function Profile(props, { navigation }) {
         .collection("Posts")
         .doc(firebase.auth().currentUser.uid)
         .collection("UserPosts")
-        .orderBy("creation", "asc")
+        .orderBy("creation", "desc")
         .get()
         .then((snapshot) => {
           let posts = snapshot.docs.map(doc => {
@@ -193,10 +193,13 @@ function Profile(props, { navigation }) {
         {item.type =="list" ? 
         (
         <View style={styles.item}>
+          
            <Image
           style={styles.image}
           source={{ uri: item.downloadURL[0] }}
         />
+        <Foundation name="page-multiple" size={30}  color="rgba(255,255,255,0.8)" 
+        style={{ position: 'absolute', top: 8, right:8 }}/>
         </View>
         ) :(
         <View style={styles.item}>
@@ -407,6 +410,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
+    borderRadius:10,
     aspectRatio: 1 / 1
   },
   containerImage: {
@@ -519,7 +523,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
     height:38,
     width:'50%',
-    border:1,
+    borderWidth:1,
     paddingTop:8,
     paddingBottom:8,
     borderRadius:12,
@@ -536,7 +540,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#eee',
-    height: 150,
+    height: 185,
+    
   }
 })
 export default connect(mapStateToProps, null)(Profile)

@@ -85,11 +85,11 @@ export class Main extends Component {
                         headerRight: () => <View style={styles.container}>
                         <TouchableOpacity style={styles.button}
                         onPress ={() =>this.props.navigation.navigate("QRcode")}>
-                        <AntDesign name="qrcode" size={30} color="black" />
+                        <AntDesign name="qrcode" size={30} color="#ffb412" />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button}
                         onPress ={() =>this.props.navigation.navigate("SearchImage")}>
-                        <AntDesign name="camerao" size={30} color="black" />
+                        <AntDesign name="camerao" size={30} color="#ffb412" />
                         </TouchableOpacity>
                     </View>,
                     }}
@@ -114,7 +114,6 @@ const styles =StyleSheet.create({
         marginRight :16,
     },
     header: {
-        fontFamily: 'Bungee',
         fontWeight:'bold',
         fontSize:26
     }

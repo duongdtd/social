@@ -35,6 +35,7 @@ function EditProfile(props, { navigation }) {
     const taskCompleted  =   () => {
         task.snapshot.ref.getDownloadURL().then((snapshot)=>{
             saveData(snapshot);
+            showAlert();
             console.log(snapshot)
         })
     }
@@ -213,7 +214,7 @@ const saveData = (downloadURL) => {
         style={styles.deviler} />
       <View style={styles.container}>
         <TouchableOpacity style={styles.panelButton}
-        onPress={() =>(showAlert())}>
+        onPress={() =>{uploadImage()}}>
           <Text style={styles.panelButtonTitle}>Update</Text>
         </TouchableOpacity>
       </View>

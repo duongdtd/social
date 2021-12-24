@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useEffect } from "react";
-import { Image, View, Text, TextInput, FlatList, TouchableOpacity,StyleSheet } from "react-native";
+import { Image, View, Text, TextInput, FlatList, TouchableOpacity,StyleSheet,ImageBackground } from "react-native";
 import firebase from "firebase";
 import { Avatar, Badge } from 'react-native-elements';
 import { Button } from "react-native-elements/dist/buttons/Button";
@@ -23,10 +23,10 @@ export default function Search(props, { navigation }) {
     }
     return (
         <View style={{flex:1}}>
-            <Image 
+            <ImageBackground 
                 source={require('../../image/bg2.jpg')}
                 style={StyleSheet.absoluteFillObject }
-                blurRadius={30}
+                blurRadius={10}
             />
             <TextInput style={styles.inputSearch} onChangeText={(search) => fetchUsers(search)}
                 placeholder="Type number, name here" />

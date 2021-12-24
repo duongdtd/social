@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     },
     Caption: {
         fontSize:22,
-        fontWeight:450,
+        fontWeight:'400',
         marginLeft:12,
         //fontFamily: 'Open Sans, san-serif'
     },

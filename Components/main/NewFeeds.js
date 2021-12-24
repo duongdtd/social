@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Animated, Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button, } from 'react-native';
+import { Animated, Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button,ImageBackground } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { useLayoutEffect, useEffect } from 'react'
@@ -322,7 +322,7 @@ function NewFeeds(props, { navigation }) {
 
     <View style={styles.container}>
       <View style={styles.comtainerGalley}>
-        <Image 
+        <ImageBackground 
           source={require('../../image/bg1.jpg')}
           style={StyleSheet.absoluteFillObject}
           blurRadius={65}
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   postText: {
     marginLeft:12,
     marginTop:5,
-    fontStyle:'Italic',
+    fontStyle:'italic',
     fontSize: 16,
     // paddingLeft: 12,
     // paddingRight: 15,
