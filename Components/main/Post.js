@@ -410,7 +410,7 @@ const AddLikeNotifications = () => {
         </View>
         <View style={styles.sendComment}>
           <TextInput 
-            style={{height:36,flex:4,borderWidth:1,borderColor:'#dddddd',padding:6,borderRadius:6,marginRight:12}}
+            style={{height:36,flex:4,borderWidth:2,borderColor:'#dddddd',padding:6,borderRadius:6,marginRight:12}}
             placeholder=' Comment...'
             onChangeText={(text) => setText(text)}>
           </TextInput>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button,Alert } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import 'firebase/database'
@@ -20,7 +20,14 @@ function Profile(props, { navigation }) {
   var bs = React.useRef(null);
   var fall = new Animated.Value(1);
   const logout = () => {
-    firebase.auth().signOut();
+    // firebase.auth().signOut();
+    Alert.alert('Warning', 'Log out ?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      { text: 'OK', onPress: () => firebase.auth().signOut() },
+    ]);
   }
   const renderInner = () => (
     <View style={styles.panel}>
@@ -196,7 +203,7 @@ function Profile(props, { navigation }) {
           
            <Image
           style={styles.image}
-          source={{ uri: item.downloadURL[0] }}
+          source={{ uri: item.im}}
         />
         <Foundation name="page-multiple" size={30}  color="rgba(255,255,255,0.8)" 
         style={{ position: 'absolute', top: 8, right:8 }}/>
@@ -224,7 +231,7 @@ function Profile(props, { navigation }) {
         <View style={styles.item}>
            <Image
           style={styles.image}
-          source={{ uri: item.downloadURL[0] }}
+          source={{ uri: item.im }}
         /> <Foundation name="page-multiple" size={30}  color="rgba(255,255,255,0.8)" 
         style={{ position: 'absolute', top: 8, right:8 }}/>
         </View>
@@ -412,7 +419,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     borderRadius:10,
-    aspectRatio: 1 / 1
+    aspectRatio: 1/1
   },
   containerImage: {
     flex: 1 / 2,
@@ -480,6 +487,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffb412',
     alignItems: 'center',
     marginVertical: 7,
+    borderWidth:2,
+    borderColor:'black'
   },
   panelSubTitle: {
     fontSize: 14,

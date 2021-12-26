@@ -200,6 +200,18 @@ function NewFeeds(props, { navigation }) {
             </View>
             {/* <View style={styles.deviler} /> */}
             <Text style={styles.like}>{String(item.LikesCount)} Likes</Text> 
+            <TouchableOpacity
+            onPress={() =>
+              props.navigation.navigate('Comments', {
+                postId: item.id,
+                uid: item.user.uid, caption: item.caption,
+                image: item.user.downloadURL,
+                type :item.type,
+                name: item.user.nickname[item.user.nickname.length - 1]
+              }
+              )}>
+           <Text style={styles.cmt}>View all {String(item.cmts)} comments</Text> 
+            </TouchableOpacity>
           </Animated.View>
         </View>
       );
@@ -295,7 +307,19 @@ function NewFeeds(props, { navigation }) {
               </View>
             </View>
             {/* <View style={styles.deviler} /> */}
-            <Text style={styles.like}>{String(item.LikesCount)} Likes</Text>     
+            <Text style={styles.like}>{String(item.LikesCount)} Likes</Text> 
+            <TouchableOpacity
+            onPress={() =>
+              props.navigation.navigate('Comments', {
+                postId: item.id,
+                uid: item.user.uid, caption: item.caption,
+                image: item.user.downloadURL,
+                type :item.type,
+                name: item.user.nickname[item.user.nickname.length - 1]
+              }
+              )}>
+            <Text style={styles.cmt}>View all {String(item.cmts)} comments</Text> 
+            </TouchableOpacity>   
           </Animated.View>
         </View>
       );
@@ -363,7 +387,8 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    aspectRatio: 1 / 1
+    aspectRatio: 1 / 1,
+    
   },
   horizontalItem: {
     width: Dimensions.get('screen').width , 
@@ -448,13 +473,24 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 300,
     marginTop: 8,
+    resizeMode :'contain'
+    
   },
   like: {
     marginLeft:12,
     marginBottom:10,
-    fontSize:12,
+    fontSize:15,
     fontWeight:'bold',
     //paddingLeft:12
+  },
+  cmt: {
+    marginLeft:12,
+    marginBottom:10,
+    fontSize:15,
+    fontWeight:'bold',
+    color:'gray'
+    //paddingLeft:12
+
   },
   interReactionWrapper: {
     flexDirection: 'row',

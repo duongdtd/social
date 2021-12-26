@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useEffect } from "react";
-import { View, Text, TextInput, FlatList, TouchableOpacity, Image, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, FlatList, TouchableOpacity, Image, ActivityIndicator,Alert } from "react-native";
 import firebase from "firebase";
 import { Avatar } from 'react-native-elements';
 import { Entypo } from '@expo/vector-icons';
@@ -48,6 +48,24 @@ export default function Notifications({ navigation }) {
             .doc(id)
             .delete()
     }
+    const alert =(id) =>{
+        Alert.alert('Warning', 'Delete this notification ?', [
+            {
+              text: 'No',
+              style: 'cancel',
+            },
+            { text: 'Yes',
+             onPress: () =>{deleteNotification(id),alert1()} },
+          ]);
+    }
+    const alert1 =() =>{
+        Alert.alert('Delete', 'Successful', [
+            {
+              text: 'OK',
+              style: 'cancel',
+            },
+          ]);
+    }
 
     useEffect(() => {
         firebase.firestore()
@@ -78,7 +96,7 @@ export default function Notifications({ navigation }) {
                         <View style={{ flex: 1, backgroundColor: '#fff' }} >
                             {(item.kid != "null") ? (
                                 item.seen == 'no' ? (
-                                    <TouchableOpacity style={{ backgroundColor: '#fff' }}
+                                    <TouchableOpacity style={{ backgroundColor: '#ffb412' }}
                                         onPress={() => {
                                             navigation.navigate("Post", {
                                                 postId: item.kid,
@@ -102,21 +120,21 @@ export default function Notifications({ navigation }) {
                                                     {item.nameUser}{item.type}
                                                 </Text>
                                                 <Text>
-                                                    caption : {item.caption}
+                                                    "{item.caption}".
                                                 </Text>
                                                 <Text>
                                                     {findDaysDiffrent(item.creation.seconds, item.creation.nanoseconds)}
                                                 </Text>
 
                                             </View>
-                                            <TouchableOpacity onPress={() => deleteNotification(item.id)} style={{position:'absolute', right:20}}>
+                                            <TouchableOpacity onPress={() => alert(item.id)} style={{position:'absolute', right:20}}>
                                                 <Entypo name="dots-three-horizontal" size={24} color="black" />
                                             </TouchableOpacity>
                                         </View>
                                     </TouchableOpacity>
 
                                 ) : (
-                                    <TouchableOpacity style={{ backgroundColor: '#ffb412d6', marginTop: 10 }}
+                                    <TouchableOpacity style={{ backgroundColor: '#fff' }}
                                         onPress={() => navigation.navigate("Post", {
                                             postId: item.kid, type: item.typePost,
                                             uid: firebase.auth().currentUser.uid, nameUser: item.nameUser,
@@ -136,13 +154,13 @@ export default function Notifications({ navigation }) {
                                                     {item.nameUser}{item.type}
                                                 </Text>
                                                 <Text>
-                                                    caption : {item.caption}
+                                                    "{item.caption}"".
                                                 </Text>
                                                 <Text>
                                                     {findDaysDiffrent(item.creation.seconds, item.creation.nanoseconds)}
                                                 </Text>
                                             </View>
-                                            <TouchableOpacity onPress={() => deleteNotification(item.id)} style={{position:'absolute', right:20}}>
+                                            <TouchableOpacity onPress={() => alert(item.id)} style={{position:'absolute', right:20}}>
                                                 <Entypo name="dots-three-horizontal" size={24} color="black" />
                                             </TouchableOpacity>
                                         </View>
@@ -160,14 +178,14 @@ export default function Notifications({ navigation }) {
                                     </Image>
                                     <View style={{ flexDirection: 'column' }}>
                                         <Text>
-                                            {item.nameUser}{item.type}
+                                            {item.nameUser}{item.type}.
                                         </Text>
                                         <Text>
                                             {findDaysDiffrent(item.creation.seconds, item.creation.nanoseconds)}
                                         </Text>
 
                                     </View>
-                                    <TouchableOpacity onPress={() => deleteNotification(item.id)} style={{position:'absolute', right:20}}>
+                                    <TouchableOpacity onPress={() => alert(item.id)} style={{position:'absolute', right:20}}>
                                         <Entypo name="dots-three-horizontal" size={24} color="black" />
                                     </TouchableOpacity>
                                 </View>

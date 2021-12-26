@@ -13,57 +13,57 @@ import { Ionicons } from '@expo/vector-icons';
 require('firebase/firestore')
 function EditProfile(props, { navigation }) {
   const [user, setUser] = useState(null)
-  const [name, setname]=useState("")
-  const [nickname, setNickname]=useState("")
-  const [phone, setphone]=useState("")
+  const [name, setname] = useState("")
+  const [nickname, setNickname] = useState("")
+  const [phone, setphone] = useState("")
   const [hasCameraPermission, setCameraHasPermission] = useState(null);
   const [hasGalleyPermission, setGalleyHasPermission] = useState(null);
   const [image, setImage] = useState(null);
   const uploadImage = async () => {
     const uri = image;
-    const childPath =`user/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
+    const childPath = `user/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
     console.log(childPath)
-    const response =await fetch(uri);
-    const blob =await response.blob();  
-    const task =firebase.storage()
-    .ref()
-    .child(childPath)
-    .put(blob);
-    const taskProgress = snapshot  => {
-        console.log(`transferred : ${snapshot.bytesTransferred}`)
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const task = firebase.storage()
+      .ref()
+      .child(childPath)
+      .put(blob);
+    const taskProgress = snapshot => {
+      console.log(`transferred : ${snapshot.bytesTransferred}`)
     }
-    const taskCompleted  =   () => {
-        task.snapshot.ref.getDownloadURL().then((snapshot)=>{
-            saveData(snapshot);
-            showAlert();
-            console.log(snapshot)
-        })
+    const taskCompleted = () => {
+      task.snapshot.ref.getDownloadURL().then((snapshot) => {
+        saveData(snapshot);
+        showAlert();
+        console.log(snapshot)
+      })
     }
-    const taskError =snapshot => {
-        console.log(snapshot) 
+    const taskError = snapshot => {
+      console.log(snapshot)
     }
     task.on("state_changed", taskProgress, taskError, taskCompleted);
-}
-const saveData = (downloadURL) => {
+  }
+  const saveData = (downloadURL) => {
     firebase.firestore()
-    .collection("Users")
-    .doc(firebase.auth().currentUser.uid)
-    .update ({
+      .collection("Users")
+      .doc(firebase.auth().currentUser.uid)
+      .update({
         downloadURL,
-    }).then(( {})
-    )
+      }).then(({})
+      )
     const update = {
-        photoURL: downloadURL,
-        displayName:name
-      };
-       firebase.auth().currentUser.updateProfile(update);
-}
+      photoURL: downloadURL,
+      displayName: name
+    };
+    firebase.auth().currentUser.updateProfile(update);
+  }
   function generateSearchIndex(str) {
-  var temp = []
-  str.trim().split(" ").forEach(word => {
+    var temp = []
+    str.trim().split(" ").forEach(word => {
       temp = temp.concat(generateSearchIndexWord(word))
     })
-     return temp
+    return temp
   }
   function generateSearchIndexWord(word) {
     if (word.length == 0) {
@@ -79,42 +79,42 @@ const saveData = (downloadURL) => {
     }
   }
   const showAlert = () =>
-  Alert.alert(
-    "Profile Updated",
-    "My Alert Msg",
-    [
+    Alert.alert(
+      "Profile Updated",
+      "My Alert Msg",
+      [
+        {
+          text: "Cancel",
+          onPress: () => props.navigation.navigate('NewFeeds'),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => Alert.alert("Cancel Pressed"),
+          style: "cancel",
+        },
+      ],
       {
-        text: "Cancel",
-        onPress: () => props.navigation.navigate('NewFeeds'),
-        style: "cancel",
-      },
-      {
-        text: "OK",
-        onPress: () => Alert.alert("Cancel Pressed"),
-        style: "cancel",
-      },
-    ],
-    {
-      cancelable: true,
-      onDismiss: () =>
-        Alert.alert(
-          "This alert was dismissed by tapping outside of the alert dialog."
-        ),
-    }
-  );
-  const update =() =>{
-  firebase.firestore()
-  .collection('Users')
-  .doc(firebase.auth().currentUser.uid)
-  .update({
-    name: name,
-    nickname :generateSearchIndex(nickname),
-    phone : generateSearchIndex(phone)
-  })
-  .then(() => {
-    console.log('User updated!');
+        cancelable: true,
+        onDismiss: () =>
+          Alert.alert(
+            "This alert was dismissed by tapping outside of the alert dialog."
+          ),
+      }
+    );
+  const update = () => {
+    firebase.firestore()
+      .collection('Users')
+      .doc(firebase.auth().currentUser.uid)
+      .update({
+        name: name,
+        nickname: generateSearchIndex(nickname),
+        phone: generateSearchIndex(phone)
+      })
+      .then(() => {
+        console.log('User updated!');
 
-  });
+      });
   }
   useEffect(() => {
     (async () => {
@@ -125,9 +125,9 @@ const saveData = (downloadURL) => {
       setGalleyHasPermission(galleyStatus.status === 'granted');
 
     })();
-    const { currentUser } = props; 
-      setUser(currentUser);
-     setImage(currentUser.downloadURL);
+    const { currentUser } = props;
+    setUser(currentUser);
+    setImage(currentUser.downloadURL);
   }, []);
   if (user === null) {
     return <View />
@@ -166,55 +166,66 @@ const saveData = (downloadURL) => {
         <View style={styles.containerInfo}>
           <Text>{user.name}</Text>
         </View>
+        <View style={styles.containerInfo}>
+
+          <TouchableOpacity
+            onPress={() => pickImage()}>
+            <Text style={styles.text}>Change avatar</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={{ justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', marginTop: 20 }
-      }>
-        <Text>Name :</Text>
-        <TextInput style={{ marginLeft: 30 }}
-          placeholder={user.name}
-          placeholderTextColor='rgba(0,0,0,1)'
-          keyboardType='email-address'
-          returnKeyType="next"
-          type='text'
-          value={name}
-          onChangeText={(text) =>setname(text)} 
-        ></TextInput>
-      </View>
-      <View
-        style={styles.deviler} />
-      <View style={{ justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', marginTop: 20 }
-      }>
-        <Text>Nickname :</Text>
-        <TextInput style={{ marginLeft: 30 }}
-          placeholder={user.nickname[user.nickname.length-1]}
-          placeholderTextColor='rgba(0,0,0,1)'
-          keyboardType='email-address'
-          returnKeyType="next"
-          type='text'
-          value={name}
-          onChangeText={(text) =>setNickname(text)} 
-        ></TextInput>
+      <View style={styles.viewTextInput}>
+        <Text>Name</Text>
+        <View style={{ width: '80%' }}>
+          <TextInput style={{}}
+            placeholder={user.name}
+            placeholderTextColor='rgba(0,0,0,1)'
+            keyboardType='email-address'
+            returnKeyType="next"
+            type='text'
+            value={name}
+            onChangeText={(text) => setname(text)}
+          ></TextInput>
+        </View>
       </View>
       <View
         style={styles.deviler} />
-      <View style={{ justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', marginTop: 20 }
-      }>
-        <Text>Phone :</Text>
-        <TextInput style={{ marginLeft: 30 }}
-          placeholder={user.phone[user.phone.length - 1]}
-          placeholderTextColor='rgba(0,0,0,1)'
-          keyboardType='email-address'
-          returnKeyType="next"
-          type='text'
-          value={phone}
-          onChangeText={(text) =>setphone(text)} 
-        ></TextInput>
+      <View style={styles.viewTextInput}>
+
+        <Text>Nickname</Text>
+        <View style={{ width: '80%' }}>
+          <TextInput style={{}}
+            placeholder={user.nickname[user.nickname.length - 1]}
+            placeholderTextColor='rgba(0,0,0,1)'
+            keyboardType='email-address'
+            returnKeyType="next"
+            type='text'
+            value={name}
+            onChangeText={(text) => setNickname(text)}
+          ></TextInput>
+        </View>
+      </View>
+      <View
+        style={styles.deviler} />
+      <View style={styles.viewTextInput}>
+        <Text>Phone</Text>
+        <View style={{ width: '80%' }}>
+          <TextInput style={{}}
+            placeholder={user.phone[user.phone.length - 1]}
+            placeholderTextColor='rgba(0,0,0,1)'
+            keyboardType='email-address'
+            returnKeyType="next"
+            type='text'
+            value={phone}
+            onChangeText={(text) => setphone(text)}
+          ></TextInput>
+        </View>
       </View>
       <View
         style={styles.deviler} />
       <View style={styles.container}>
         <TouchableOpacity style={styles.panelButton}
-        onPress={() =>{uploadImage()}}>
+          onPress={() => { uploadImage() }}>
           <Text style={styles.panelButtonTitle}>Update</Text>
         </TouchableOpacity>
       </View>
@@ -232,7 +243,12 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   containerInfo: {
-    margin: 20
+    marginTop: 10
+  },
+  text: {
+    color: '#6495ed',
+    fontSize: 20,
+    fontWeight: 'bold'
   },
   comtainerGalley: {
     flex: 1,
@@ -252,14 +268,16 @@ const styles = StyleSheet.create({
   deviler: {
     borderBottomColor: '#dddddd',
     borderBottomWidth: 1,
-    width: '100%',
+    width: '90%',
     alignSelf: 'center',
     marginTop: 1,
   },
   panelButton: {
     padding: 13,
     borderRadius: 10,
-    backgroundColor: '#FF6347',
+    borderColor:'black',
+    borderWidth:2,
+    backgroundColor: '#ffb412',
     alignItems: 'center',
     marginVertical: 7,
     width: '50%'
@@ -275,6 +293,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
+  viewTextInput: {
+    marginLeft: 20,
+    justifyContent: 'flex-start',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginTop: 20
+
+  }
+
 
 })
 export default connect(mapStateToProps, null)(EditProfile)

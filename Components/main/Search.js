@@ -74,7 +74,7 @@ export default function Search(props, { navigation }) {
                         <View style={{ marginTop: 10 }}>
                             <TouchableOpacity
                                 onPress={() => props.navigation.navigate("Profile", { uid: item.id })}>
-                                <View style={{ flexDirection: 'row',backgroundColor:'#ffb412',borderRadius:60,height:55,
+                                <View style={{ flexDirection: 'row',backgroundColor:'#fff',borderRadius:60,height:55,
                                  justifyContent: 'flex-start', alignItems: 'center',marginTop:5,}}>
                                     <View >
                                         <Avatar
