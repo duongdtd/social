@@ -232,12 +232,14 @@ const styles = StyleSheet.create({
     width: WIDTH - 55,
     height: 45,
     borderRadius: 45,
-    backgroundColor: `#00FA9A`,
+    backgroundColor: `#FFA500`,
     marginTop: 20,
     marginHorizontal: 25,
     justifyContent: 'center',
     alignItems: 'center',
     opacity: 0.8,
+    borderWidth:2,
+    borderColor:'black'
   },
   login2: {
     marginTop: 30,
