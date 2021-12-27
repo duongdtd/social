@@ -96,12 +96,14 @@ export default class Chat extends React.Component {
     Animated.sequence([
       Animated.timing(this.position, {
         toValue: { x: -34, y: 0 },
-        easing:Easing.ease
+        easing:Easing.ease,
+        useNativeDriver:true
       }),
       Animated.timing(this.position, {
         delay:1400,
         easing:Easing.ease,
-        toValue:{x:0,y:0}
+        toValue:{x:0,y:0},
+        useNativeDriver:true
     }),
   ]).start();   
   }
@@ -110,12 +112,14 @@ export default class Chat extends React.Component {
     Animated.sequence([
       Animated.timing(this.position, {
         toValue: { x: 34, y: 0 },
-        easing:Easing.ease
+        easing:Easing.ease,
+        useNativeDriver:true
       }),
       Animated.timing(this.position, {
         delay:1400,
         easing:Easing.ease,
-        toValue:{x:0,y:0}
+        toValue:{x:0,y:0},
+        useNativeDriver:true
     }),
   ]).start();   
   }

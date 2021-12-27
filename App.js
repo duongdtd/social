@@ -65,25 +65,25 @@ export class App extends Component {
       else {
         const uid = user.uid;
         // This is where we will store data about being online/offline.
-        var userStatusDatabaseRef = firebase.database().ref('/Users/' + uid);
-        // or online.
-        var isOfflineForDatabase = {
-          state: 'offline',
-          last_changed: firebase.database.ServerValue.TIMESTAMP,
-        };
-        var isOnlineForDatabase = {
-          state: 'online',
-          last_changed: firebase.database.ServerValue.TIMESTAMP,
-        };
-        firebase.database().ref('.info/connected').on('value', function (snapshot) {
-          // If we're not currently connected, don't do anything.
-          if (snapshot.val() == false) {
-            return;
-          };
-          userStatusDatabaseRef.onDisconnect().update(isOfflineForDatabase).then(function () {
-            userStatusDatabaseRef.update(isOnlineForDatabase);
-          });
-        });
+        // var userStatusDatabaseRef = firebase.database().ref('/Users/' + uid);
+        // // or online.
+        // var isOfflineForDatabase = {
+        //   state: 'offline',
+        //   last_changed: firebase.database.ServerValue.TIMESTAMP,
+        // };
+        // var isOnlineForDatabase = {
+        //   state: 'online',
+        //   last_changed: firebase.database.ServerValue.TIMESTAMP,
+        // };
+        // firebase.database().ref('.info/connected').on('value', function (snapshot) {
+        //   // If we're not currently connected, don't do anything.
+        //   if (snapshot.val() == false) {
+        //     return;
+        //   };
+        //   userStatusDatabaseRef.onDisconnect().update(isOfflineForDatabase).then(function () {
+        //     userStatusDatabaseRef.update(isOnlineForDatabase);
+        //   });
+        // });
         this.setState({
           loggedIn: true,
           loaded: true,

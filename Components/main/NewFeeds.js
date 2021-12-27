@@ -105,7 +105,7 @@ function NewFeeds(props, { navigation }) {
   const ITEM_SIZE = 515;
   const renderMainItem = ({ item,index }) => {
     const inputRange = [-1,0,ITEM_SIZE * index,ITEM_SIZE * (index + 1)];
-    const opacityInputRange = [-1,0,ITEM_SIZE * index,ITEM_SIZE * (index + .5)];
+    const opacityInputRange = [-1,0,ITEM_SIZE * index,ITEM_SIZE * (index + 0.5)];
 
     const scale = scrollY.interpolate({
       inputRange,
