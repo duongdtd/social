@@ -281,7 +281,7 @@ const AddLikeNotifications = () => {
                    }
                )}
               >
-                <Ionicons name="chatbubble-ellipses-outline" size={24} color="#ffb412" />
+                <Ionicons name="chatbubble-ellipses-outline" size={28} color="#ffb412" />
               </TouchableOpacity>
               <Text style={styles.interReactionText}>
                 Comments
@@ -355,7 +355,7 @@ const AddLikeNotifications = () => {
                 }
             )}
           >
-            <Ionicons name="chatbubble-ellipses-outline" size={27} color="#ffb412" />
+            <Ionicons name="chatbubble-ellipses-outline" size={28} color="#ffb412" />
           </TouchableOpacity>
           <Text style={styles.interReactionText}>
             Comments
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   userImg: {
-    marginLeft:12,
+    //marginLeft:12,
     marginTop:12,
     width: 50,
     height: 50,
@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
     marginTop:10,
     fontStyle:'italic',
     fontSize: 16,
-    paddingLeft: 12,
+    //paddingLeft: 12,
     paddingRight: 15,
   },
   postImg: {
@@ -519,7 +519,8 @@ const styles = StyleSheet.create({
 
   },
   like: {
-    marginTop:10,
+    marginTop:6,
+    marginBottom:6,
     fontSize:20,
     fontWeight:'bold',
     paddingLeft:36
@@ -554,7 +555,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     width: '96%',
     alignSelf: 'center',
-    marginTop: 10,
+    //marginBottom:5
   },
   input1: {
     width: '100%',

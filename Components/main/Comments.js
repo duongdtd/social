@@ -201,7 +201,7 @@ function Comments(props) {
                     placeholder="Add a comment "
                     onChangeText={(text) => setText(text)}
                 />
-                <TouchableOpacity style={{alignItems:'flex-end',marginRight :10}}
+                <TouchableOpacity style={{height:30, width:40, marginRight :10}}
                      onPress={() => {
                     onCommentSend(), cmts(props.route.params.uid, props.route.params.postId)
                         , AddNotifications(props.route.params.uid, 
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
         //borderColor: '#FFCC00',
         paddingTop:10,
         paddingBottom: 10,
-        justifyContent: 'flex-start',
+        //justifyContent: 'flex-start',
         alignItems: 'center' 
     },
     inputStyle: {

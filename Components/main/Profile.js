@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button,Alert } from 'react-native';
+import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import 'firebase/database'
@@ -11,7 +11,7 @@ import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 require('firebase/firestore')
 require('firebase/database');
-import { SimpleLineIcons, Feather,Foundation } from '@expo/vector-icons';
+import { SimpleLineIcons, Feather, Foundation } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -26,7 +26,7 @@ function Profile(props, { navigation }) {
         text: 'Cancel',
         style: 'cancel',
       },
-      { text: 'OK', onPress: () => firebase.auth().signOut() },
+      { text: 'Yes', onPress: () => firebase.auth().signOut() },
     ]);
   }
   const renderInner = () => (
@@ -40,7 +40,7 @@ function Profile(props, { navigation }) {
         <Text style={styles.panelButtonTitle}>Change Password</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton}
-        onPress={logout} >
+        onPress={logout}>
         <Text style={styles.panelButtonTitle}>Log Out</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.panelButton}
@@ -62,8 +62,7 @@ function Profile(props, { navigation }) {
   const [following, setFollowing] = useState(false)
 
   useEffect(() => {
-    const { currentUser, posts } = props;
-    if (props.route.params.uid === firebase.auth().currentUser.uid) {
+    if (props.route.params.uid == firebase.auth().currentUser.uid) {
       firebase.firestore()
         .collection("Users")
         .doc(firebase.auth().currentUser.uid)
@@ -167,7 +166,7 @@ function Profile(props, { navigation }) {
   }
 
   const handleChat = () => {
-    firebase.database().ref('Users/' + props.route.params.uid).set({ name: user.name,avatar: user.downloadURL });
+    firebase.database().ref('Users/' + props.route.params.uid).set({ name: user.name, avatar: user.downloadURL });
     props.navigation.navigate('Messenger')
 
   }
@@ -183,78 +182,76 @@ function Profile(props, { navigation }) {
         nameUser: nameUser,
         type: ' đã theo dõi bạn bạn',
         seen: 'yes',
-        creation:firebase.firestore.FieldValue.serverTimestamp(),
+        creation: firebase.firestore.FieldValue.serverTimestamp(),
       })
   }
-  const renderHorizontalItem = ({item}) => {
+  const renderHorizontalItem = ({ item }) => {
     return (
       <View style={styles.containerImage}>
-      {props.route.params.uid == firebase.auth().currentUser.uid ? (
-        <TouchableOpacity
-        onPress ={() => props.navigation.navigate("Post", {
-          postId: item.id, type :item.type,
-          uid: firebase.auth().currentUser.uid,
-          uid1: firebase.auth().currentUser.uid,
-          imgOwn :firebase.auth().currentUser.photoURL
-      })}>
-        {item.type =="list" ? 
-        (
-        <View style={styles.item}>
-          
-           <Image
-          style={styles.image}
-          source={{ uri: item.im}}
-        />
-        <Foundation name="page-multiple" size={30}  color="rgba(255,255,255,0.8)" 
-        style={{ position: 'absolute', top: 8, right:8 }}/>
-        </View>
-        ) :(
-        <View style={styles.item}>
-                 <Image
-          style={styles.image}
-          source={{ uri: item.downloadURL }}
-        />
-        </View>
-        )
-        }
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-      onPress ={() => props.navigation.navigate("Post", {
-        postId: item.id, type :item.type,
-        uid: firebase.auth().currentUser.uid,
-        uid1: props.route.params.uid,
-        imgOwn: user.downloadURL
-    })}>
-      {item.type =="list" ? 
-        (
-        <View style={styles.item}>
-           <Image
-          style={styles.image}
-          source={{ uri: item.im }}
-        /> <Foundation name="page-multiple" size={30}  color="rgba(255,255,255,0.8)" 
-        style={{ position: 'absolute', top: 8, right:8 }}/>
-        </View>
-        ) :(
-        <View style={styles.item}>
-                 <Image
-          style={styles.image}
-          source={{ uri: item.downloadURL }}
-        />
-        </View>
-        )
-        }
-      </TouchableOpacity>
-      )}
-    </View>
+        {props.route.params.uid == firebase.auth().currentUser.uid ? (
+          <TouchableOpacity
+            onPress={() => props.navigation.navigate("Post", {
+              postId: item.id, type: item.type,
+              uid: firebase.auth().currentUser.uid,
+              uid1: firebase.auth().currentUser.uid,
+              imgOwn: firebase.auth().currentUser.photoURL
+            })}>
+            {item.type == "list" ?
+              (
+                <View style={styles.item}>
+
+                  <Image
+                    style={styles.image}
+                    source={{ uri: item.im }}
+                  />
+                  <Foundation name="page-multiple" size={30} color="rgba(255,255,255,0.😎" style={{ position: 'absolute', top: 8, right: 8 }} />
+                </View>
+              ) : (
+                <View style={styles.item}>
+                  <Image
+                    style={styles.image}
+                    source={{ uri: item.downloadURL }}
+                  />
+                </View>
+              )
+            }
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => props.navigation.navigate("Post", {
+              postId: item.id, type: item.type,
+              uid: firebase.auth().currentUser.uid,
+              uid1: props.route.params.uid,
+              imgOwn: user.downloadURL,
+            })}>
+            {item.type == "list" ?
+              (
+                <View style={styles.item}>
+                  <Image
+                    style={styles.image}
+                    source={{ uri: item.im }}
+                  />
+                  <Foundation name="page-multiple" size={30} color="rgba(255,255,255,0.😎"
+                    style={{ position: 'absolute', top: 8, right: 8 }} />
+                </View>
+              ) : (
+                <View style={styles.item}>
+                  <Image
+                    style={styles.image}
+                    source={{ uri: item.downloadURL }}
+                  />
+                </View>
+              )
+            }
+          </TouchableOpacity>
+        )}
+      </View>
     );
   }
-  console.log(user)
-  if (user === null) {
+  if (user == null) {
     return <View />
   }
   return (
-
     <View style={styles.container}>
       <BottomSheet
         ref={bs}
@@ -300,10 +297,8 @@ function Profile(props, { navigation }) {
               </View>
             </View>
             <View style={styles.Header}>
-              {/* <Text style={styles.text}>{user.nickname[user.nickname.length-1]}</Text> */}
               {props.route.params.uid == firebase.auth().currentUser.uid ? (
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-
                   <TouchableOpacity
                     onPress={() => bs.current.snapTo(0)} //style={styles.button}
                   >
@@ -319,25 +314,26 @@ function Profile(props, { navigation }) {
 
                 </View>
               ) : (
-                <View style={{width:'100%', flexDirection:'row'}}>
-                  <TouchableOpacity 
-                      onPress ={handleChat}
-                    >
-                      <Feather name="message-circle" size={30} color="#ffb412" />
-                    </TouchableOpacity>
-                    {following ? (
+                <View style={{ width: '100%', flexDirection: 'row' }}>
+                  <TouchableOpacity
+                    onPress={handleChat}
+                  >
+                    <Feather name="message-circle" size={30} color="#ffb412" />
+                  </TouchableOpacity>
+                  {following == true ? (
                     <TouchableOpacity
-                      style={styles.btnFollow}                    
+                      style={styles.btnFollow}
                       onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
                       <Text style={styles.followText}>Unfollow</Text>
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity
                       style={styles.btnFollow}
-                      onPress={() => { onfollowing(), AddFollow(), AddFollowing()
-                      ,AddNotifications(props.route.params.uid,
-                      props.currentUser.nickname[props.currentUser.nickname.length-1]) }}>                     
-                     <Text style={styles.followText}>follow</Text>
+                      onPress={() => {
+                        onfollowing(), AddFollow(), AddFollowing()
+                        , AddNotifications(props.route.params.uid,
+                          props.currentUser.nickname[props.currentUser.nickname.length - 1])
+                      }}><Text style={styles.followText}>follow</Text>
                     </TouchableOpacity>
                   )
                   }
@@ -346,28 +342,6 @@ function Profile(props, { navigation }) {
             </View>
           </View>
         </View>
-
-        {/* {props.route.params.uid !== firebase.auth().currentUser.uid ? (
-                <View style={{ display:'flex', width:'100%',alignItems:'center',alignContent:'center' }}>
-                  {following ? (
-                    <TouchableOpacity
-                      style={styles.btnFollow}                    
-                      onPress={() => { unfollowing(), SubFollow(), SubFollowing() }}>
-                      <Text style={styles.followText}>Unfollow</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      style={styles.btnFollow}
-                      onPress={() => { onfollowing(), AddFollow(), AddFollowing()
-                      ,AddNotifications(props.route.params.uid,
-                      props.currentUser.nickname[props.currentUser.nickname.length-1]) }}>                     
-                     <Text style={styles.followText}>follow</Text>
-                    </TouchableOpacity>
-                  )
-                  }
-                </View>
-              ) : null} */}
-
         <View
           style={styles.deviler} />
         <View style={styles.comtainerGalley}
@@ -391,7 +365,7 @@ const mapStateToProps = (store) => ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'white'
+    backgroundColor: 'white'
   },
   containerInfo: {
     //marginLeft: 30
@@ -413,13 +387,13 @@ const styles = StyleSheet.create({
   comtainerGalley: {
     flex: 1,
     marginTop: 16,
-    marginHorizontal:5,
+    marginHorizontal: 5,
     flexDirection: 'column'
   },
   image: {
     flex: 1,
-    borderRadius:10,
-    aspectRatio: 1/1
+    borderRadius: 10,
+    aspectRatio: 1 / 1
   },
   containerImage: {
     flex: 1 / 2,
@@ -487,8 +461,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffb412',
     alignItems: 'center',
     marginVertical: 7,
-    borderWidth:2,
-    borderColor:'black'
+    borderWidth: 2,
+    borderColor: 'black'
   },
   panelSubTitle: {
     fontSize: 14,
@@ -524,25 +498,25 @@ const styles = StyleSheet.create({
   },
   panel: {
     backgroundColor: '#FFFFFF',
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     paddingBottom: 20,
   },
   btnFollow: {
-    marginLeft:'16%',
-    textAlign:'center',
-    alignItems:'center',
-    height:38,
-    width:'50%',
-    borderWidth:1,
-    paddingTop:8,
-    paddingBottom:8,
-    borderRadius:12,
-    backgroundColor:'#ffb412',    
+    marginLeft: '16%',
+    textAlign: 'center',
+    alignItems: 'center',
+    height: 38,
+    width: '50%',
+    borderWidth: 1,
+    paddingTop: 8,
+    paddingBottom: 8,
+    borderRadius: 12,
+    backgroundColor: '#ffb412',
   },
   followText: {
-    textTransform:'uppercase',
-    fontWeight:'bold',
-    fontSize:17
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    fontSize: 17
   },
   item: {
     margin: 5,
@@ -551,7 +525,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#eee',
     height: 185,
-    
+
   }
 })
 export default connect(mapStateToProps, null)(Profile)

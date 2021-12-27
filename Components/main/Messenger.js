@@ -19,13 +19,13 @@ export default class Messenger extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
-    let dbRef = firebase.database().ref('Users');
+    let dbRef = firebase.database().ref('Users/'+User.uid)
+    console.log("User UID la:",User.uid)
     dbRef.on('child_added', (val) => {
       let person = val.val();
-      person.uid = val.key;
-      if (person.uid === User.uid) {
-        User.name = person.name
-      } else {
+      console.log("2", person);
+      //person.uid = val.key;
+{
         this.setState((prevState) => {
           // console.log("1",typeof person);
           // console.log("2",prevState);
@@ -39,7 +39,7 @@ export default class Messenger extends React.Component {
   }
 
   renderRow = ({ item }) => {
-    console.log(item.avatar)
+    //console.log(item.avatar)
     return (
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('Chat', item)}
@@ -110,10 +110,6 @@ const styles = StyleSheet.create({
 //       let person = val.val(); 
 //       person.uid = val.key;
 //       setUsers((prevState) => {
-//         console.log("1",typeof person);
-//         console.log("2",prevState);
-//         console.log("3",typeof users);
-//         // console.log(person.name)
 //         return {
 //           users: [...prevState, person]
 //         }  
