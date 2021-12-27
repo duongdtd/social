@@ -12,18 +12,15 @@ export default function Login({navigation} ) {
   const [isShow,setIs] =useState(true)
   const [email, setemail]=useState("")
   const [password, setpassword]=useState("")
-
   const [uid,setUID] = useState("");
-
   const  forgotPassword = (Email) => {
     firebase.auth().sendPasswordResetEmail(Email)
       .then(() => {
-        Alert.alert("check email");
+        Alert.alert(`check email ${Email}`);
       }).catch(function (e) {
-        console.log(e)
+        Alert.alert("Error");
       })
   }
-  console.log('test')
   const SignIn = () => {
     firebase.auth()
     .signInWithEmailAndPassword(email, password)
@@ -193,6 +190,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     opacity: 0.8,
+    borderWidth:2,
+    borderColor:'black'
   },
   login2: {
     marginTop: 30,

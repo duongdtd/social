@@ -97,7 +97,7 @@ function Profile(props, { navigation }) {
         .collection("Posts")
         .doc(props.route.params.uid)
         .collection("UserPosts")
-        .orderBy("creation", "asc")
+        .orderBy("creation", "desc")
         .get()
         .then((snapshot) => {
           let posts = snapshot.docs.map(doc => {

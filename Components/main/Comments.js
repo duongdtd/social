@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Button, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, Button, TextInput, StyleSheet, TouchableOpacity,TouchableWithoutFeedback, Keyboard } from "react-native";
 import firebase from "firebase";
 import { user } from "../../redux/reducers/user";
 import { Avatar } from 'react-native-elements';
@@ -8,6 +8,27 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { fetchUsersData } from "../../redux/actions/index";
 import { AntDesign } from '@expo/vector-icons';
+function findDaysDiffrent(seconds, nanoseconds) {
+
+    let CreatedDate = new Date(seconds * 1000 + nanoseconds / 1000000)
+    let today = new Date()
+    let requiredDiffrentDays
+
+    const oneMinute = 60 * 1000;
+    const diffMinutes = Math.round(Math.abs((CreatedDate - today) / oneMinute));
+    if (diffMinutes >= 518400) {
+        requiredDiffrentDays = Math.floor(diffMinutes / 518400) == 1 ? `${Math.floor(diffMinutes / 525600)} year ` : `${Math.floor(diffMinutes / 525600)} years `
+    } else if (diffMinutes >= 43200) {
+        requiredDiffrentDays = Math.floor(diffMinutes / 43200) == 1 ? `${Math.floor(diffMinutes / 43200)} month ` : `${Math.floor(diffMinutes / 43200)} months `
+    } else if (diffMinutes >= 1440) {
+        requiredDiffrentDays = Math.floor(diffMinutes / 1440) == 1 ? `${Math.floor(diffMinutes / 1440)} day ` : `${Math.floor(diffMinutes / 1440)} days `
+    } else if (diffMinutes >= 60) {
+        requiredDiffrentDays = Math.floor(diffMinutes / 60) == 1 ? `${Math.floor(diffMinutes / 60)} hour ` : `${Math.floor(diffMinutes / 60)} hours `
+    } else if (diffMinutes < 60) {
+        requiredDiffrentDays = (diffMinutes == 1 || diffMinutes == 0) == 1 ? "just now" : `${Math.floor(diffMinutes)} minutes `
+    }
+    return requiredDiffrentDays;
+}
 function Comments(props) {
 
     const [comments, setComments] = useState([])
@@ -38,7 +59,7 @@ function Comments(props) {
                 .collection('UserPosts')
                 .doc(props.route.params.postId)
                 .collection('Comments')
-                .orderBy("creation","asc")
+                .orderBy("creation", "desc")
                 .onSnapshot((snapshot) => {
                     let comments = snapshot.docs.map(doc => {
                         const data = doc.data();
@@ -54,7 +75,7 @@ function Comments(props) {
             matchUserToComment(comments)
         }
 
-    }, [props.route.params.postId, props.users, props.route.params.postId.likesCouter,comments])
+    }, [props.route.params.postId, props.users, props.route.params.postId.likesCouter, comments])
     const onCommentSend = () => {
         firebase.firestore()
             .collection('Posts')
@@ -65,7 +86,7 @@ function Comments(props) {
             .add({
                 creator: firebase.auth().currentUser.uid,
                 text,
-                creation:firebase.firestore.FieldValue.serverTimestamp(),
+                creation: firebase.firestore.FieldValue.serverTimestamp(),
             })
     }
     const cmts = (userId, postId) => {
@@ -98,26 +119,31 @@ function Comments(props) {
             .doc(id)
             .delete()
     }
-    const AddNotifications = (userId, postId, nameUser,type,img,caption) => {
-        if(userId != firebase.auth().currentUser.uid)
-        {firebase.firestore()
-            .collection("Notifications")
-            .doc(userId)
-            .collection("UserNotifications")
-            .add({
-                kid: String(postId),
-                image: firebase.auth().currentUser.photoURL,
-                nameUser: nameUser,
-                type: ' đã bình luận bài viết của bạn',
-                seen: 'no',
-                typePost :type,
-                imageOwn:img,
-                time:firebase.firestore.FieldValue.serverTimestamp(),
-                caption:caption,
-        })}
+    const AddNotifications = (userId, postId, nameUser, type, img, caption) => {
+        if (userId != firebase.auth().currentUser.uid) {
+            firebase.firestore()
+                .collection("Notifications")
+                .doc(userId)
+                .collection("UserNotifications")
+                .add({
+                    kid: String(postId),
+                    image: firebase.auth().currentUser.photoURL,
+                    nameUser: nameUser,
+                    type: ' đã bình luận bài viết của bạn',
+                    seen: 'no',
+                    typePost: type,
+                    imageOwn: img,
+                    time: firebase.firestore.FieldValue.serverTimestamp(),
+                    caption: caption,
+                })
+        }
     }
 
     return (
+        <TouchableWithoutFeedback style={{flex: 1,
+            marginTop: 30,
+            flexDirection: 'column',
+            justifyContent: 'flex-start',}} onPress={Keyboard.dismiss}>
         <View style={{
             flex: 1,
             marginTop: 30,
@@ -125,25 +151,26 @@ function Comments(props) {
             justifyContent: 'flex-start',
         }}>
             <View>
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                     <View style={styles.Avatar}>
                         <Avatar size="small" rounded source={{ uri: props.route.params.image }} />
                     </View>
-                    <Text style={{fontSize:18,fontWeight:'bold'}}>
+                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
                         {props.route.params.name}
                     </Text>
+                    <Text style={styles.comment, styles.Caption}>{props.route.params.caption}</Text>
                 </View>
-                <Text style={styles.comment, styles.Caption}>{props.route.params.caption}</Text>
+
 
             </View>
             <View style={{
-                //borderBottomColor: '#dddddd',
+                borderBottomColor: '#dddddd',
                 borderBottomWidth: 1,
-                width: '92%',
+                width: '100%',
                 alignSelf: 'center',
                 marginTop: 15,
                 marginBottom: 15,
-                borderColor: '#FFCC00',
+
             }} />
             <FlatList
                 numColumns={1}
@@ -154,20 +181,33 @@ function Comments(props) {
                         {item.user !== undefined ?
                             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                                 <View style={styles.Avatar}>
-                                    <Avatar size="small" rounded source={{ uri: item.user.downloadURL }} />                
-                                </View>                                               
-                                <Text style={{flex:5,fontWeight:'bold'}}>
-                                    {item.user.nickname[item.user.nickname.length - 1]}
-                                </Text>
+                                    <Avatar size="small" rounded source={{ uri: item.user.downloadURL }} />
+                                </View>
+                                <View style={{ flexDirection: 'column' }}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={{ fontWeight: 'bold', fontSize: 15 }}>
+                                            {item.user.nickname[item.user.nickname.length - 1]}
+                                        </Text>
+                                        <Text style={styles.comment}>{item.text}</Text>
+
+                                    </View>
+                                    { item.creation != null ?
+                                        (<Text >{findDaysDiffrent(item.creation.seconds,
+                                            item.creation.nanoseconds)}</Text>) :(<View></View>)
+                                    }   
+                                </View>
                                 {
                                     item.user.uid === firebase.auth().currentUser.uid ? (
-                                        <View style={{flexGrow:0.5}}>
+                                        <View style={{
+                                            position: 'absolute',
+                                            right: 10,
+                                        }}>
                                             <TouchableOpacity
                                                 onPress={() => {
                                                     onCommentDelete(item.id),
-                                                    deleteCmts(props.route.params.uid, props.route.params.postId)
+                                                        deleteCmts(props.route.params.uid, props.route.params.postId)
                                                 }}
-                                                style={{alignItems:'flex-end',marginRight:10}}>
+                                                style={{ alignItems: 'flex-end', marginRight: 10 }}>
                                                 <AntDesign name="delete" size={18} color="black" />
                                             </TouchableOpacity>
                                         </View>
@@ -175,14 +215,13 @@ function Comments(props) {
                                 }
                             </View>
                             : null}
-                        <Text style={styles.comment}>{item.text}</Text>
                     </View>
                 )}
             />
             <View style={{
                 borderBottomColor: '#dddddd',
                 borderBottomWidth: 1,
-                width: '92%',
+                width: '100%',
                 alignSelf: 'center',
                 marginTop: 15,
                 marginBottom: 15,
@@ -190,10 +229,10 @@ function Comments(props) {
             }} />
             <View style={styles.Container}>
                 <View style={styles.Avatar}>
-                    <Avatar 
-                    size ={'small'}
-                    rounded
-                    source={{uri : firebase.auth().currentUser.photoURL}}               
+                    <Avatar
+                        size={'small'}
+                        rounded
+                        source={{ uri: firebase.auth().currentUser.photoURL }}
                     />
                 </View>
                 <TextInput
@@ -201,59 +240,61 @@ function Comments(props) {
                     placeholder="Add a comment "
                     onChangeText={(text) => setText(text)}
                 />
-                <TouchableOpacity style={{height:30, width:40, marginRight :10}}
-                     onPress={() => {
-                    onCommentSend(), cmts(props.route.params.uid, props.route.params.postId)
-                        , AddNotifications(props.route.params.uid, 
-                            props.route.params.postId,
-                             props.currentUser.name,props.route.params.type,props.route.params.image
-                             ,props.route.params.caption)
-                }}>
-                <Text>Post</Text>
+                <TouchableOpacity style={{
+                    position: 'absolute',
+                    right: 20,
+                }}
+                    onPress={() => {
+                        onCommentSend(), cmts(props.route.params.uid, props.route.params.postId)
+                            , AddNotifications(props.route.params.uid,
+                                props.route.params.postId,
+                                props.currentUser.name, props.route.params.type, props.route.params.image
+                                , props.route.params.caption)
+                    }}>
+                    <Text style={{ fontSize: 16 }}>Post</Text>
                 </TouchableOpacity>
             </View>
         </View>
+        </TouchableWithoutFeedback>
     )
 }
 const styles = StyleSheet.create({
     Container: {
         flexDirection: 'row',
-        //borderTopWidth:1,
-        //borderColor: '#FFCC00',
-        paddingTop:10,
+        paddingTop: 10,
         paddingBottom: 10,
-        //justifyContent: 'flex-start',
-        alignItems: 'center' 
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        marginBottom: 10,
     },
     inputStyle: {
-        width:'100%',
-        height:30,
-        padding:8,
+        width: '100%',
+        height: 30,
+        padding: 8,
         marginLeft: 6,
         marginRight: 10
     },
     Avatar: {
-        marginLeft:12,
-        marginRight:10,
+        marginLeft: 5,
+        marginRight: 5,
     },
     comment: {
-        marginLeft:12,
-        fontSize:18,
+        marginLeft: 5,
+        fontSize: 15,
     },
     Caption: {
-        fontSize:22,
-        fontWeight:'400',
-        marginLeft:12,
+        fontSize: 15,
+        fontWeight: '400',
+        marginLeft: 5,
     },
     commentRow: {
-        //width:'100%',
-        borderWidth:1,
-        borderRadius:18,
-        borderColor:'#EEB422',
-        backgroundColor:'#f5d941',
-        padding:5,
-        marginHorizontal:10,
-        marginVertical:6
+        borderWidth: 1,
+        borderRadius: 18,
+        borderColor: '#EEB422',
+        backgroundColor: '#f5d941',
+        padding: 5,
+        marginHorizontal: 10,
+        marginVertical: 6
     }
 })
 const mapStateToProps = (store) => ({
