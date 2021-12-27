@@ -461,8 +461,8 @@ const styles = StyleSheet.create({
     marginTop:5
   },
   comment: {
-    marginLeft:12,
-    fontSize:18,
+    marginLeft:10,
+    fontSize:15,
     //fontFamily: 'Open Sans, san-serif'
   },
   sendComment: {

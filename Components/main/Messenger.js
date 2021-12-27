@@ -20,12 +20,11 @@ export default class Messenger extends React.Component {
 
   UNSAFE_componentWillMount() {
     let dbRef = firebase.database().ref('Users/'+User.uid)
-    console.log("User UID la:",User.uid)
     dbRef.on('child_added', (val) => {
       let person = val.val();
       console.log("2", person);
-      //person.uid = val.key;
-{
+      person.uid = val.key;
+      {
         this.setState((prevState) => {
           // console.log("1",typeof person);
           // console.log("2",prevState);
@@ -33,13 +32,14 @@ export default class Messenger extends React.Component {
           return {
             users: [...prevState.users, person]
           }
+          
         })
+        //console.log(this.state.users)
       }
     })
   }
 
   renderRow = ({ item }) => {
-    //console.log(item.avatar)
     return (
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('Chat', item)}
@@ -60,7 +60,7 @@ export default class Messenger extends React.Component {
         <FlatList
           data={this.state.users}
           renderItem={this.renderRow}
-          keyExtractor={(item) => item.uid}
+          keyExtractor={(item) => { return item.uid}}
         />
         {/* <Text>{this.users.name}</Text> */}
       </SafeAreaView>
