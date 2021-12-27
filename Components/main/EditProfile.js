@@ -10,6 +10,7 @@ import { Camera } from 'expo-camera';
 import { useIsFocused } from '@react-navigation/core';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
+require('firebase/database');
 require('firebase/firestore')
 function EditProfile(props, { navigation }) {
   const [user, setUser] = useState(null)
@@ -142,6 +143,7 @@ function EditProfile(props, { navigation }) {
     console.log(result);
     if (!result.cancelled) {
       setImage(result.uri);
+      firebase.database().ref('Users/' + props.route.params.uid).set({avatar: result.uri });
     }
   };
   if (hasCameraPermission === null || hasGalleyPermission === false) {

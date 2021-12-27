@@ -102,7 +102,7 @@ function NewFeeds(props, { navigation }) {
       .doc(firebase.auth().currentUser.uid)
       .delete({})
   }
-  const ITEM_SIZE = 460;
+  const ITEM_SIZE = 515;
   const renderMainItem = ({ item,index }) => {
     const inputRange = [-1,0,ITEM_SIZE * index,ITEM_SIZE * (index + 1)];
     const opacityInputRange = [-1,0,ITEM_SIZE * index,ITEM_SIZE * (index + .5)];
@@ -407,10 +407,10 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 12,
     borderRadius: 14,
-    //elevation:10,
+    elevation:18,
     shadowColor: 'black',
-    shadowOpacity: 0.7,
-    shadowOffset: { width: 0, height: 10},
+    //shadowOpacity: 0.7,
+    //shadowOffset: { width: 0, height: 10},
     shadowRadius: 14,
     //transform:[{scale}]
     // shadowColor:'#000',

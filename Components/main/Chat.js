@@ -173,7 +173,7 @@ export default class Chat extends React.Component {
             value={this.state.textMessage}
             onChangeText={this.handleChange('textMessage')}
           />
-          <TouchableOpacity onPress={this.sendMessage} style={[{ paddingBottom: 5, marginTop: 4 }
+          <TouchableOpacity onPress={this.sendMessage} style={[{ marginLeft: 12,marginBottom: 22, marginTop: 12, marginRight:16 }
           ,{ transform: [{ rotate: '45deg' }]
           }]}>
             {/* <Text style={styles.btnText}>Send</Text> */}
@@ -191,8 +191,10 @@ const Style = StyleSheet.create({
 		padding: 10,
 		borderWidth:1,
 		borderColor: '#ccc',
-		width:'85%',
-		borderRadius:5
+		width:'80%',
+		borderRadius:5,
+    marginBottom: 12,
+    marginLeft: 6,
 	},
   rowChat: {
     //position: 'absolute',
