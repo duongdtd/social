@@ -87,7 +87,6 @@ export class App extends Component {
         if (this.state.loggedIn) {
           User.uid = uid;
         }
-        //console.log(User.uid)
       }
     })
   }
@@ -95,7 +94,8 @@ export class App extends Component {
   render() {
     const { loggedIn, loaded } = this.state;
     if (!loaded) {
-      (<View style={{
+     return (
+      <View style={{
         flex: 1, justifyContent: 'center',
         alignItems: 'center', backgroundColor: '#ffb412'
       }}>
@@ -104,7 +104,7 @@ export class App extends Component {
         </View>
       </View>
 
-      )
+      );
     }
     if (!loggedIn) {
       return (

@@ -20,6 +20,7 @@ function EditProfile(props, { navigation }) {
   const [hasCameraPermission, setCameraHasPermission] = useState(null);
   const [hasGalleyPermission, setGalleyHasPermission] = useState(null);
   const [image, setImage] = useState(null);
+  const [base64, setBase64] = useState("");
   const uploadImage = async () => {
     const uri = image;
     const childPath = `user/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
@@ -37,14 +38,31 @@ function EditProfile(props, { navigation }) {
       task.snapshot.ref.getDownloadURL().then((snapshot) => {
         saveData(snapshot);
         showAlert();
-        console.log(snapshot)
       })
     }
     const taskError = snapshot => {
       console.log(snapshot)
     }
     task.on("state_changed", taskProgress, taskError, taskCompleted);
+    up();
   }
+  const up = () => {
+    fetch(`http://171.244.53.66:5000/add_faces?user_id=${firebase.auth().currentUser.uid}`, {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(
+            [
+                {
+                    image: `data:image/png;base64,${base64}`
+                }
+            ]
+        )
+    });
+}
+console.log(base64)
   const saveData = (downloadURL) => {
     firebase.firestore()
       .collection("Users")
@@ -81,8 +99,8 @@ function EditProfile(props, { navigation }) {
   }
   const showAlert = () =>
     Alert.alert(
-      "Profile Updated",
-      "My Alert Msg",
+      "Profile ",
+      "Success",
       [
         {
           text: "Cancel",
@@ -92,7 +110,6 @@ function EditProfile(props, { navigation }) {
         {
           text: "OK",
           onPress: () => Alert.alert("Cancel Pressed"),
-          style: "cancel",
         },
       ],
       {
@@ -113,8 +130,6 @@ function EditProfile(props, { navigation }) {
         phone: generateSearchIndex(phone)
       })
       .then(() => {
-        console.log('User updated!');
-
       });
   }
   useEffect(() => {
@@ -137,12 +152,14 @@ function EditProfile(props, { navigation }) {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
+      base64:true,
     });
     console.log(result);
     if (!result.cancelled) {
       setImage(result.uri);
+      setBase64(result.base64);
       firebase.database().ref('Users/' + props.route.params.uid).set({avatar: result.uri });
     }
   };
@@ -202,7 +219,7 @@ function EditProfile(props, { navigation }) {
             keyboardType='email-address'
             returnKeyType="next"
             type='text'
-            value={name}
+            value={nickname}
             onChangeText={(text) => setNickname(text)}
           ></TextInput>
         </View>
@@ -227,7 +244,7 @@ function EditProfile(props, { navigation }) {
         style={styles.deviler} />
       <View style={styles.container}>
         <TouchableOpacity style={styles.panelButton}
-          onPress={() => { uploadImage() }}>
+          onPress={() => { uploadImage(),update() }}>
           <Text style={styles.panelButtonTitle}>Update</Text>
         </TouchableOpacity>
       </View>

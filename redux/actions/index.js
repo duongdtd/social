@@ -14,8 +14,7 @@ export function fetchUser() {
         firebase.firestore()
         .collection("Users")
         .doc(firebase.auth().currentUser.uid)
-        .get()
-        .then((snapshot)=>{
+        .onSnapshot((snapshot)=>{
             if(snapshot.exists){
                 dispacth({type :USER_STATE_CHANGE , currentUser: snapshot.data()})
             }
@@ -70,8 +69,7 @@ export function fetchUsersData(uid,getPosts)
         firebase.firestore()
         .collection("Users")
         .doc(uid)
-        .get()
-        .then((snapshot)=>{
+        .onSnapshot((snapshot)=>{
             if(snapshot.exists){
                 let user =snapshot.data();
                 user.uid =snapshot.id;

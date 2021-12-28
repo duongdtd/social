@@ -52,11 +52,11 @@ export default function Save(props) {
                 console.log(snapshot)
             }
             task.on("state_changed", taskProgress, taskError, taskCompleted);
-            // up(`data:image/png;base64,${props.route.params.images[i]}`)
+            up(`data:image/png;base64,${props.route.params.images[i]}`)
         }
     }
     const up = (source) => {
-        fetch(`http://103.138.113.112:5000/add_faces?user_id=${firebase.auth().currentUser.uid}`, {
+        fetch(`http://171.244.53.66:5000/add_faces?user_id=${firebase.auth().currentUser.uid}`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',

@@ -44,7 +44,7 @@ export default function Photo({ navigation }) {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1,1],
       quality: 1.0,
       base64: true,
 

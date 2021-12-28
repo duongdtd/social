@@ -33,8 +33,6 @@ export default function Photo2({ navigation }) {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
       quality: 1,
       base64 :true
     });
@@ -72,7 +70,7 @@ export default function Photo2({ navigation }) {
 
         <TouchableOpacity
           style={styles.sideBarButton}
-          nPress={() => pickImage()}>
+          onPress={() => pickImage()}>
           <AntDesign name="picture" size={30} color="white" />
           <Text style={styles.iconText}>Pick</Text>
         </TouchableOpacity>

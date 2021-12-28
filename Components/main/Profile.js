@@ -66,8 +66,7 @@ function Profile(props, { navigation }) {
       firebase.firestore()
         .collection("Users")
         .doc(firebase.auth().currentUser.uid)
-        .get()
-        .then((snapshot) => {
+        .onSnapshot((snapshot) => {
           setUser(snapshot.data())
         })
       firebase.firestore()
@@ -75,8 +74,7 @@ function Profile(props, { navigation }) {
         .doc(firebase.auth().currentUser.uid)
         .collection("UserPosts")
         .orderBy("creation", "desc")
-        .get()
-        .then((snapshot) => {
+        .onSnapshot((snapshot) => {
           let posts = snapshot.docs.map(doc => {
             const data = doc.data();
             const id = doc.id;
@@ -204,7 +202,7 @@ function Profile(props, { navigation }) {
                     style={styles.image}
                     source={{ uri: item.im }}
                   />
-                  <Foundation name="page-multiple" size={30} color="rgba(255,255,255,0.8" style={{ position: 'absolute', top: 8, right: 8 }} />
+                  <Foundation name="page-multiple" size={30} color="rgba(255,255,255,0.8)" style={{ position: 'absolute', top: 8, right: 8 }} />
                 </View>
               ) : (
                 <View style={styles.item}>

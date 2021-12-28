@@ -24,7 +24,7 @@ export default function CheckUser(props) {
         }
     })
         const up =async  () => {
-            const response = await fetch(`http://103.138.113.112:5000/find_user`, {
+            const response = await fetch(`http://171.244.53.66:5001/find_user`, {
             method: 'POST',
             headers: {
               Accept: 'application/json',
