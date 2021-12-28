@@ -231,7 +231,11 @@ function Profile(props, { navigation }) {
                     style={styles.image}
                     source={{ uri: item.im }}
                   />
+<<<<<<< Updated upstream
                   <Foundation name="page-multiple" size={30} color="rgba(255,255,255,0.8"
+=======
+                  <Foundation name="page-multiple" size={30} color="rgba(255,255,255,0.8)"
+>>>>>>> Stashed changes
                     style={{ position: 'absolute', top: 8, right: 8 }} />
                 </View>
               ) : (

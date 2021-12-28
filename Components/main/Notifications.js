@@ -116,7 +116,7 @@ export default function Notifications({ navigation }) {
                                                 source={{ uri: item.image }}>
                                             </Image>
                                             <View style={{ flexDirection: 'column' }}>
-                                                <Text style={{fontSize}}>
+                                                <Text style={{fontSize :15}}>
                                                     {item.nameUser}{item.type}
                                                 </Text>
                                                 <Text>

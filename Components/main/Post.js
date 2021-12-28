@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Text, View, Image, FlatList, StyleSheet,ScrollView, TouchableOpacity, Button, TextInput,KeyboardAvoidingView } from 'react-native';
+import { Text, View, Image, FlatList, TouchableWithoutFeedback, Keyboard, 
+  StyleSheet,ScrollView, TouchableOpacity, Button, TextInput,KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { useLayoutEffect, useEffect } from 'react'
@@ -95,6 +96,10 @@ function Post(props,{navigation}) {
     {
       setCurrentUserLike(false);
       setComments([]);
+      setPostId("");
+      setText("");
+      setPost(null);
+      setU(null);
     }
   }, [props.route.params.postId, props.users, props.route.params.postId.LikesCount])
 
@@ -204,6 +209,7 @@ const AddLikeNotifications = () => {
     return <View />
   }
   return (
+    <TouchableWithoutFeedback style={styles.containerView} onPress={Keyboard.dismiss}>
     <View style={styles.containerView}>
       {props.route.params.type =="list" ? (
             <View style={styles.container1}>
@@ -422,6 +428,7 @@ const AddLikeNotifications = () => {
           </TouchableOpacity>  
         </View>
     </View>
+    </TouchableWithoutFeedback>
 
   );
 }
