@@ -166,7 +166,7 @@ function Profile(props, { navigation }) {
   }
 
   const handleChat = () => {
-    firebase.database().ref('Users/' + firebase.auth().currentUser.uid +'/'+ props.route.params.uid).set({ name: user.name,avatar: user.downloadURL });
+    firebase.database().ref('Users/' + firebase.auth().currentUser.uid + '/' + props.route.params.uid).set({ name: user.name, avatar: user.downloadURL });
     props.navigation.navigate('Messenger')
 
   }
@@ -231,11 +231,9 @@ function Profile(props, { navigation }) {
                     style={styles.image}
                     source={{ uri: item.im }}
                   />
-<<<<<<< Updated upstream
+
                   <Foundation name="page-multiple" size={30} color="rgba(255,255,255,0.8"
-=======
-                  <Foundation name="page-multiple" size={30} color="rgba(255,255,255,0.8)"
->>>>>>> Stashed changes
+
                     style={{ position: 'absolute', top: 8, right: 8 }} />
                 </View>
               ) : (
@@ -335,8 +333,8 @@ function Profile(props, { navigation }) {
                       style={styles.btnFollow}
                       onPress={() => {
                         onfollowing(), AddFollow(), AddFollowing()
-                        , AddNotifications(props.route.params.uid,
-                          props.currentUser.nickname[props.currentUser.nickname.length - 1])
+                          , AddNotifications(props.route.params.uid,
+                            props.currentUser.nickname[props.currentUser.nickname.length - 1])
                       }}><Text style={styles.followText}>follow</Text>
                     </TouchableOpacity>
                   )
