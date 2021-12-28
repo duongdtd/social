@@ -9,6 +9,14 @@ import { Avatar } from 'react-native-elements';
 
 export default class Chat extends React.Component {
 
+  componentDidMount(){
+    this.props.navigation.setOptions({ headerTitle: ()=> 
+      <View style={Style.header}>
+        <Avatar size="medium" rounded source={{ uri: this.state.person.avatar }}/>
+        <Text style={Style.headerName}>{this.state.person.name}</Text>
+      </View>})
+
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -21,11 +29,6 @@ export default class Chat extends React.Component {
       messageList: [],
       messageId: []
     }
-    this.props.navigation.setOptions({ headerTitle: ()=> 
-    <View style={Style.header}>
-      <Avatar size="medium" rounded source={{ uri: this.state.person.avatar }}/>
-      <Text style={Style.headerName}>{this.state.person.name}</Text>
-    </View>})
 
     this.chatRow = this.chatRow.bind(this);
     console.log("1",this.state.person.avatar)

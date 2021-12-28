@@ -51,9 +51,6 @@ export class App extends Component {
       loggedIn: null,
     }
   }
-  componentDidMount(){
-    
-  }
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
@@ -64,26 +61,25 @@ export class App extends Component {
       }
       else {
         const uid = user.uid;
-        // This is where we will store data about being online/offline.
-        // var userStatusDatabaseRef = firebase.database().ref('/Users/' + uid);
-        // // or online.
-        // var isOfflineForDatabase = {
-        //   state: 'offline',
-        //   last_changed: firebase.database.ServerValue.TIMESTAMP,
-        // };
-        // var isOnlineForDatabase = {
-        //   state: 'online',
-        //   last_changed: firebase.database.ServerValue.TIMESTAMP,
-        // };
-        // firebase.database().ref('.info/connected').on('value', function (snapshot) {
-        //   // If we're not currently connected, don't do anything.
-        //   if (snapshot.val() == false) {
-        //     return;
-        //   };
-        //   userStatusDatabaseRef.onDisconnect().update(isOfflineForDatabase).then(function () {
-        //     userStatusDatabaseRef.update(isOnlineForDatabase);
-        //   });
-        // });
+        var userStatusDatabaseRef = firebase.database().ref('/User/' + uid);
+        // or online.
+        var isOfflineForDatabase = {
+          state: 'offline',
+          last_changed: firebase.database.ServerValue.TIMESTAMP,
+        };
+        var isOnlineForDatabase = {
+          state: 'online',
+          last_changed: firebase.database.ServerValue.TIMESTAMP,
+        };
+        firebase.database().ref('.info/connected').on('value', function (snapshot) {
+          // If we're not currently connected, don't do anything.
+          if (snapshot.val() == false) {
+            return;
+          };
+          userStatusDatabaseRef.onDisconnect().update(isOfflineForDatabase).then(function () {
+            userStatusDatabaseRef.update(isOnlineForDatabase);
+          });
+        });
         this.setState({
           loggedIn: true,
           loaded: true,
@@ -99,10 +95,15 @@ export class App extends Component {
   render() {
     const { loggedIn, loaded } = this.state;
     if (!loaded) {
-      return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',backgroundColor:'#ffb412' }}>
-          <Text>Loading Screen</Text>
+      (<View style={{
+        flex: 1, justifyContent: 'center',
+        alignItems: 'center', backgroundColor: '#ffb412'
+      }}>
+        <View >
+          <Image style={{ width: 200, height: 200 }} source={require('./image/dog.jpg')} />
         </View>
+      </View>
+
       )
     }
     if (!loggedIn) {
@@ -125,7 +126,7 @@ export class App extends Component {
             <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
             <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} />
             <Stack.Screen name="Messenger" component={Messenger} navigation={this.props.navigation} />
-            <Stack.Screen name="Chat" component={Chat}  navigation={this.props.navigation} />
+            <Stack.Screen name="Chat" component={Chat} navigation={this.props.navigation} />
             {/* <Stack.Screen name="EditProfile" component={EditProfile} navigation={this.props.navigation} options ={{headerLeft :null}} /> */}
             <Stack.Screen name="Photo" component={Photo} navigation={this.props.navigation} options={{ headerShown: false }} />
             <Stack.Screen name="SearchImage" component={SearchImage} navigation={this.props.navigation} options={{ headerShown: false }} />
@@ -134,7 +135,7 @@ export class App extends Component {
             <Stack.Screen name="Save" component={Save} navigation={this.props.navigation} />
             <Stack.Screen name="CheckUser" component={CheckUser} navigation={this.props.navigation} />
             <Stack.Screen name="QRscreen" component={QRscreen} navigation={this.props.navigation} />
-            <Stack.Screen name="Comments" component={Comments} options={{headerTitle:()=><Text style={{fontWeight:'bold',fontSize:26}}>Comments</Text>}} navigation={this.props.navigation} />
+            <Stack.Screen name="Comments" component={Comments} options={{ headerTitle: () => <Text style={{ fontWeight: 'bold', fontSize: 26 }}>Comments</Text> }} navigation={this.props.navigation} />
             <Stack.Screen name="Post" component={Post} navigation={this.props.navigation} />
             <Stack.Screen name="ChangePassword" component={ChangePassword} navigation={this.props.navigation} />
 

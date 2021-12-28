@@ -7,7 +7,17 @@ import { useState, useEffect } from 'react';
 import { getDatabase, ref, set } from "firebase/database";
 import firebase from "firebase/app";
 import User from '../main/User';
+import { Avatar, Badge, Icon, withBadge } from 'react-native-elements'
 
+
+function check(arr, uid) {
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i].uid == uid && arr[i].state == 'online') {
+      return true;
+    }
+  }
+
+}
 
 export default class Messenger extends React.Component {
   static navigationOptions = {
@@ -15,14 +25,14 @@ export default class Messenger extends React.Component {
   }
 
   state = {
-    users: []
+    users: [],
+    statusUser: []
   }
 
   UNSAFE_componentWillMount() {
-    let dbRef = firebase.database().ref('Users/'+User.uid)
+    let dbRef = firebase.database().ref('Users/' + User.uid)
     dbRef.on('child_added', (val) => {
       let person = val.val();
-      console.log("2", person);
       person.uid = val.key;
       {
         this.setState((prevState) => {
@@ -32,35 +42,62 @@ export default class Messenger extends React.Component {
           return {
             users: [...prevState.users, person]
           }
-          
+
         })
-        //console.log(this.state.users)
+        // console.log(this.state.users)
       }
     })
   }
-
+  componentDidMount() {
+    let dbRef = firebase.database().ref('User')
+    dbRef.on('child_added', (val) => {
+      let person = val.val();
+      // console.log(person)
+      person.uid = val.key;
+      {
+        this.setState((prevState) => {
+          return {
+            statusUser: [...prevState.statusUser, person]
+          }
+        })
+        // console.log(this.state.statusUser)
+      }
+    })
+  }
   renderRow = ({ item }) => {
     return (
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('Chat', item)}
-          style={{ width:'100%', padding: 12, borderColor: '#DDDDDD', borderBottomWidth: 0.5}}>
-          <View style={{width:'100%',flexDirection:'row',alignItems:'center' }}>
-            <Image source={{uri: item.avatar }} style={styles.userImg}/>
-            <Text style={{ fontSize: 24 }}>{item.name}</Text>
+      <TouchableOpacity
+        onPress={() => this.props.navigation.navigate('Chat', item)}
+        style={{ width: '100%', padding: 12, borderColor: '#DDDDDD', borderBottomWidth: 0.5 }}>
+        <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center' }}>
+          <View>
+            <Image source={{ uri: item.avatar }} style={styles.userImg} />
+            <View>
+            {check(this.state.statusUser, item.uid) == true ? (
+              <View style={styles.Badge_onl}/>
+           )
+              : (
+                  <View style={styles.Badge_off}/>
+            )
+            }
+            </View>
           </View>
-        </TouchableOpacity>
+          <Text style={{ fontSize: 24 }}>{item.name}</Text>
+
+        </View>
+      </TouchableOpacity>
     )
   }
 
   render() {
-    //console.log(this.state.users)
+    console.log(this.state.statusUser)
     //console.log("User.uid la:",User.uid)
     return (
       <SafeAreaView>
         <FlatList
           data={this.state.users}
           renderItem={this.renderRow}
-          keyExtractor={(item) => { return item.uid}}
+          keyExtractor={(item) => { return item.uid }}
         />
         {/* <Text>{this.users.name}</Text> */}
       </SafeAreaView>
@@ -91,10 +128,27 @@ const styles = StyleSheet.create({
     color: 'darkblue',
     fontSize: 20
   },
+  Badge_off :{
+    position: 'absolute', bottom: 10, right: 10,
+    width: 10,
+    height: 10,
+    borderRadius: 25,
+    backgroundColor:'red'
+
+  },
+  Badge_onl :{
+    position: 'absolute', bottom: 10, right: 10,
+    width: 10,
+    height: 10,
+    borderRadius: 25,
+    backgroundColor:'green'
+
+  },
   userImg: {
     // marginHorizontal:12,
     // marginTop:12,
-    margin:12,
+   
+    margin: 12,
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -107,12 +161,12 @@ const styles = StyleSheet.create({
 //   useEffect(() => {
 //     let dbRef = firebase.database().ref('UserID');
 //     dbRef.on('child_added',(val) => {
-//       let person = val.val(); 
+//       let person = val.val();
 //       person.uid = val.key;
 //       setUsers((prevState) => {
 //         return {
 //           users: [...prevState, person]
-//         }  
+//         }
 //       })
 
 //     })
