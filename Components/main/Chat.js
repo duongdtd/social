@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Animated, StyleSheet, Pressable, SafeAreaView, FlatList, Text, 
-         Dimensions, View, TouchableOpacity, TextInput, Easing, Image } from 'react-native';
+         Dimensions, View, TouchableOpacity, TextInput, Easing, Image, KeyboardAvoidingView } from 'react-native';
 import { Feather, AntDesign, Ionicons } from '@expo/vector-icons';
 import styles from '../constants/style';
 import User from './User';
@@ -15,6 +15,7 @@ export default class Chat extends React.Component {
         <Avatar size="medium" rounded source={{ uri: this.state.person.avatar }}/>
         <Text style={Style.headerName}>{this.state.person.name}</Text>
       </View>})
+  
 
   }
   constructor(props) {
@@ -29,16 +30,11 @@ export default class Chat extends React.Component {
       messageList: [],
       messageId: []
     }
-
+ 
     this.chatRow = this.chatRow.bind(this);
     console.log("1",this.state.person.avatar)
   }
   
-  // Avatar = createReactClass({
-  //   render: function() {
-  //     return  <Image style={styles.avatar} source={{uri:this.state.person.avatar}}/>;
-  //   }
-  // });
 
 
   handleChange = key => val => {
@@ -55,15 +51,6 @@ export default class Chat extends React.Component {
           }
         })
       })
-
-    // firebase.database().ref('messages').child(User.uid).child(this.state.person.uid)
-    // .on('child_added', (key) => {
-    //   this.setState((prevState) => {
-    //     return {
-    //       messageId: [...prevState.messageId, key.val()]
-    //     }
-    //   })
-    // })
 
     this.position = new Animated.ValueXY(0, 0);
   }
@@ -174,20 +161,20 @@ export default class Chat extends React.Component {
           renderItem={this.renderRow}
           keyExtractor={(item, index) => index.toString()}
         />
-        <View style={{ height:'8%',width:'100%',flexDirection: 'row', alignItems: 'center', marginHorizontal: 8 }}>
+        <View style={{ height:54, flexDirection: 'row', alignItems: 'center', marginHorizontal: 8 }}>
           <TextInput
             style={Style.input}
             value={this.state.textMessage}
             onChangeText={this.handleChange('textMessage')}
           />
-          <TouchableOpacity onPress={this.sendMessage} style={[{ marginLeft: 12,marginBottom: 22, marginTop: 12, marginRight:16 }
+          <TouchableOpacity onPress={this.sendMessage} style={[{ marginLeft: 8,marginBottom: 15, marginTop: 16, marginRight:16 }
           ,{ transform: [{ rotate: '45deg' }]
           }]}>
             {/* <Text style={styles.btnText}>Send</Text> */}
             {/* <AntDesign name="SendOutlined" size={28} color="#ffb412"/> */}
             <Feather name="send" size={36} color="#ffb412" />
           </TouchableOpacity>
-        </View>
+        </View>        
       </SafeAreaView>
     )
   }
@@ -200,8 +187,9 @@ const Style = StyleSheet.create({
 		borderColor: '#ccc',
 		width:'80%',
 		borderRadius:5,
-    marginBottom: 12,
+    marginHorizontal: 8,
     marginLeft: 6,
+    height:40,
 	},
   rowChat: {
     //position: 'absolute',

@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from "react";
-import { View, TextInput,Button,Image,StyleSheet,ActivityIndicator,Alert } from "react-native";
+import { View,Text, TextInput,Button,Image,StyleSheet,ActivityIndicator,Alert,TouchableOpacity } from "react-native";
 import firebase from "firebase";
 import { Avatar } from "react-native-elements/dist/avatar/Avatar";
 import { NavigationContainer } from "@react-navigation/native";
@@ -15,7 +15,7 @@ export default function CheckUser(props) {
         }
         else if(data == "Undetected")
         {
-            Alert.alert('Thông báo', 'Không tìm được', [
+            Alert.alert('Notification', 'Can not find', [
                 {
                   text: 'OK',
                   style: 'cancel',
@@ -24,7 +24,7 @@ export default function CheckUser(props) {
         }
     })
         const up =async  () => {
-            const response = await fetch(`http://171.244.53.66:5001/find_user`, {
+            const response = await fetch(`http://171.244.53.66:5000/find_user`, {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -43,13 +43,16 @@ export default function CheckUser(props) {
         
     }
     return(
-        <View style ={{flex :1, marginTop :10}}>
+        <View style ={{flex :1, marginTop :10,alignItems:'center'}}>
             <Image source ={{uri :`data:image/png;base64,${props.route.params.image}`}} style ={styles.image} />
             <View style={styles.deviler}></View>
-            <Button
+            <TouchableOpacity
+             style={{ height: 40, width: '50%', backgroundColor: "#ffb412", alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderRadius: 6, padding: 5 }}
             title ='Check'
             onPress = {() =>{ up()}}
-            ></Button>
+            >
+                 <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold' }}>Check</Text>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -59,6 +62,7 @@ image : {
     height: 300,
     marginTop :10,
     marginBottom: 30,
+    resizeMode:'contain'
 
 },
 deviler: {

@@ -17,9 +17,7 @@ export default function Login({navigation} ) {
     firebase.auth().sendPasswordResetEmail(Email)
       .then(() => {
         Alert.alert(`check email ${Email}`);
-      }).catch(function (e) {
-        Alert.alert("Error");
-      })
+      }).catch((error)=> alert(error.message))
   }
   const SignIn = () => {
     firebase.auth()
@@ -27,37 +25,16 @@ export default function Login({navigation} ) {
   .then((userCredential) => {
     var user = userCredential.user;
 
-    //firebase.database().ref('user')
-
     firebase.firestore()
     .collection('Users')
     .doc(firebase.auth().currentUser.uid)
     .update({
       status: "online",
     })
-
-    // ...
-    //User.uid = user.uid;
     console.log(user.uid)
   })
   .catch((error)=> alert(error.message))
   }
-
-//   useEffect(()=>{
-//     const unsubcrible =auth.onAuthStateChanged(
-//       function(user){
-//         if(user)
-//         {
-//           navigation.replace('Chat')
-//         }
-//         else {
-//             navigation.canGoBack() && navigation.popToTop();
-//           }
-
-//       })
-//       return unsubcrible;
-//   })
-
 
   return (
     <View style={{flex:1, backgroundColor:'white', flexDirection:'row',alignItems:'center',justifyContent:'center'}}> 

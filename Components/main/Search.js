@@ -1,5 +1,6 @@
 import React, { useState, useLayoutEffect, useEffect } from "react";
-import { Image, View, Text, TextInput, FlatList, TouchableOpacity,TouchableWithoutFeedback,Keyboard, StyleSheet, ImageBackground,Dimensions  } from "react-native";
+import { Image, View, Text, TextInput, FlatList, 
+    TouchableOpacity,TouchableWithoutFeedback,Keyboard, StyleSheet, ImageBackground,Dimensions  } from "react-native";
 import firebase from "firebase";
 import { Avatar, Badge, SearchBar } from 'react-native-elements';
 const width = Dimensions.get('window').width;

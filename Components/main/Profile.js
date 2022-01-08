@@ -62,7 +62,7 @@ function Profile(props, { navigation }) {
   const [following, setFollowing] = useState(false)
 
   useEffect(() => {
-    if (props.route.params.uid == firebase.auth().currentUser.uid) {
+    if (props.route.params.uid === firebase.auth().currentUser.uid) {
       firebase.firestore()
         .collection("Users")
         .doc(firebase.auth().currentUser.uid)
@@ -111,7 +111,6 @@ function Profile(props, { navigation }) {
     } else {
       setFollowing(false);
     }
-
   }, [props.route.params.uid, props.following])
 
   const onfollowing = () => {
@@ -186,7 +185,7 @@ function Profile(props, { navigation }) {
   const renderHorizontalItem = ({ item }) => {
     return (
       <View style={styles.containerImage}>
-        {props.route.params.uid == firebase.auth().currentUser.uid ? (
+        {props.route.params.uid === firebase.auth().currentUser.uid ? (
           <TouchableOpacity
             onPress={() => props.navigation.navigate("Post", {
               postId: item.id, type: item.type,
@@ -197,20 +196,20 @@ function Profile(props, { navigation }) {
             {item.type == "list" ?
               (
                 <View style={styles.item}>
-
                   <Image
                     style={styles.image}
                     source={{ uri: item.im }}
                   />
                   <Foundation name="page-multiple" size={30} color="rgba(255,255,255,0.8)" style={{ position: 'absolute', top: 8, right: 8 }} />
                 </View>
-              ) : (
-                <View style={styles.item}>
+              ) : ( 
+                item.type == "row" ?
+               ( <View style={styles.item}>
                   <Image
                     style={styles.image}
                     source={{ uri: item.downloadURL }}
                   />
-                </View>
+                </View>) :null
               )
             }
           </TouchableOpacity>
@@ -229,18 +228,17 @@ function Profile(props, { navigation }) {
                     style={styles.image}
                     source={{ uri: item.im }}
                   />
-
                   <Foundation name="page-multiple" size={30} color="rgba(255,255,255,0.8)"
-
                     style={{ position: 'absolute', top: 8, right: 8 }} />
                 </View>
               ) : (
-                <View style={styles.item}>
+                item.type == "row" ?
+                (<View style={styles.item}>
                   <Image
                     style={styles.image}
                     source={{ uri: item.downloadURL }}
                   />
-                </View>
+                </View> ): null
               )
             }
           </TouchableOpacity>

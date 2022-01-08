@@ -134,7 +134,6 @@ function NewFeeds(props, { navigation }) {
                   <Text style={styles.userName}>
                     {item.user.nickname[item.user.nickname.length - 1]}
                   </Text>
-                  <Text>asd</Text>
                   <Text style={styles.date}>{findDaysDiffrent(item.creation.seconds,item.creation.nanoseconds)}</Text>
               </View>
             </View>
@@ -394,6 +393,7 @@ const styles = StyleSheet.create({
   horizontalItem: {
     width: Dimensions.get('screen').width , 
     height:300,
+    resizeMode:'contain'
   },
   containerImage: {
     flex: 1 / 3

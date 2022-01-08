@@ -15,8 +15,8 @@ export default function Save(props) {
         if (url.length == props.route.params.data.length) {
             setRunning(false);
             Alert.alert(
-                "Profile Updated",
-                "Thành công",
+                "Upload",
+                "Success",
                 [
                     {
                         text: "OK",
@@ -132,19 +132,12 @@ export default function Save(props) {
             </TextInput>
             <Image source={{ uri: `data:image/png;base64,${props.route.params.images[0]}` }} style={styles.image} />
             <View style={styles.deviler}></View>
-            {/* 
-            <Button
-            st
-            color="#ffb412"
-            title ='Save'
-            onPress = {() =>{uploadImage()}}
-            ></Button> */}
             <View style={{ flex: 1, alignItems: 'center', }}>
                 <TouchableOpacity
                  onPress = {() =>{uploadImage()}}
                     style={{ height: 40, width: '50%', backgroundColor: "#ffb412", alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderRadius: 6, padding: 5 }}
                 >
-                    <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold' }}>Send</Text>
+                    <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold' }}>Save</Text>
                 </TouchableOpacity>
             </View>
 
@@ -157,6 +150,7 @@ const styles = StyleSheet.create({
         height: 300,
         marginTop: 10,
         marginBottom: 30,
+        resizeMode:'contain'
     },
     deviler: {
         borderBottomColor: '#dddddd',

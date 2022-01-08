@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity, Button, TextInput, Alert } from 'react-native';
+import { Text, View, Image, FlatList,ActivityIndicator, StyleSheet, TouchableOpacity, Button, TextInput, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { useLayoutEffect, useEffect } from 'react'
@@ -21,7 +21,9 @@ function EditProfile(props, { navigation }) {
   const [hasGalleyPermission, setGalleyHasPermission] = useState(null);
   const [image, setImage] = useState(null);
   const [base64, setBase64] = useState("");
+  const [running, setRunning] = useState(false)
   const uploadImage = async () => {
+    setRunning(true)
     const uri = image;
     const childPath = `user/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
     console.log(childPath)
@@ -37,6 +39,7 @@ function EditProfile(props, { navigation }) {
     const taskCompleted = () => {
       task.snapshot.ref.getDownloadURL().then((snapshot) => {
         saveData(snapshot);
+        setRunning(false);
         showAlert();
       })
     }
@@ -104,12 +107,12 @@ console.log(base64)
       [
         {
           text: "Cancel",
-          onPress: () => props.navigation.navigate('NewFeeds'),
+          onPress: () => Alert.alert("Cancel!!"),
           style: "cancel",
         },
         {
           text: "OK",
-          onPress: () => Alert.alert("Cancel Pressed"),
+          onPress: () => props.navigation.navigate('NewFeeds')
         },
       ],
       {
@@ -148,11 +151,16 @@ console.log(base64)
   if (user === null) {
     return <View />
   }
+  if (running) {
+    return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator color='red' size='large' />
+        </View>
+    );
+}
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
       quality: 1,
       base64:true,
     });
@@ -160,7 +168,6 @@ console.log(base64)
     if (!result.cancelled) {
       setImage(result.uri);
       setBase64(result.base64);
-      firebase.database().ref('Users/' + props.route.params.uid).set({avatar: result.uri });
     }
   };
   if (hasCameraPermission === null || hasGalleyPermission === false) {

@@ -91,9 +91,6 @@ export default function Register({navigation}) {
     <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <StatusBar style='light' />
-        <View style={styles.logocontainer}>
-          <Text style={styles.logotext}>Đăng ký</Text>
-        </View>
         <View >
           <Ionicons name="md-person" size={30} color="rgba(255,255,255,1)" style={styles.inputIcon1} />
           <TextInput
